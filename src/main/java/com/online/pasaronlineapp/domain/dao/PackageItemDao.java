@@ -1,7 +1,7 @@
 package com.online.pasaronlineapp.domain.dao;
 
-import com.online.pasaronlineapp.domain.comman.BaseDao;
-import com.online.pasaronlineapp.domain.comman.PackageItemKey;
+import com.online.pasaronlineapp.domain.common.BaseDao;
+import com.online.pasaronlineapp.domain.common.PackageItemKey;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;

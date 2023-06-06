@@ -1,4 +1,4 @@
-package com.online.pasaronlineapp.domain.comman;
+package com.online.pasaronlineapp.domain.common;
 
 import lombok.*;
 

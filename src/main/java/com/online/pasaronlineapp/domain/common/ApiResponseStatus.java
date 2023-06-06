@@ -1,4 +1,4 @@
-package com.online.pasaronlineapp.domain.comman;
+package com.online.pasaronlineapp.domain.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
