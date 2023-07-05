@@ -7,5 +7,13 @@ import org.springframework.stereotype.Service;
 @Service
 public interface ItemService {
 
-    public ResponseEntity<Object> createItem(ItemDto itemDto);
+    ResponseEntity<Object> createItem(ItemDto itemDto);
+
+    ResponseEntity<Object> getItemById(Long id);
+
+    ResponseEntity<Object> getAllItems();
+
+    ResponseEntity<Object> updateItemById(Long id, ItemDto itemDto);
+
+    ResponseEntity<Object> deleteItemById(Long id);
 }
