@@ -57,4 +57,4 @@ jobs:
             docker stop pasar-project
             docker rmi dimsen0/pasar-project:latest
             docker pull dimsen0/pasar-project:latest
-            docker run -d --rm --name pasar-project -p 80:8080 --env-file-.dev.env --network ta_network dimsen0/pasar-project:latest
+            docker run -d --rm --name pasar-project -p 80:8080 --env-file=.dev.env --network ta_network dimsen0/pasar-project:latest
