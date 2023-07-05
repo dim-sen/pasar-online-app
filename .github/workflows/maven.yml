@@ -45,7 +45,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: .dev.env
-          target: /home/${{ secrets.SSH_USERNAME }}
+          target: /home/${{ secrets.SSH_USER }}
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
         with:
