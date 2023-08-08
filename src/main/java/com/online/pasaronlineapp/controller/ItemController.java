@@ -1,7 +1,7 @@
 package com.online.pasaronlineapp.controller;
 
 import com.online.pasaronlineapp.domain.dto.ItemDto;
-import com.online.pasaronlineapp.service.ItemServiceImpl;
+import com.online.pasaronlineapp.service.impl.ItemServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
