@@ -29,6 +29,7 @@ public class UserDto {
     @Size(min = 11, max = 12, message = "Invalid Phone Number (11 or 12 characters)")
     private String phoneNumber;
 
+    @Size(min = 8, message = "Invalid Password (min 8 characters")
     private String password;
 
 }

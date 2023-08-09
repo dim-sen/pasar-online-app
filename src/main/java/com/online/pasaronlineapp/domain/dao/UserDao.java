@@ -9,7 +9,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -44,5 +44,5 @@ public class UserDao extends BaseDao {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
     inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
-    private Collection<RoleDao> roleDaos;
+    private List<RoleDao> roleDaos;
 }
