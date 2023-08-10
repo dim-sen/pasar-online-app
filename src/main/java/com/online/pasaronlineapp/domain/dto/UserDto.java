@@ -32,4 +32,7 @@ public class UserDto {
     @Size(min = 8, message = "Invalid Password (min 8 characters")
     private String password;
 
+    @Size(min = 8, message = "Invalid Password (min 8 characters")
+    private String confirmPassword;
+
 }

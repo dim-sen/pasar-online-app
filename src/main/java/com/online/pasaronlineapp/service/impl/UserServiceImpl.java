@@ -9,6 +9,7 @@ import com.online.pasaronlineapp.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -23,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Optional<UserDao> findByUsername(String username) {
@@ -53,7 +57,7 @@ public class UserServiceImpl implements UserService {
             userDao.setFirstName(userDto.getFirstName());
             userDao.setLastName(userDto.getLastName());
             userDao.setPhoneNumber(userDto.getPhoneNumber());
-            userDao.setPassword(userDto.getPassword());
+            userDao.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
             userDao.setRoleDaos(Arrays.asList(roleRepository.findByName("ADMIN")));
 
             return userRepository.save(userDao);
