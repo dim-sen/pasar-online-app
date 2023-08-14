@@ -31,8 +31,13 @@ public class ItemDao extends BaseDao {
     @Column(name = "item_weight", nullable = false)
     private Integer itemWeight;
 
-    @Column(name = "item_image", nullable = false)
+    @Lob
+    @Column(name = "item_image", columnDefinition = "MEDIUMBLOB")
     private String itemImage;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private CategoryDao categoryDao;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude

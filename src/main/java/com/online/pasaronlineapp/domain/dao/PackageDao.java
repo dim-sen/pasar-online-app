@@ -25,7 +25,8 @@ public class PackageDao extends BaseDao {
     @Column(name = "package_name", nullable = false)
     private String packageName;
 
-    @Column(name = "package_image", nullable = false)
+    @Lob
+    @Column(name = "package_image", columnDefinition = "MEDIUMBLOB")
     private String packageImage;
 
     @OneToMany(mappedBy = "packages", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
