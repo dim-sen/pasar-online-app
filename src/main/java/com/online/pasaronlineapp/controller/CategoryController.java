@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -18,7 +19,10 @@ public class CategoryController {
     private CategoryServiceImpl categoryService;
 
     @GetMapping(value = "/categories")
-    public String manageCategories(Model model) {
+    public String manageCategories(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
         List<CategoryDao> categoryDaoList = categoryService.getAllCategories();
         model.addAttribute("categories", categoryDaoList);
         model.addAttribute("size", categoryDaoList.size());

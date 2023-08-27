@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th = "https://www.thymeleaf.org/">
+
+<head th:replace="fragments :: header"></head>
+
+<body>
+    <div class="container-xxl position-relative bg-white d-flex p-0">
+        <!-- Spinner Start -->
+        <div th:replace="fragments :: spinner"></div>
+
+
+        <!-- Sidebar Start -->
+        <div th:replace="fragments :: sidebar"></div>
+
+
+        <!-- Content Start -->
+        <div class="content">
+            <!-- Navbar Start -->
+            <nav th:replace="fragments :: navbar"></nav>
+
+            <!-- Form Start -->
+            <form th:action="@{/save-item}" th:object="${itemNew}" class="form-horizontal" method="post" enctype="multipart/form-data">
+                <fieldset>
+
+                    <!-- Form Name -->
+                    <legend>ADD ITEMS</legend>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="itemName">ITEM NAME</label>
+                        <div class="col-md-4">
+                            <input th:field="*{itemName}" id="itemName" name="itemName" placeholder="ITEM NAME" class="form-control input-md" required="" type="text">
+
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="itemPrice">ITEM PRICE</label>
+                        <div class="col-md-4">
+                            <input th:field="*{itemPrice}" id="itemPrice" name="itemPrice" placeholder="ITEM PRICE" class="form-control input-md" required="" type="text">
+
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="itemWeight">ITEM WEIGHT</label>
+                        <div class="col-md-4">
+                            <input th:field="*{itemWeight}" id="itemWeight" name="itemWeight" placeholder="ITEM WEIGHT" class="form-control input-md" required="" type="text">
+
+                        </div>
+                    </div>
+
+                    <!-- Select Basic -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="categories">ITEM CATEGORY</label>
+                        <div class="col-md-4">
+                            <select th:field="*{categoryDao}" id="categories" name="categories" class="form-control">
+                                <option th:value="null">SELECT ONE</option>
+                                <option th:each="category : ${categories}"
+                                        th:value="${category.id}"
+                                        th:text="${category.categoryName}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- File Button -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="file">ITEM IMAGE</label>
+                        <div class="col-md-4">
+                            <input id="file" name="file" class="input-file" type="file">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </fieldset>
+            </form>
+            <!-- Form End -->
+
+
+            <!-- Footer Start -->
+            <div th:replace="fragments :: footer"></div>
+        </div>
+        <!-- Content End -->
+
+
+        <!-- Back to Top -->
+        <a th:replace="fragments :: top"></a>
+
+    </div>
+
+    <!-- Add Modal -->
+
+
+    <!-- Edit Modal -->
+
+
+
+    <div th:replace="fragments :: script"></div>
+
+    <script th:src="@{/js/categories.js}"></script>
+
+</body>
+
+</html>

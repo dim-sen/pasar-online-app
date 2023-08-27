@@ -7,6 +7,8 @@ public class AppConstant {
 
     public static final String DEFAULT_SYSTEM = "SYSTEM";
 
+    public static final String ITEM_DIRECTORY = "D:\\pasar-online-app\\src\\main\\resources\\static\\img\\item-img";
+
     public enum ResponseCode {
 
         SUCCESS("SUCCESS", "success"),
