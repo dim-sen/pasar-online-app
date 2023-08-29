@@ -7,6 +7,7 @@ import com.online.pasaronlineapp.service.impl.CategoryServiceImpl;
 import com.online.pasaronlineapp.service.impl.ItemServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +32,28 @@ public class ItemController {
         if (principal == null) {
             return "redirect:/login";
         }
-        List<ItemDao> itemDaoList = itemService.getAllItems();
-        model.addAttribute("items", itemDaoList);
-        model.addAttribute("size", itemDaoList.size());
+        List<ItemDto> itemDtoList = itemService.getAllItems();
+        model.addAttribute("items", itemDtoList);
+        model.addAttribute("size", itemDtoList.size());
         model.addAttribute("title", "Item");
-        model.addAttribute("itemDto", new ItemDto());
+        return "items";
+    }
+
+    @GetMapping(value = "/items/{page}")
+    public String itemPage(
+            @PathVariable(value = "page") Integer pageNumber,
+            Model model,
+            Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        Page<ItemDao> itemDaoPage = itemService.ITEM_DAO_PAGE(pageNumber);
+        model.addAttribute("title", "Item");
+        model.addAttribute("size", itemDaoPage.getSize());
+        model.addAttribute("totalPages", itemDaoPage.getTotalPages());
+        model.addAttribute("currentPage", pageNumber);
+        model.addAttribute("items", itemDaoPage);
         return "items";
     }
 

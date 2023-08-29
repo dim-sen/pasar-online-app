@@ -1,5 +1,6 @@
 package com.online.pasaronlineapp.service.impl;
 
+import com.online.pasaronlineapp.constant.AppConstant;
 import com.online.pasaronlineapp.domain.dao.ItemDao;
 import com.online.pasaronlineapp.domain.dto.ItemDto;
 import com.online.pasaronlineapp.repository.ItemRepository;
@@ -7,13 +8,13 @@ import com.online.pasaronlineapp.service.ItemService;
 import com.online.pasaronlineapp.util.ImageUploadUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -82,10 +83,24 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDao> getAllItems() {
+    public List<ItemDto> getAllItems() {
         try {
             log.info("Getting all items");
-            return itemRepository.findAll();
+            List<ItemDao> itemDaoList = itemRepository.findAll();
+            List<ItemDto> itemDtoList = new ArrayList<>();
+
+            for (ItemDao itemDao : itemDaoList) {
+                itemDtoList.add(ItemDto.builder()
+                                .id(itemDao.getId())
+                                .itemName(itemDao.getItemName())
+                                .itemPrice(itemDao.getItemPrice())
+                                .itemWeight(itemDao.getItemWeight())
+                                .itemImage(itemDao.getItemImage())
+                                .categoryDao(itemDao.getCategoryDao())
+                        .build());
+            }
+
+            return itemDtoList;
         } catch (Exception e) {
             log.error("An error occurred in getting all items. Error {}", e.getMessage());
             return Collections.emptyList();
@@ -157,5 +172,11 @@ public class ItemServiceImpl implements ItemService {
             log.error("An error occurred in deleting an item by id. Error {}", e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    public Page<ItemDao> ITEM_DAO_PAGE(Integer number) {
+        Pageable pageable = PageRequest.of(number, AppConstant.PAGE_MAX);
+        return itemRepository.pageableItem(pageable);
     }
 }

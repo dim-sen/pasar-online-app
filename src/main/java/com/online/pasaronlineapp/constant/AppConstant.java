@@ -9,6 +9,8 @@ public class AppConstant {
 
     public static final String ITEM_DIRECTORY = "D:\\pasar-online-app\\src\\main\\resources\\static\\img\\item-img";
 
+    public static final Integer PAGE_MAX = 3;
+
     public enum ResponseCode {
 
         SUCCESS("SUCCESS", "success"),
