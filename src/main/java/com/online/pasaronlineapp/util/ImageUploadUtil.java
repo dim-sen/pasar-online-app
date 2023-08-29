@@ -2,10 +2,8 @@ package com.online.pasaronlineapp.util;
 
 import com.online.pasaronlineapp.constant.AppConstant;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -28,8 +26,21 @@ public class ImageUploadUtil {
                     StandardCopyOption.REPLACE_EXISTING);
 
         } catch (Exception e) {
-            log.error("And error occurred in uploading an image. Error {}", e.getMessage());
+            log.error("An error occurred in uploading an image. Error {}", e.getMessage());
+        }
+    }
+
+    public boolean checkIfExist(MultipartFile file) {
+        boolean isExisted = false;
+
+        try {
+            log.info("Checking if the file exist");
+            File f = new File(AppConstant.ITEM_DIRECTORY + "\\" + file.getOriginalFilename());
+            isExisted = f.exists();
+        } catch (Exception e) {
+            log.error("An error occurred in checking the image file. Error {}", e.getMessage());
         }
 
+        return isExisted;
     }
 }

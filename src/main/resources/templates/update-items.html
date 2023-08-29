@@ -19,11 +19,12 @@
             <nav th:replace="fragments :: navbar"></nav>
 
             <!-- Form Start -->
-            <form th:action="@{/save-item}" th:object="${itemDto}" class="form-horizontal" method="post" enctype="multipart/form-data">
+            <form th:action="@{/update-item/{id} (id = ${itemDto.id})}" th:object="${itemDto}" class="form-horizontal" method="post" enctype="multipart/form-data">
                 <fieldset>
 
                     <!-- Form Name -->
-                    <legend>ADD ITEMS</legend>
+                    <legend>Update ITEMS</legend>
+                    <p th:text="${itemDto.id}"></p>
 
                     <!-- Text input-->
                     <div class="form-group">
@@ -69,6 +70,7 @@
                     <!-- File Button -->
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="file">ITEM IMAGE</label>
+                        <img th:src="*{'data:image/jpeg;base64,' + {itemImage}}" style="height: 50px; width: 50px;">
                         <div class="col-md-4">
                             <input id="file" name="file" class="input-file" type="file">
                         </div>

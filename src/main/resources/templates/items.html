@@ -48,16 +48,16 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr th:each="itemNew : ${items}">
-                                            <th scope="row" th:text="${itemNew.id}"></th>
-                                            <td th:text="${itemNew.itemName}"></td>
-                                            <td th:text="${itemNew.itemPrice}"></td>
-                                            <td th:text="${itemNew.itemWeight}"></td>
-                                            <td><img th:src="*{'data:image/jpeg;base64,' + {itemNew.itemImage}}" style="height: 50px; width: 50px;"></td>
-                                            <td th:text="${itemNew.categoryDao.categoryName}"></td>
+                                        <tr th:each="itemDto : ${items}">
+                                            <th scope="row" th:text="${itemDto.id}"></th>
+                                            <td th:text="${itemDto.itemName}"></td>
+                                            <td th:text="${itemDto.itemPrice}"></td>
+                                            <td th:text="${itemDto.itemWeight}"></td>
+                                            <td><img th:src="*{'data:image/jpeg;base64,' + {itemDto.itemImage}}" style="height: 50px; width: 50px;"></td>
+                                            <td th:text="${itemDto.categoryDao.categoryName}"></td>
                                             <td>
-                                                <a id="editButton" class="btn btn-primary">Edit</a>
-                                                <a id="deleteButton" class="btn btn-danger">Delete</a>
+                                                <a th:href="@{/update-item/{id} (id = ${itemDto.id})}" class="btn btn-primary">Edit</a>
+                                                <a th:href="@{/delete-item/{id} (id = ${itemDto.id})}" class="btn btn-danger">Delete</a>
                                             </td>
                                         </tr>
                                     </tbody>
