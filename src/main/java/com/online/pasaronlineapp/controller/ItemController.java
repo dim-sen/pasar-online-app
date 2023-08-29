@@ -40,21 +40,37 @@ public class ItemController {
     }
 
     @GetMapping(value = "/items/{page}")
-    public String itemPage(
-            @PathVariable(value = "page") Integer pageNumber,
-            Model model,
-            Principal principal) {
+    public String itemPage(@PathVariable(value = "page") Integer pageNumber,
+                           Model model,
+                           Principal principal) {
         if (principal == null) {
             return "redirect:/login";
         }
 
-        Page<ItemDao> itemDaoPage = itemService.ITEM_DAO_PAGE(pageNumber);
+        Page<ItemDao> itemDaoPage = itemService.itemPage(pageNumber);
         model.addAttribute("title", "Item");
         model.addAttribute("size", itemDaoPage.getSize());
         model.addAttribute("totalPages", itemDaoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("items", itemDaoPage);
         return "items";
+    }
+
+    @GetMapping(value = "/search-result/{page}")
+    public String searchItem(@PathVariable(value = "page") Integer pageNumber,
+                             @RequestParam(value = "keyword") String keyword,
+                             Model model,
+                             Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        Page<ItemDao> itemDaoPage = itemService.searchItem(pageNumber, keyword);
+        model.addAttribute("title", "Search");
+        model.addAttribute("items", itemDaoPage);
+        model.addAttribute("size", itemDaoPage.getSize());
+        model.addAttribute("totalPages", itemDaoPage.getTotalPages());
+        model.addAttribute("currentPage", pageNumber);
+        return "result-items";
     }
 
     @GetMapping(value = "/add-item")
