@@ -5,17 +5,16 @@ import com.online.pasaronlineapp.domain.dao.ItemDao;
 import com.online.pasaronlineapp.domain.dto.ItemDto;
 import com.online.pasaronlineapp.repository.ItemRepository;
 import com.online.pasaronlineapp.service.ItemService;
-import com.online.pasaronlineapp.util.ResponseUtil;
+import com.online.pasaronlineapp.util.ImageUploadUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -25,45 +24,58 @@ public class ItemServiceImpl implements ItemService {
     private ItemRepository itemRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
-
+    private ImageUploadUtil imageUploadUtil;
 
     @Override
-    public ResponseEntity<Object> createItem(ItemDto itemDto) {
+    public ItemDao createItem(ItemDto itemDto, MultipartFile itemImage) {
         try {
             log.info("Creating new item");
             Optional<ItemDao> optionalItemDao =itemRepository.findItemName(itemDto.getItemName());
 
             if (optionalItemDao.isPresent()) {
                 log.info("Item Already Exist");
-                return ResponseUtil.build(AppConstant.ResponseCode.ALREADY_EXISTS, null, HttpStatus.CONFLICT);
+                return null;
             }
 
-            ItemDao itemDao = modelMapper.map(itemDto, ItemDao.class);
-            itemRepository.save(itemDao);
+            imageUploadUtil.imgUpload(itemImage);
 
-            ItemDto dto = modelMapper.map(itemDao, ItemDto.class);
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, dto, HttpStatus.OK);
+            ItemDao itemDao = ItemDao.builder()
+                    .itemName(itemDto.getItemName())
+                    .itemPrice(itemDto.getItemPrice())
+                    .itemWeight(itemDto.getItemWeight())
+                    .itemImage(Base64.getEncoder().encodeToString(itemImage.getBytes()))
+                    .categoryDao(itemDto.getCategoryDao())
+                    .build();
+            return itemRepository.save(itemDao);
+
         } catch (Exception e) {
             log.error("An error occurred in creating Item. Error: {}", e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return null;
         }
     }
 
     @Override
-    public ResponseEntity<Object> getItemById(Long id) {
+    public ItemDto getItemById(Long id) {
         try {
             log.info("Getting an item by id");
             Optional<ItemDao> optionalItemDao = itemRepository.findById(id);
 
             if (optionalItemDao.isEmpty()) {
                 log.info("Item not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+                return null;
             }
 
             log.info("Item found");
-            ItemDto itemDto = modelMapper.map(optionalItemDao.get(), ItemDto.class);
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, itemDto, HttpStatus.OK);
+
+            return ItemDto.builder()
+                    .id(optionalItemDao.get().getId())
+                    .itemName(optionalItemDao.get().getItemName())
+                    .itemPrice(optionalItemDao.get().getItemPrice())
+                    .itemWeight(optionalItemDao.get().getItemWeight())
+                    .itemImage(optionalItemDao.get().getItemImage())
+                    .categoryDao(optionalItemDao.get().getCategoryDao())
+                    .build();
+
         } catch (Exception e) {
             log.error("An error occurred in getting an item by id. Error {}", e.getMessage());
             throw e;
@@ -71,41 +83,51 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ResponseEntity<Object> getAllItems() {
+    public List<ItemDto> getAllItems() {
         try {
             log.info("Getting all items");
-            List<ItemDao> itemDaos;
-            List<ItemDto> itemDtos = new ArrayList<>();
+            List<ItemDao> itemDaoList = itemRepository.findAll();
+            List<ItemDto> itemDtoList = new ArrayList<>();
 
-            itemDaos = itemRepository.findAll();
-
-            for (ItemDao itemDao : itemDaos) {
-                itemDtos.add(modelMapper.map(itemDao, ItemDto.class));
+            for (ItemDao itemDao : itemDaoList) {
+                itemDtoList.add(ItemDto.builder()
+                                .id(itemDao.getId())
+                                .itemName(itemDao.getItemName())
+                                .itemPrice(itemDao.getItemPrice())
+                                .itemWeight(itemDao.getItemWeight())
+                                .itemImage(itemDao.getItemImage())
+                                .categoryDao(itemDao.getCategoryDao())
+                        .build());
             }
 
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, itemDtos, HttpStatus.OK);
+            return itemDtoList;
         } catch (Exception e) {
             log.error("An error occurred in getting all items. Error {}", e.getMessage());
-            return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return Collections.emptyList();
         }
     }
 
+
+
     @Override
-    public ResponseEntity<Object> updateItemById(Long id, ItemDto itemDto) {
+    public ItemDao updateItemById(ItemDto itemDto, MultipartFile itemImage) {
         try {
             log.info("Updating an item by id");
-            Optional<ItemDao> optionalItemDao = itemRepository.findById(id);
+            Optional<ItemDao> optionalItemDao = itemRepository.findById(itemDto.getId());
+            log.info("itemDao: " + optionalItemDao);
 
             if (optionalItemDao.isEmpty()) {
                 log.info("Item not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+                return null;
             }
 
             Optional<ItemDao> itemDaoOptional = itemRepository.findItemName(itemDto.getItemName());
+            log.info("dto name: " + itemDto.getItemName());
+            log.info("dao name: " + itemDaoOptional);
 
             if (itemDaoOptional.isPresent()) {
                 log.info("Item already exist");
-                return ResponseUtil.build(AppConstant.ResponseCode.ALREADY_EXISTS, null, HttpStatus.CONFLICT);
+                return null;
             }
 
             log.info("Item found");
@@ -113,35 +135,56 @@ public class ItemServiceImpl implements ItemService {
             itemDao.setItemName(itemDto.getItemName());
             itemDao.setItemPrice(itemDto.getItemPrice());
             itemDao.setItemWeight(itemDto.getItemWeight());
-            itemDao.setItemImage(itemDto.getItemImage());
-            itemRepository.save(itemDao);
 
-            ItemDto dto = modelMapper.map(itemDao, ItemDto.class);
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, dto, HttpStatus.OK);
+            if (itemImage.isEmpty()) {
+                log.info("itemImage is null");
+                itemDao.setItemImage(optionalItemDao.get().getItemImage());
+            } else {
+                if (!imageUploadUtil.checkIfExist(itemImage)) {
+                    log.info("itemImage isn't null & upload");
+                    imageUploadUtil.imgUpload(itemImage);
+                }
+
+                itemDao.setItemImage(Base64.getEncoder().encodeToString(itemImage.getBytes()));
+            }
+
+            return itemRepository.save(itemDao);
 
         } catch (Exception e) {
             log.error("An error occurred in updating an item by id. Error {}", e.getMessage());
-            throw e;
+            return null;
         }
     }
 
     @Override
-    public ResponseEntity<Object> deleteItemById(Long id) {
+    public void deleteItemById(Long id) {
         try {
             log.info("Deleting an item by id");
             Optional<ItemDao> optionalItemDao = itemRepository.findById(id);
 
             if (optionalItemDao.isEmpty()) {
                 log.info("Item not found");
-                return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
 
             log.info("Item found");
             itemRepository.delete(optionalItemDao.get());
-            return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, null, HttpStatus.OK);
         } catch (Exception e) {
             log.error("An error occurred in deleting an item by id. Error {}", e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    public Page<ItemDao> itemPage(Integer number) {
+        log.info("Showing pagination");
+        Pageable pageable = PageRequest.of(number, AppConstant.PAGE_MAX);
+        return itemRepository.pageableItem(pageable);
+    }
+
+    @Override
+    public Page<ItemDao> searchItem(Integer number, String keyword) {
+        log.info("Searching an item");
+        Pageable pageable = PageRequest.of(number, AppConstant.PAGE_MAX);
+        return itemRepository.searchItemDaoByItemImageOrItemPrice(keyword, pageable);
     }
 }

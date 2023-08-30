@@ -1,19 +1,27 @@
 package com.online.pasaronlineapp.service;
 
+import com.online.pasaronlineapp.domain.dao.ItemDao;
 import com.online.pasaronlineapp.domain.dto.ItemDto;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 public interface ItemService {
 
-    ResponseEntity<Object> createItem(ItemDto itemDto);
+    ItemDao createItem(ItemDto itemDto, MultipartFile itemImage);
 
-    ResponseEntity<Object> getItemById(Long id);
+    ItemDto getItemById(Long id);
 
-    ResponseEntity<Object> getAllItems();
+    List<ItemDto> getAllItems();
 
-    ResponseEntity<Object> updateItemById(Long id, ItemDto itemDto);
+    ItemDao updateItemById(ItemDto itemDto, MultipartFile itemImage);
 
-    ResponseEntity<Object> deleteItemById(Long id);
+    void deleteItemById(Long id);
+
+    Page<ItemDao> itemPage(Integer number);
+
+    Page<ItemDao> searchItem(Integer number, String keyword);
 }
