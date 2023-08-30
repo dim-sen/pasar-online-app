@@ -30,7 +30,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDao createItem(ItemDto itemDto, MultipartFile itemImage) {
         try {
             log.info("Creating new item");
-            Optional<ItemDao> optionalItemDao =itemRepository.findItemName(itemDto.getItemName());
+            Optional<ItemDao> optionalItemDao = itemRepository.findItemName(itemDto.getItemName());
 
             if (optionalItemDao.isPresent()) {
                 log.info("Item Already Exist");
@@ -91,12 +91,12 @@ public class ItemServiceImpl implements ItemService {
 
             for (ItemDao itemDao : itemDaoList) {
                 itemDtoList.add(ItemDto.builder()
-                                .id(itemDao.getId())
-                                .itemName(itemDao.getItemName())
-                                .itemPrice(itemDao.getItemPrice())
-                                .itemWeight(itemDao.getItemWeight())
-                                .itemImage(itemDao.getItemImage())
-                                .categoryDao(itemDao.getCategoryDao())
+                        .id(itemDao.getId())
+                        .itemName(itemDao.getItemName())
+                        .itemPrice(itemDao.getItemPrice())
+                        .itemWeight(itemDao.getItemWeight())
+                        .itemImage(itemDao.getItemImage())
+                        .categoryDao(itemDao.getCategoryDao())
                         .build());
             }
 
@@ -106,7 +106,6 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
     }
-
 
 
     @Override

@@ -4,11 +4,11 @@ import com.online.pasaronlineapp.domain.dao.CategoryDao;
 import com.online.pasaronlineapp.domain.dto.CategoryDto;
 import com.online.pasaronlineapp.repository.CategoryRepository;
 import com.online.pasaronlineapp.service.CategoryService;
-import java.util.Collections;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

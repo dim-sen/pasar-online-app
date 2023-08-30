@@ -1,6 +1,5 @@
 package com.online.pasaronlineapp.service.impl;
 
-import com.online.pasaronlineapp.domain.dao.RoleDao;
 import com.online.pasaronlineapp.domain.dao.UserDao;
 import com.online.pasaronlineapp.domain.dto.UserDto;
 import com.online.pasaronlineapp.repository.RoleRepository;

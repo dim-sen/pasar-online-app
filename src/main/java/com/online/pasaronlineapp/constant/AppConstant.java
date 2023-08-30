@@ -2,14 +2,12 @@ package com.online.pasaronlineapp.constant;
 
 public class AppConstant {
 
+    public static final String DEFAULT_SYSTEM = "SYSTEM";
+    public static final String ITEM_DIRECTORY = "D:\\pasar-online-app\\src\\main\\resources\\static\\img\\item-img";
+    public static final Integer PAGE_MAX = 3;
+
     public AppConstant() {
     }
-
-    public static final String DEFAULT_SYSTEM = "SYSTEM";
-
-    public static final String ITEM_DIRECTORY = "D:\\pasar-online-app\\src\\main\\resources\\static\\img\\item-img";
-
-    public static final Integer PAGE_MAX = 3;
 
     public enum ResponseCode {
 
