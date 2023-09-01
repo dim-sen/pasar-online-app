@@ -113,19 +113,9 @@ public class ItemServiceImpl implements ItemService {
         try {
             log.info("Updating an item by id");
             Optional<ItemDao> optionalItemDao = itemRepository.findById(itemDto.getId());
-            log.info("itemDao: " + optionalItemDao);
 
             if (optionalItemDao.isEmpty()) {
                 log.info("Item not found");
-                return null;
-            }
-
-            Optional<ItemDao> itemDaoOptional = itemRepository.findItemName(itemDto.getItemName());
-            log.info("dto name: " + itemDto.getItemName());
-            log.info("dao name: " + itemDaoOptional);
-
-            if (itemDaoOptional.isPresent()) {
-                log.info("Item already exist");
                 return null;
             }
 

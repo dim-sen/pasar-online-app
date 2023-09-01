@@ -19,69 +19,48 @@
         <nav th:replace="fragments :: navbar"></nav>
 
         <!-- Form Start -->
-        <form class="form-horizontal" enctype="multipart/form-data" method="post" th:action="@{/save-item}"
-              th:object="${itemDto}">
-            <fieldset>
+        <h3 class="mb-4">Add Item</h3>
+        <form th:action="@{/save-item}" th:object="${itemDto}" enctype="multipart/form-data" method="post">
 
-                <!-- Form Name -->
-                <legend>ADD ITEMS</legend>
-
-                <!-- Text input-->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="itemName">ITEM NAME</label>
-                    <div class="col-md-4">
-                        <input class="form-control input-md" id="itemName" name="itemName" placeholder="ITEM NAME"
-                               required="" th:field="*{itemName}" type="text">
-
-                    </div>
+            <div class="mb-3">
+                <label for="itemName" class="col-sm-2 col-form-label">Item Name</label>
+                <div class="col-sm">
+                    <input th:field="*{itemName}" type="text" class="form-control" id="itemName" required>
                 </div>
+            </div>
 
-                <!-- Text input-->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="itemPrice">ITEM PRICE</label>
-                    <div class="col-md-4">
-                        <input class="form-control input-md" id="itemPrice" name="itemPrice" placeholder="ITEM PRICE"
-                               required="" th:field="*{itemPrice}" type="text">
-
-                    </div>
+            <div class="mb-3">
+                <label for="itemPrice" class="col-sm-2 col-form-label">Item Price</label>
+                <div class="col-sm">
+                    <input th:field="*{itemPrice}" type="text" class="form-control" id="itemPrice" required>
                 </div>
+            </div>
 
-                <!-- Text input-->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="itemWeight">ITEM WEIGHT</label>
-                    <div class="col-md-4">
-                        <input class="form-control input-md" id="itemWeight" name="itemWeight" placeholder="ITEM WEIGHT"
-                               required="" th:field="*{itemWeight}" type="text">
-
-                    </div>
+            <div class="mb-3">
+                <label for="itemWeight" class="col-sm-2 col-form-label">Item Weight</label>
+                <div class="col-sm">
+                    <input th:field="*{itemWeight}" type="text" class="form-control" id="itemWeight" required>
                 </div>
+            </div>
 
-                <!-- Select Basic -->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="categories">ITEM CATEGORY</label>
-                    <div class="col-md-4">
-                        <select class="form-control" id="categories" name="categories" th:field="*{categoryDao}">
-                            <option th:value="null">SELECT ONE</option>
-                            <option th:each="category : ${categories}"
-                                    th:text="${category.categoryName}"
-                                    th:value="${category.id}">
-                            </option>
-                        </select>
-                    </div>
-                </div>
+            <label for="categories" class="form-label">Item Category</label>
+            <select th:field="*{categoryDao}" class="form-select mb-3" aria-label="Default select example" id="categories" name="categories">
+                <option th:value="null">SELECT ONE</option>
+                <option th:each="category : ${categories}"
+                        th:text="${category.categoryName}"
+                        th:value="${category.id}">
+                </option>
+            </select>
 
-                <!-- File Button -->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="file">ITEM IMAGE</label>
-                    <div class="col-md-4">
-                        <input class="input-file" id="file" name="file" type="file">
-                    </div>
-                </div>
+            <!-- File Button -->
+            <div class="mb-3">
+                <label for="file" class="form-label">Item Image</label>
+                <input class="form-control" type="file" id="file">
+            </div>
 
-                <div class="form-group">
-                    <button class="btn btn-primary" type="submit">Save</button>
-                </div>
-            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-primary" type="submit">Save</button>
+            </div>
         </form>
         <!-- Form End -->
 
@@ -98,8 +77,6 @@
 </div>
 
 <div th:replace="fragments :: script"></div>
-
-<script th:src="@{/js/categories.js}"></script>
 
 </body>
 

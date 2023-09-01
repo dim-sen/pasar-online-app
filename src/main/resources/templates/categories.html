@@ -8,10 +8,8 @@
     <!-- Spinner Start -->
     <div th:replace="fragments :: spinner"></div>
 
-
     <!-- Sidebar Start -->
     <div th:replace="fragments :: sidebar"></div>
-
 
     <!-- Content Start -->
     <div class="content">
@@ -25,9 +23,10 @@
                     <div class="bg-light rounded h-100 p-4">
                         <h6 class="mb-4">Category</h6>
                         <div class="table-responsive">
-                            <button class="btn btn-primary" data-bs-target="#addModal" data-bs-toggle="modal"
-                                    data-bs-whatever="@mdo" type="button">Add New Category
-                            </button>
+                            <a class="btn btn-primary" th:href="@{/add-category}">Add New Category</a>
+<!--                            <button class="btn btn-primary" data-bs-target="#addModal" data-bs-toggle="modal"-->
+<!--                                    data-bs-whatever="@mdo" type="button">Add New Category-->
+<!--                            </button>-->
                             <div th:if="${size == 0}">
                                 <p>There is no category</p>
                             </div>
@@ -65,74 +64,17 @@
         </div>
         <!-- Table End -->
 
-
         <!-- Footer Start -->
         <div th:replace="fragments :: footer"></div>
     </div>
     <!-- Content End -->
-
 
     <!-- Back to Top -->
     <a th:replace="fragments :: top"></a>
 
 </div>
 
-<!-- Add Modal -->
-<div aria-hidden="true" aria-labelledby="addModalLabel" class="modal fade" id="addModal" tabindex="-1">
-    <form method="post" th:action="@{/add-category}" th:object="${categoryNew}">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">New Category</h5>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="col-form-label" for="categoryName">Name:</label>
-                        <input class="form-control" id="categoryName" th:field="*{categoryName}" type="text">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-                    <button class="btn btn-primary" type="submit">Save</button>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
-
-<!-- Edit Modal -->
-<div aria-hidden="true" aria-labelledby="editModalLabel" class="modal fade" id="editModal" tabindex="-1">
-    <form method="put" th:action="@{/update-category}">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit Category</h5>
-                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="col-form-label" for="editCategoryId">Id:</label>
-                        <input class="form-control" id="editCategoryId" name="id" readonly type="text">
-                    </div>
-                    <div class="mb-3">
-                        <label class="col-form-label" for="editCategoryName">Name:</label>
-                        <input class="form-control" id="editCategoryName" name="categoryName" type="text">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
-                    <button class="btn btn-primary" type="submit">Save</button>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
-
-
 <div th:replace="fragments :: script"></div>
-
-<script th:src="@{/js/categories.js}"></script>
 
 </body>
 
