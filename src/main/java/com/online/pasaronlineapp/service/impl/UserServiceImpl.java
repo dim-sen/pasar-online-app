@@ -1,5 +1,7 @@
 package com.online.pasaronlineapp.service.impl;
 
+import com.online.pasaronlineapp.constant.AppConstant;
+import com.online.pasaronlineapp.domain.dao.RoleDao;
 import com.online.pasaronlineapp.domain.dao.UserDao;
 import com.online.pasaronlineapp.domain.dto.UserDto;
 import com.online.pasaronlineapp.repository.RoleRepository;
@@ -51,12 +53,22 @@ public class UserServiceImpl implements UserService {
         try {
             log.info("Creating a user");
 
+            Optional<RoleDao> optionalRoleDao = roleRepository.findByName(AppConstant.Role.ADMIN.getRoleName());
+
+            if (optionalRoleDao.isEmpty()) {
+                RoleDao roleDao = RoleDao.builder()
+                        .name(AppConstant.Role.ADMIN.getRoleName())
+                        .build();
+
+                optionalRoleDao = Optional.of(roleRepository.save(roleDao));
+            }
+
             UserDao userDao = new UserDao();
             userDao.setFirstName(userDto.getFirstName());
             userDao.setLastName(userDto.getLastName());
             userDao.setPhoneNumber(userDto.getPhoneNumber());
             userDao.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-            userDao.setRoleDaos(Arrays.asList(roleRepository.findByName("ADMIN")));
+            userDao.setRoleDao(optionalRoleDao.orElseThrow(() -> new RuntimeException("Role not found")));
 
             return userRepository.save(userDao);
 

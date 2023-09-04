@@ -21,10 +21,8 @@ public class UserDetailsDao implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-        for (RoleDao roleDao : userDao.getRoleDaos()) {
-            simpleGrantedAuthorities.add(new SimpleGrantedAuthority(roleDao.getName()));
-        }
-        return null;
+        simpleGrantedAuthorities.add(new SimpleGrantedAuthority(userDao.getRoleDao().getName()));
+        return simpleGrantedAuthorities;
     }
 
     @Override

@@ -65,6 +65,11 @@
                             <div class="alert alert-danger" th:errors="*{confirmPassword}"
                                  th:if="${#fields.hasErrors('confirmPassword')}"></div>
                         </div>
+                        <div class="form-floating mb-4">
+                            <input class="form-control" id="roleName" placeholder="Role"
+                                   type="text" th:value="${'ADMIN'}" readonly>
+                            <label for="roleName">Role</label>
+                        </div>
                         <button class="btn btn-primary py-3 w-100 mb-4" type="submit">Register</button>
                         <p class="text-center mb-0">Already have an Account? <a href="login.html" th:href="@{/login}">Login</a>
                         </p>
