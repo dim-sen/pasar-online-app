@@ -3,6 +3,7 @@ package com.online.pasaronlineapp.domain.dao;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -31,7 +32,7 @@ public class ItemDao extends BaseDao {
     @Column(name = "item_weight", nullable = false)
     private Integer itemWeight;
 
-    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "item_image", columnDefinition = "BYTEA")
     private String itemImage;
 
