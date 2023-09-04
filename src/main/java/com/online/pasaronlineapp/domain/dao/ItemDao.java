@@ -32,7 +32,7 @@ public class ItemDao extends BaseDao {
     private Integer itemWeight;
 
     @Lob
-    @Column(name = "item_image", columnDefinition = "MEDIUMBLOB")
+    @Column(name = "item_image", columnDefinition = "BYTEA")
     private String itemImage;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

@@ -37,7 +37,7 @@ public class UserDao extends BaseDao {
     private String password;
 
     @Lob
-    @Column(name = "image", columnDefinition = "MEDIUMBLOB")
+    @Column(name = "image", columnDefinition = "BYTEA")
     private String image;
 
     @ManyToOne
