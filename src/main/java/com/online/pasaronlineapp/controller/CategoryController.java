@@ -27,22 +27,16 @@ public class CategoryController {
         model.addAttribute("categories", categoryDaoList);
         model.addAttribute("size", categoryDaoList.size());
         model.addAttribute("title", "Category");
-        model.addAttribute("categoryNew", new CategoryDto());
         return "categories";
     }
 
-    @PostMapping(value = "/add-category")
-    public String addCategory(@ModelAttribute("categoryNew") CategoryDto categoryDto,
-                              RedirectAttributes redirectAttributes) {
-        try {
-            categoryService.createCategory(categoryDto);
-            redirectAttributes.addFlashAttribute("success", "Successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("failed", "Failed");
-        }
-        return "redirect:/categories";
+    @GetMapping(value = "/add-category")
+    public String addCategory(Model model) {
+        model.addAttribute("categoryDto", new CategoryDto());
+        return "add-categories";
     }
+
+
 
     @RequestMapping(value = "/edit", method = {RequestMethod.PUT, RequestMethod.GET})
     @ResponseBody

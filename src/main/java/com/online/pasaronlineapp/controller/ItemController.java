@@ -93,7 +93,7 @@ public class ItemController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("failed", "Failed");
         }
-        return "redirect:/items";
+        return "redirect:/items/0";
     }
 
     @GetMapping(value = "/update-item/{id}")
@@ -122,7 +122,7 @@ public class ItemController {
             redirectAttributes.addFlashAttribute("error", "Failed");
         }
 
-        return "redirect:/items";
+        return "redirect:/items/0";
     }
 
     @RequestMapping(value = "/delete-item/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
@@ -133,6 +133,6 @@ public class ItemController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Failed");
         }
-        return "redirect:/items";
+        return "redirect:/items/0";
     }
 }

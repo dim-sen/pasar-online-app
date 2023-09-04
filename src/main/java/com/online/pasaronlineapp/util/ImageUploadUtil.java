@@ -21,7 +21,7 @@ public class ImageUploadUtil {
             Files.copy(
                     file.getInputStream(),
                     Paths.get(
-                    AppConstant.ITEM_DIRECTORY + File.separator,
+                            AppConstant.ITEM_DIRECTORY + File.separator,
                             file.getOriginalFilename()),
                     StandardCopyOption.REPLACE_EXISTING);
 

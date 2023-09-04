@@ -1,118 +1,107 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th = "https://www.thymeleaf.org/">
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
 
 <head th:replace="fragments :: header"></head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
-        <div th:replace="fragments :: spinner"></div>
+<div class="container-xxl position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div th:replace="fragments :: spinner"></div>
 
+    <!-- Sidebar Start -->
+    <div th:replace="fragments :: sidebar"></div>
 
-        <!-- Sidebar Start -->
-        <div th:replace="fragments :: sidebar"></div>
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <nav th:replace="fragments :: navbar"></nav>
 
-
-        <!-- Content Start -->
-        <div class="content">
-            <!-- Navbar Start -->
-            <nav th:replace="fragments :: navbar"></nav>
-
-            <!-- Table Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="col-12">
-                        <div>
-                            <form th:action="@{/search-result/0}" method="get">
-                                <label for="search"></label>
-                                <input type="text" id="search" name="keyword" placeholder="Search an item">
-                                <button type="submit" class="btn btn-primary">Search</button>
-                            </form>
-                        </div>
-                        <div class="bg-light rounded h-100 p-4">
-                            <h6 class="mb-4">Item</h6>
-                            <div class="table-responsive">
-                                <a th:href="@{/add-item}" class="btn btn-primary">Add New Item</a>
-                                <div th:if="${size == 0}">
-                                    <p>There is no item</p>
-                                </div>
-                                <div th:if="${success}" class="text-center alert alert-success">
-                                    <p th:text="${success}"></p>
-                                </div>
-                                <div th:if="${failed}" class="text-center alert alert-danger">
-                                    <p th:text="${failed}"></p>
-                                </div>
-                                <table class="table" th:if="${size > 0}">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Id</th>
-                                            <th scope="col">Item Name</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Weight</th>
-                                            <th scope="col">Image</th>
-                                            <th scope="col">Category</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr th:each="itemDto : ${items}">
-                                            <th scope="row" th:text="${itemDto.id}"></th>
-                                            <td th:text="${itemDto.itemName}"></td>
-                                            <td th:text="${itemDto.itemPrice}"></td>
-                                            <td th:text="${itemDto.itemWeight}"></td>
-                                            <td><img th:src="*{'data:image/jpeg;base64,' + {itemDto.itemImage}}" style="height: 50px; width: 50px;"></td>
-                                            <td th:text="${itemDto.categoryDao.categoryName}"></td>
-                                            <td>
-                                                <a th:href="@{/update-item/{id} (id = ${itemDto.id})}" class="btn btn-primary">Edit</a>
-                                                <a th:href="@{/delete-item/{id} (id = ${itemDto.id})}" class="btn btn-danger">Delete</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <nav aria-label="Page navigation example">
-                                    <ul class="pagination">
-                                        <li th:if="${currentPage != 0}" class="page-item">
-                                            <a th:href="@{'/items/' + ${currentPage - 1}}" class="page-link">Previous</a>
-                                        </li>
-                                        <li th:each="i : ${#numbers.sequence(1, totalPages)}"
-                                            th:classappend="${currentPage == i - 1 ? 'active' : ''}" class="page-item">
-                                            <a th:href="@{'/items/' + ${i - 1}}" class="page-link"><span th:text="${i}"></span></a>
-                                        </li>
-                                        <li th:if="${currentPage + 1 != totalPages}" class="page-item">
-                                            <a th:href="@{'/items/' + ${currentPage + 1}}" class="page-link">Next</a>
-                                        </li>
-                                    </ul>
-                                </nav>
+        <!-- Table Start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div>
+                        <form method="get" th:action="@{/search-result/0}">
+                            <label for="search"></label>
+                            <input id="search" name="keyword" placeholder="Search an item" type="text">
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </form>
+                    </div>
+                    <div class="bg-light rounded h-100 p-4">
+                        <h6 class="mb-4">Item</h6>
+                        <div class="table-responsive">
+                            <a class="btn btn-primary" th:href="@{/add-item}">Add New Item</a>
+                            <div th:if="${size == 0}">
+                                <p>There is no item</p>
                             </div>
+                            <div class="text-center alert alert-success" th:if="${success}">
+                                <p th:text="${success}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${failed}">
+                                <p th:text="${failed}"></p>
+                            </div>
+                            <table class="table" th:if="${size > 0}">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Item Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Weight</th>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Category</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="itemDto : ${items}">
+                                    <th scope="row" th:text="${itemDto.id}"></th>
+                                    <td th:text="${itemDto.itemName}"></td>
+                                    <td th:text="${itemDto.itemPrice}"></td>
+                                    <td th:text="${itemDto.itemWeight}"></td>
+                                    <td><img style="height: 50px; width: 50px;"
+                                             th:src="*{'data:image/jpeg;base64,' + {itemDto.itemImage}}"></td>
+                                    <td th:text="${itemDto.categoryDao.categoryName}"></td>
+                                    <td>
+                                        <a class="btn btn-primary" th:href="@{/update-item/{id} (id = ${itemDto.id})}">Edit</a>
+                                        <a class="btn btn-danger" th:href="@{/delete-item/{id} (id = ${itemDto.id})}">Delete</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item" th:if="${currentPage != 0}">
+                                        <a class="page-link" th:href="@{'/items/' + ${currentPage - 1}}">Previous</a>
+                                    </li>
+                                    <li class="page-item"
+                                        th:classappend="${currentPage == i - 1 ? 'active' : ''}" th:each="i : ${#numbers.sequence(1, totalPages)}">
+                                        <a class="page-link" th:href="@{'/items/' + ${i - 1}}"><span
+                                                th:text="${i}"></span></a>
+                                    </li>
+                                    <li class="page-item" th:if="${currentPage + 1 != totalPages}">
+                                        <a class="page-link" th:href="@{'/items/' + ${currentPage + 1}}">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Table End -->
-
-
-            <!-- Footer Start -->
-            <div th:replace="fragments :: footer"></div>
         </div>
-        <!-- Content End -->
+        <!-- Table End -->
 
-
-        <!-- Back to Top -->
-        <a th:replace="fragments :: top"></a>
-
+        <!-- Footer Start -->
+        <div th:replace="fragments :: footer"></div>
     </div>
+    <!-- Content End -->
 
-    <!-- Add Modal -->
+    <!-- Back to Top -->
+    <a th:replace="fragments :: top"></a>
 
+</div>
 
-    <!-- Edit Modal -->
-
-
-
-    <div th:replace="fragments :: script"></div>
-
-    <script th:src="@{/js/categories.js}"></script>
+<div th:replace="fragments :: script"></div>
 
 </body>
 

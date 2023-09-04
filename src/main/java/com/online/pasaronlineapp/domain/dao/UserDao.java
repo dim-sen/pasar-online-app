@@ -9,7 +9,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -41,8 +40,7 @@ public class UserDao extends BaseDao {
     @Column(name = "image", columnDefinition = "MEDIUMBLOB")
     private String image;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
-    inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
-    private List<RoleDao> roleDaos;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private RoleDao roleDao;
 }

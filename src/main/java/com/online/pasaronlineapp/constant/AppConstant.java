@@ -2,14 +2,12 @@ package com.online.pasaronlineapp.constant;
 
 public class AppConstant {
 
+    public static final String DEFAULT_SYSTEM = "SYSTEM";
+    public static final String ITEM_DIRECTORY = "D:\\pasar-online-app\\src\\main\\resources\\static\\img\\item-img";
+    public static final Integer PAGE_MAX = 3;
+
     public AppConstant() {
     }
-
-    public static final String DEFAULT_SYSTEM = "SYSTEM";
-
-    public static final String ITEM_DIRECTORY = "D:\\pasar-online-app\\src\\main\\resources\\static\\img\\item-img";
-
-    public static final Integer PAGE_MAX = 3;
 
     public enum ResponseCode {
 
@@ -34,6 +32,21 @@ public class AppConstant {
 
         public String getMessage() {
             return message;
+        }
+    }
+
+    public enum Role {
+        ADMIN("ADMIN"),
+        CUSTOMER("CUSTOMER");
+
+        private String roleName;
+
+        Role(String roleName) {
+            this.roleName = roleName;
+        }
+
+        public String getRoleName() {
+            return roleName;
         }
     }
 }

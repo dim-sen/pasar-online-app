@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface RoleRepository extends JpaRepository<RoleDao, Long> {
 
     @Query("select r from RoleDao r where r.name = :name")
-    RoleDao findByName(@Param("name") String name);
+    Optional<RoleDao> findByName(@Param("name") String name);
 }

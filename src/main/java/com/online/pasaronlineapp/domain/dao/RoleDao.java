@@ -9,6 +9,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,4 +27,7 @@ public class RoleDao extends BaseDao {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "roleDao", cascade = CascadeType.ALL)
+    private List<UserDao> userDaos;
 }
