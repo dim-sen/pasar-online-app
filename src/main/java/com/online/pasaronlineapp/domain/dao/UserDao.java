@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -36,7 +37,7 @@ public class UserDao extends BaseDao {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "image", columnDefinition = "BYTEA")
     private String image;
 
