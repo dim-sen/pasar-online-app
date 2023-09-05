@@ -2,6 +2,7 @@ package com.online.pasaronlineapp.service;
 
 import com.online.pasaronlineapp.domain.dao.CategoryDao;
 import com.online.pasaronlineapp.domain.dto.CategoryDto;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,12 +12,15 @@ public interface CategoryService {
 
     CategoryDao createCategory(CategoryDto categoryDto);
 
-    CategoryDao getCategoryById(Long id);
+    CategoryDto getCategoryById(Long id);
 
-    List<CategoryDao> getAllCategories();
+    List<CategoryDto> getAllCategories();
 
     CategoryDao updateCategoryById(CategoryDto categoryDto);
 
     void deleteCategoryById(Long id);
 
+    Page<CategoryDao> caategoryPage(Integer pageNumber);
+
+    Page<CategoryDao> searchCategory(Integer pageNumber, String keyword);
 }

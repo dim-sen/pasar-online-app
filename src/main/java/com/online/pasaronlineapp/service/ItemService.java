@@ -21,7 +21,7 @@ public interface ItemService {
 
     void deleteItemById(Long id);
 
-    Page<ItemDao> itemPage(Integer number);
+    Page<ItemDao> itemPage(Integer pageNumber);
 
-    Page<ItemDao> searchItem(Integer number, String keyword);
+    Page<ItemDao> searchItem(Integer pageNumber, String keyword);
 }

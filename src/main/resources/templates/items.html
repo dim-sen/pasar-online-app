@@ -21,7 +21,7 @@
             <div class="row g-4">
                 <div class="col-12">
                     <div>
-                        <form method="get" th:action="@{/search-result/0}">
+                        <form method="get" th:action="@{/search-item/0}">
                             <label for="search"></label>
                             <input id="search" name="keyword" placeholder="Search an item" type="text">
                             <button class="btn btn-primary" type="submit">Search</button>
@@ -69,15 +69,18 @@
                                 </tbody>
                             </table>
 
-                            <nav aria-label="Page navigation example">
+                            <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
                                 <ul class="pagination">
                                     <li class="page-item" th:if="${currentPage != 0}">
                                         <a class="page-link" th:href="@{'/items/' + ${currentPage - 1}}">Previous</a>
                                     </li>
                                     <li class="page-item"
-                                        th:classappend="${currentPage == i - 1 ? 'active' : ''}" th:each="i : ${#numbers.sequence(1, totalPages)}">
-                                        <a class="page-link" th:href="@{'/items/' + ${i - 1}}"><span
-                                                th:text="${i}"></span></a>
+                                        th:classappend="${currentPage == 0 ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/items/' + 0}"><span>1</span></a>
+                                    </li>
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 1)}"
+                                        th:classappend="${currentPage == totalPages - 1 ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/categories/' + ${i}}"><span th:text="${i + 1}"></span></a>
                                     </li>
                                     <li class="page-item" th:if="${currentPage + 1 != totalPages}">
                                         <a class="page-link" th:href="@{'/items/' + ${currentPage + 1}}">Next</a>

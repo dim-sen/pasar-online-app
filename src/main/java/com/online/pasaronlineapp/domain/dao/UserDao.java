@@ -37,8 +37,10 @@ public class UserDao extends BaseDao {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Type(type = "org.hibernate.type.BinaryType")
-    @Column(name = "image", columnDefinition = "BYTEA")
+//    @Type(type = "org.hibernate.type.BinaryType")
+//    @Column(name = "image", columnDefinition = "BYTEA")
+    @Lob
+    @Column(name = "image", columnDefinition = "MEDIUMBLOB")
     private String image;
 
     @ManyToOne

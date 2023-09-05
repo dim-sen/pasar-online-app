@@ -20,13 +20,17 @@
         <div class="container-fluid pt-4 px-4">
             <div class="row g-4">
                 <div class="col-12">
+                    <div>
+                        <form th:action="@{search-category/0}">
+                            <label for="searchCategory"></label>
+                            <input id="searchCategory" name="keyword" placeholder="Search a category" type="text">
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </form>
+                    </div>
                     <div class="bg-light rounded h-100 p-4">
                         <h6 class="mb-4">Category</h6>
                         <div class="table-responsive">
                             <a class="btn btn-primary" th:href="@{/add-category}">Add New Category</a>
-<!--                            <button class="btn btn-primary" data-bs-target="#addModal" data-bs-toggle="modal"-->
-<!--                                    data-bs-whatever="@mdo" type="button">Add New Category-->
-<!--                            </button>-->
                             <div th:if="${size == 0}">
                                 <p>There is no category</p>
                             </div>
@@ -49,14 +53,32 @@
                                     <th scope="row" th:text="${categoryDto.id}"></th>
                                     <td th:text="${categoryDto.categoryName}"></td>
                                     <td>
-                                        <a class="btn btn-primary" id="editButton"
-                                           th:href="@{/edit/(id = ${categoryDto.id})}">Edit</a>
-                                        <a class="btn btn-danger" id="deleteButton"
-                                           th:href="@{/delete/(id = ${categoryDto.id})}">Delete</a>
+                                        <a class="btn btn-primary" th:href="@{/update-category/{id} (id = ${categoryDto.id})}">Edit</a>
+                                        <a class="btn btn-danger" th:href="@{/delete-category/{id} (id = ${categoryDto.id})}">Delete</a>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
+
+                            <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
+                                <ul class="pagination">
+                                    <li class="page-item" th:if="${currentPage != 0}">
+                                        <a class="page-link" th:href="@{'/categories/' + ${currentPage - 1}}">Previous</a>
+                                    </li>
+                                    <li class="page-item"
+                                        th:classappend="${currentPage == 0 ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/categories/' + 0}"><span>1</span></a>
+                                    </li>
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 1)}"
+                                        th:classappend="${currentPage == totalPages - 1 ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/categories/' + ${i}}"><span th:text="${i + 1}"></span></a>
+                                    </li>
+                                    <li class="page-item" th:if="${currentPage + 1 != totalPages}">
+                                        <a class="page-link" th:href="@{'/categories/' + ${currentPage + 1}}">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+
                         </div>
                     </div>
                 </div>

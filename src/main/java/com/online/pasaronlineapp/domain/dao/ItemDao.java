@@ -32,8 +32,10 @@ public class ItemDao extends BaseDao {
     @Column(name = "item_weight", nullable = false)
     private Integer itemWeight;
 
-    @Type(type = "org.hibernate.type.BinaryType")
-    @Column(name = "item_image", columnDefinition = "BYTEA")
+//    @Type(type = "org.hibernate.type.BinaryType")
+//    @Column(name = "item_image", columnDefinition = "BYTEA")
+    @Lob
+    @Column(name = "image", columnDefinition = "MEDIUMBLOB")
     private String itemImage;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

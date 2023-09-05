@@ -1,11 +1,10 @@
 package com.online.pasaronlineapp.controller;
 
-import com.online.pasaronlineapp.domain.dao.CategoryDao;
 import com.online.pasaronlineapp.domain.dao.ItemDao;
+import com.online.pasaronlineapp.domain.dto.CategoryDto;
 import com.online.pasaronlineapp.domain.dto.ItemDto;
 import com.online.pasaronlineapp.service.impl.CategoryServiceImpl;
 import com.online.pasaronlineapp.service.impl.ItemServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -17,7 +16,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.util.List;
 
-@Slf4j
 @Controller
 public class ItemController {
 
@@ -26,18 +24,6 @@ public class ItemController {
 
     @Autowired
     private CategoryServiceImpl categoryService;
-
-    @GetMapping(value = "/items")
-    public String ManageItems(Model model, Principal principal) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-        List<ItemDto> itemDtoList = itemService.getAllItems();
-        model.addAttribute("items", itemDtoList);
-        model.addAttribute("size", itemDtoList.size());
-        model.addAttribute("title", "Item");
-        return "items";
-    }
 
     @GetMapping(value = "/items/{page}")
     public String itemPage(@PathVariable(value = "page") Integer pageNumber,
@@ -48,19 +34,20 @@ public class ItemController {
         }
 
         Page<ItemDao> itemDaoPage = itemService.itemPage(pageNumber);
+        List<ItemDto> itemDtoList = itemService.getAllItems();
         model.addAttribute("title", "Item");
-        model.addAttribute("size", itemDaoPage.getSize());
+        model.addAttribute("size", itemDtoList.size());
         model.addAttribute("totalPages", itemDaoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("items", itemDaoPage);
         return "items";
     }
 
-    @GetMapping(value = "/search-result/{page}")
-    public String searchItem(@PathVariable(value = "page") Integer pageNumber,
-                             @RequestParam(value = "keyword") String keyword,
-                             Model model,
-                             Principal principal) {
+    @GetMapping(value = "/search-item/{page}")
+    public String searchItemPage(@PathVariable(value = "page") Integer pageNumber,
+                                 @RequestParam(value = "keyword") String keyword,
+                                 Model model,
+                                 Principal principal) {
         if (principal == null) {
             return "redirect:/login";
         }
@@ -75,8 +62,8 @@ public class ItemController {
 
     @GetMapping(value = "/add-item")
     public String addItem(Model model) {
-        List<CategoryDao> categoryDaoList = categoryService.getAllCategories();
-        model.addAttribute("categories", categoryDaoList);
+        List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
+        model.addAttribute("categories", categoryDtoList);
         model.addAttribute("itemDto", new ItemDto());
         return "add-items";
     }
@@ -86,8 +73,6 @@ public class ItemController {
                            @RequestParam(value = "file") MultipartFile itemImage,
                            RedirectAttributes redirectAttributes) {
         try {
-            log.info("itemDto id (save): " + itemDto.getId());
-            log.info("itemDto: " + itemDto);
             itemService.createItem(itemDto, itemImage);
             redirectAttributes.addFlashAttribute("success", "Successfully");
         } catch (Exception e) {
@@ -101,9 +86,9 @@ public class ItemController {
         if (principal == null) {
             return "redirect:/login";
         }
-        List<CategoryDao> categoryDaoList = categoryService.getAllCategories();
+        List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
         model.addAttribute("title", "Update Item");
-        model.addAttribute("categories", categoryDaoList);
+        model.addAttribute("categories", categoryDtoList);
         ItemDto itemDto = itemService.getItemById(id);
         model.addAttribute("itemDto", itemDto);
         return "update-items";

@@ -164,16 +164,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<ItemDao> itemPage(Integer number) {
-        log.info("Showing pagination");
-        Pageable pageable = PageRequest.of(number, AppConstant.PAGE_MAX);
+    public Page<ItemDao> itemPage(Integer pageNumber) {
+        log.info("Showing items pagination");
+        Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
         return itemRepository.pageableItem(pageable);
     }
 
     @Override
-    public Page<ItemDao> searchItem(Integer number, String keyword) {
+    public Page<ItemDao> searchItem(Integer pageNumber, String keyword) {
         log.info("Searching an item");
-        Pageable pageable = PageRequest.of(number, AppConstant.PAGE_MAX);
-        return itemRepository.searchItemDaoByItemImageOrItemPrice(keyword, pageable);
+        Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
+        return itemRepository.searchItemDaoByItemNameOrItemPrice(keyword, pageable);
     }
 }
