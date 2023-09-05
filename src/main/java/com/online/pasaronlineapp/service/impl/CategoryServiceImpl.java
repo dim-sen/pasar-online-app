@@ -1,13 +1,18 @@
 package com.online.pasaronlineapp.service.impl;
 
+import com.online.pasaronlineapp.constant.AppConstant;
 import com.online.pasaronlineapp.domain.dao.CategoryDao;
 import com.online.pasaronlineapp.domain.dto.CategoryDto;
 import com.online.pasaronlineapp.repository.CategoryRepository;
 import com.online.pasaronlineapp.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,9 +48,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDao getCategoryById(Long id) {
+    public CategoryDto getCategoryById(Long id) {
         try {
-            log.info("Finding a category by id");
+            log.info("Getting a category by id");
             Optional<CategoryDao> optionalCategoryDao = categoryRepository.findById(id);
 
             if (optionalCategoryDao.isEmpty()) {
@@ -55,19 +60,33 @@ public class CategoryServiceImpl implements CategoryService {
 
             log.info("Category found");
 
-            return optionalCategoryDao.get();
+            return CategoryDto.builder()
+                    .id(optionalCategoryDao.get().getId())
+                    .categoryName(optionalCategoryDao.get().getCategoryName())
+                    .build();
 
         } catch (Exception e) {
             log.error("An error occurred in finding a Category by id. Error: {}", e.getMessage());
-            return null;
+            throw e;
         }
     }
 
     @Override
-    public List<CategoryDao> getAllCategories() {
+    public List<CategoryDto> getAllCategories() {
         try {
-            log.info("Finding all categories");
-            return categoryRepository.findAll();
+            log.info("Getting all categories");
+            List<CategoryDao> categoryDaoList = categoryRepository.findAll();
+            List<CategoryDto> categoryDtoList = new ArrayList<>();
+
+            for (CategoryDao categoryDao : categoryDaoList) {
+                categoryDtoList.add(CategoryDto.builder()
+                                .id(categoryDao.getId())
+                                .categoryName(categoryDao.getCategoryName())
+                        .build());
+            }
+
+            return categoryDtoList;
+
         } catch (Exception e) {
             log.error("An error occurred in finding all categories. Error {}", e.getMessage());
             return Collections.emptyList();
@@ -114,5 +133,19 @@ public class CategoryServiceImpl implements CategoryService {
             log.error("An error occurred in deleting category by id. Error {}", e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    public Page<CategoryDao> caategoryPage(Integer pageNumber) {
+        log.info("Showing categories pagination");
+        Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
+        return categoryRepository.pageableCategory(pageable);
+    }
+
+    @Override
+    public Page<CategoryDao> searchCategory(Integer pageNumber, String keyword) {
+        log.info("Searching a category");
+        Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
+        return categoryRepository.searchCategoryDaoByCategoryName(keyword, pageable);
     }
 }
