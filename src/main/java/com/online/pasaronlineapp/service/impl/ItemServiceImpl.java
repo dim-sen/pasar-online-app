@@ -37,13 +37,11 @@ public class ItemServiceImpl implements ItemService {
                 return null;
             }
 
-            imageUploadUtil.imgUpload(itemImage);
-
             ItemDao itemDao = ItemDao.builder()
                     .itemName(itemDto.getItemName())
                     .itemPrice(itemDto.getItemPrice())
                     .itemWeight(itemDto.getItemWeight())
-                    .itemImage(Base64.getEncoder().encodeToString(itemImage.getBytes()))
+                    .itemImage(imageUploadUtil.imgUpload(itemImage))
                     .categoryDao(itemDto.getCategoryDao())
                     .build();
             return itemRepository.save(itemDao);
@@ -129,12 +127,7 @@ public class ItemServiceImpl implements ItemService {
                 log.info("itemImage is null");
                 itemDao.setItemImage(optionalItemDao.get().getItemImage());
             } else {
-                if (!imageUploadUtil.checkIfExist(itemImage)) {
-                    log.info("itemImage isn't null & upload");
-                    imageUploadUtil.imgUpload(itemImage);
-                }
-
-                itemDao.setItemImage(Base64.getEncoder().encodeToString(itemImage.getBytes()));
+                itemDao.setItemImage(imageUploadUtil.imgUpload(itemImage));
             }
 
             return itemRepository.save(itemDao);

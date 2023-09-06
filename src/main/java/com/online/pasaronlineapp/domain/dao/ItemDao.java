@@ -34,7 +34,7 @@ public class ItemDao extends BaseDao {
 
     @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "item_image", columnDefinition = "BYTEA")
-    private String itemImage;
+    private byte[] itemImage;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
