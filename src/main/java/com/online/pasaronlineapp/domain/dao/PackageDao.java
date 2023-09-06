@@ -26,10 +26,8 @@ public class PackageDao extends BaseDao {
     @Column(name = "package_name", nullable = false)
     private String packageName;
 
-//    @Type(type = "org.hibernate.type.BinaryType")
-//    @Column(name = "package_image", columnDefinition = "BYTEA")
-    @Lob
-    @Column(name = "image", columnDefinition = "MEDIUMBLOB")
+    @Type(type = "org.hibernate.type.BinaryType")
+    @Column(name = "package_image", columnDefinition = "BYTEA")
     private String packageImage;
 
     @OneToMany(mappedBy = "packages", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
