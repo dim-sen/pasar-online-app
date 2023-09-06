@@ -25,7 +25,7 @@ public class ItemDto {
 
     private Integer itemWeight;
 
-    private String itemImage;
+    private byte[] itemImage;
 
     private CategoryDao categoryDao;
 }
