@@ -58,6 +58,9 @@ public class ItemServiceImpl implements ItemService {
             log.info("Getting an item by id");
             Optional<ItemDao> optionalItemDao = itemRepository.findById(id);
 
+            byte[] imageBytes = itemRepository.findImageById(id);
+            log.info("ImageBytes: " + Arrays.toString(imageBytes));
+
             if (optionalItemDao.isEmpty()) {
                 log.info("Item not found");
                 return null;
@@ -70,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
                     .itemName(optionalItemDao.get().getItemName())
                     .itemPrice(optionalItemDao.get().getItemPrice())
                     .itemWeight(optionalItemDao.get().getItemWeight())
-                    .itemImage(optionalItemDao.get().getItemImage())
+                    .itemImage(imageBytes)
                     .categoryDao(optionalItemDao.get().getCategoryDao())
                     .build();
 
