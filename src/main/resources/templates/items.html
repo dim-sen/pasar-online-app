@@ -61,7 +61,7 @@
                                     <td th:text="${itemDto.itemWeight}"></td>
                                     <td>
                                         <img style="height: 50px; width: 50px;"
-                                             th:src="@{'data:image/jpeg;charset=utf-8;base64,' + itemDto.itemImage}"></td>
+                                             th:src="@{'data:image/jpeg;base64,' + ${itemDto.itemImage}}"></td>
                                     <td th:text="${itemDto.categoryDao.categoryName}"></td>
                                     <td>
                                         <a class="btn btn-primary" th:href="@{/update-item/{id} (id = ${itemDto.id})}">Edit</a>

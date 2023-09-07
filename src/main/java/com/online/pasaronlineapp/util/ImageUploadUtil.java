@@ -6,6 +6,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.Base64;
 
 @Component
 @Slf4j
@@ -23,5 +24,9 @@ public class ImageUploadUtil {
             log.error("An error occurred in uploading an image. Error {}", e.getMessage());
             return new byte[0];
         }
+    }
+
+    public String convertImageToBase64(byte[] image) {
+        return Base64.getEncoder().encodeToString(image);
     }
 }

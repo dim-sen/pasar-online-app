@@ -70,7 +70,7 @@ public class ItemServiceImpl implements ItemService {
                     .itemName(optionalItemDao.get().getItemName())
                     .itemPrice(optionalItemDao.get().getItemPrice())
                     .itemWeight(optionalItemDao.get().getItemWeight())
-                    .itemImage(optionalItemDao.get().getItemImage())
+                    .itemImage(imageUploadUtil.convertImageToBase64(optionalItemDao.get().getItemImage()))
                     .categoryDao(optionalItemDao.get().getCategoryDao())
                     .build();
 
@@ -93,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
                         .itemName(itemDao.getItemName())
                         .itemPrice(itemDao.getItemPrice())
                         .itemWeight(itemDao.getItemWeight())
-                        .itemImage(itemDao.getItemImage())
+                        .itemImage(imageUploadUtil.convertImageToBase64(itemDao.getItemImage()))
                         .categoryDao(itemDao.getCategoryDao())
                         .build());
             }
