@@ -15,6 +15,8 @@ public interface ItemService {
 
     ItemDto getItemById(Long id);
 
+    String getItemImageById(Long id);
+
     List<ItemDto> getAllItems();
 
     ItemDao updateItemById(ItemDto itemDto, MultipartFile itemImage);

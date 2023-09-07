@@ -58,9 +58,6 @@ public class ItemServiceImpl implements ItemService {
             log.info("Getting an item by id");
             Optional<ItemDao> optionalItemDao = itemRepository.findById(id);
 
-            byte[] imageBytes = itemRepository.findImageById(id);
-            log.info("ImageBytes: " + Arrays.toString(imageBytes));
-
             if (optionalItemDao.isEmpty()) {
                 log.info("Item not found");
                 return null;
@@ -73,7 +70,7 @@ public class ItemServiceImpl implements ItemService {
                     .itemName(optionalItemDao.get().getItemName())
                     .itemPrice(optionalItemDao.get().getItemPrice())
                     .itemWeight(optionalItemDao.get().getItemWeight())
-                    .itemImage(imageBytes)
+                    .itemImage(Base64.getEncoder().encodeToString(optionalItemDao.get().getItemImage()))
                     .categoryDao(optionalItemDao.get().getCategoryDao())
                     .build();
 
@@ -81,6 +78,14 @@ public class ItemServiceImpl implements ItemService {
             log.error("An error occurred in getting an item by id. Error {}", e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    public String getItemImageById(Long id) {
+        byte[] imageBytes = itemRepository.findImageById(id);
+        log.info("ImageBytes: " + Arrays.toString(imageBytes));
+
+        return Base64.getEncoder().encodeToString(imageBytes);
     }
 
     @Override
@@ -96,9 +101,10 @@ public class ItemServiceImpl implements ItemService {
                         .itemName(itemDao.getItemName())
                         .itemPrice(itemDao.getItemPrice())
                         .itemWeight(itemDao.getItemWeight())
-                        .itemImage(itemDao.getItemImage())
+                        .itemImage(Base64.getEncoder().encodeToString(itemDao.getItemImage()))
                         .categoryDao(itemDao.getCategoryDao())
                         .build());
+                log.info("Item Image: " + Base64.getEncoder().encodeToString(itemDao.getItemImage()));
             }
 
             return itemDtoList;
