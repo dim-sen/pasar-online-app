@@ -83,14 +83,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public String getItemImageById(Long id) {
-        byte[] imageBytes = itemRepository.findImageById(id);
-        log.info("ImageBytes: " + Arrays.toString(imageBytes));
-
-        return Base64.getEncoder().encodeToString(imageBytes);
-    }
-
-    @Override
     public List<ItemDto> getAllItems() {
         try {
             log.info("Getting all items");
