@@ -65,12 +65,14 @@ public class ItemServiceImpl implements ItemService {
 
             log.info("Item found");
 
+            String itemImageString = Base64.getEncoder().encodeToString(optionalItemDao.get().getItemImage());
+
             return ItemDto.builder()
                     .id(optionalItemDao.get().getId())
                     .itemName(optionalItemDao.get().getItemName())
                     .itemPrice(optionalItemDao.get().getItemPrice())
                     .itemWeight(optionalItemDao.get().getItemWeight())
-                    .itemImage(optionalItemDao.get().getItemImage())
+                    .itemImage(itemImageString)
                     .categoryDao(optionalItemDao.get().getCategoryDao())
                     .build();
 
@@ -87,15 +89,19 @@ public class ItemServiceImpl implements ItemService {
             List<ItemDao> itemDaoList = itemRepository.findAll();
             List<ItemDto> itemDtoList = new ArrayList<>();
 
+            String itemImageString;
+
             for (ItemDao itemDao : itemDaoList) {
+                itemImageString = Base64.getEncoder().encodeToString(itemDao.getItemImage());
                 itemDtoList.add(ItemDto.builder()
                         .id(itemDao.getId())
                         .itemName(itemDao.getItemName())
                         .itemPrice(itemDao.getItemPrice())
                         .itemWeight(itemDao.getItemWeight())
-                        .itemImage(itemDao.getItemImage())
+                        .itemImage(itemImageString)
                         .categoryDao(itemDao.getCategoryDao())
                         .build());
+                log.info("Item Image: " + Base64.getEncoder().encodeToString(itemDao.getItemImage()));
             }
 
             return itemDtoList;
@@ -104,7 +110,6 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
     }
-
 
     @Override
     public ItemDao updateItemById(ItemDto itemDto, MultipartFile itemImage) {

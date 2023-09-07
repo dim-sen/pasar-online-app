@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,13 +35,15 @@ public class ItemRestServiceImpl implements ItemRestService {
                 return ResponseUtil.build(AppConstant.ResponseCode.DATA_NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
 
+            String itemImageString = Base64.getEncoder().encodeToString(optionalItemDao.get().getItemImage());
+
             log.info("Item found");
             ItemDto itemDto = ItemDto.builder()
                     .id(optionalItemDao.get().getId())
                     .itemName(optionalItemDao.get().getItemName())
                     .itemPrice(optionalItemDao.get().getItemPrice())
                     .itemWeight(optionalItemDao.get().getItemWeight())
-                    .itemImage(optionalItemDao.get().getItemImage())
+                    .itemImage(itemImageString)
                     .categoryDao(optionalItemDao.get().getCategoryDao())
                     .build();
 
@@ -59,12 +62,16 @@ public class ItemRestServiceImpl implements ItemRestService {
             List<ItemDao> itemDaoList = itemRepository.findAll();
             List<ItemDto> itemDtoList = new ArrayList<>();
 
+            String itemImageString;
+
             for (ItemDao itemDao : itemDaoList) {
+                itemImageString = Base64.getEncoder().encodeToString(itemDao.getItemImage());
                 itemDtoList.add(ItemDto.builder()
                                 .id(itemDao.getId())
                                 .itemName(itemDao.getItemName())
                                 .itemPrice(itemDao.getItemPrice())
                                 .itemWeight(itemDao.getItemWeight())
+                                .itemImage(itemImageString)
                                 .categoryDao(itemDao.getCategoryDao())
                         .build());
             }

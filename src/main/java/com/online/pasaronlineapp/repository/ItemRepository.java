@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -20,4 +21,7 @@ public interface ItemRepository extends JpaRepository<ItemDao, Long> {
     @Query("select i from ItemDao i where i.itemName like concat('%', ?1, '%')")
     Page<ItemDao> searchItemDaoByItemNameOrItemPrice(String keyword,
                                                      Pageable pageable);
+
+    @Query("select i.itemImage from ItemDao i where i.id = :id")
+    byte[] findImageById(@Param(value = "id") Long id);
 }
