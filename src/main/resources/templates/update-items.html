@@ -55,7 +55,7 @@
             <!-- File Button -->
             <div class="mb-3">
                 <label for="file" class="form-label">Item Image</label>
-                <img style="height: 50px; width: 50px;" th:src="*{'data:image/jpeg;base64,' + {itemImage}}">
+                <img style="height: 50px; width: 50px;" th:src="*{'data:image/jpeg;base64,' + ${itemImage}}">
                 <input class="form-control" type="file" id="file" name="file">
             </div>
 
