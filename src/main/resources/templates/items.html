@@ -58,7 +58,9 @@
                                     <td th:text="${itemDto.itemName}"></td>
                                     <td th:text="${itemDto.itemPrice}"></td>
                                     <td th:text="${itemDto.itemWeight}"></td>
-                                    <td><img style="height: 50px; width: 50px;"
+                                    <td>
+                                        <p th:text="${itemDto.itemImage}"></p>
+                                        <img style="height: 50px; width: 50px;"
                                              th:src="@{'data:image/jpeg;base64,' + ${#strings.toString(itemDto.itemImage)}}"></td>
                                     <td th:text="${itemDto.categoryDao.categoryName}"></td>
                                     <td>
