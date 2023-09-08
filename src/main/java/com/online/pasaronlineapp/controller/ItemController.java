@@ -1,5 +1,6 @@
 package com.online.pasaronlineapp.controller;
 
+import com.online.pasaronlineapp.constant.AppConstant;
 import com.online.pasaronlineapp.domain.dao.ItemDao;
 import com.online.pasaronlineapp.domain.dto.CategoryDto;
 import com.online.pasaronlineapp.domain.dto.ItemDto;
@@ -74,9 +75,9 @@ public class ItemController {
                            RedirectAttributes redirectAttributes) {
         try {
             itemService.createItem(itemDto, itemImage);
-            redirectAttributes.addFlashAttribute("success", "Successfully");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.SAVE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("failed", "Failed");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.SAVE_FAILED);
         }
         return "redirect:/items/0";
     }
@@ -102,9 +103,9 @@ public class ItemController {
 
         try {
             itemService.updateItemById(itemDto, itemImage);
-            redirectAttributes.addFlashAttribute("success", "Successfully");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.UPDATE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Failed");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.UPDATE_FAILED);
         }
 
         return "redirect:/items/0";
@@ -114,9 +115,9 @@ public class ItemController {
     public String deleteItemByid(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
         try {
             itemService.deleteItemById(id);
-            redirectAttributes.addFlashAttribute("success", "Successfully");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.DELETE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Failed");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.DELETE_FAILED);
         }
         return "redirect:/items/0";
     }

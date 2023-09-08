@@ -1,5 +1,6 @@
 package com.online.pasaronlineapp.controller;
 
+import com.online.pasaronlineapp.constant.AppConstant;
 import com.online.pasaronlineapp.domain.dao.CategoryDao;
 import com.online.pasaronlineapp.domain.dto.CategoryDto;
 import com.online.pasaronlineapp.service.impl.CategoryServiceImpl;
@@ -65,9 +66,9 @@ public class CategoryController {
                                RedirectAttributes redirectAttributes) {
         try {
             categoryService.createCategory(categoryDto);
-            redirectAttributes.addFlashAttribute("success", "Successfully");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.SAVE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("failed", "Failed");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.SAVE_FAILED);
         }
         return "redirect:/categories/0";
     }
@@ -88,9 +89,9 @@ public class CategoryController {
                                       RedirectAttributes redirectAttributes) {
         try {
             categoryService.updateCategoryById(categoryDto);
-            redirectAttributes.addFlashAttribute("success", "Successfully");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.UPDATE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Failed");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.UPDATE_FAILED);
         }
         return "redirect:/categories/0";
     }
@@ -99,9 +100,9 @@ public class CategoryController {
     public String deleteCategoryById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
         try {
             categoryService.deleteCategoryById(id);
-            redirectAttributes.addFlashAttribute("success", "Delete Successfully");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.DELETE_SUCCESS);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("failed", "Failed");
+            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.DELETE_FAILED);
         }
 
         return "redirect:/categories/0";

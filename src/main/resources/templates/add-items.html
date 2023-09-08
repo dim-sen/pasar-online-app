@@ -27,6 +27,8 @@
                 <div class="col-sm">
                     <input th:field="*{itemName}" type="text" class="form-control" id="itemName" required>
                 </div>
+                <div class="alert alert-danger" th:errors="*{itemName}"
+                     th:if="${#fields.hasErrors('itemName')}"></div>
             </div>
 
             <div class="mb-3">
@@ -34,6 +36,8 @@
                 <div class="col-sm">
                     <input th:field="*{itemPrice}" type="text" class="form-control" id="itemPrice" required>
                 </div>
+                <div class="alert alert-danger" th:errors="*{itemPrice}"
+                     th:if="${#fields.hasErrors('itemPrice')}"></div>
             </div>
 
             <div class="mb-3">
@@ -41,10 +45,13 @@
                 <div class="col-sm">
                     <input th:field="*{itemWeight}" type="text" class="form-control" id="itemWeight" required>
                 </div>
+                <div class="alert alert-danger" th:errors="*{itemWeight}"
+                     th:if="${#fields.hasErrors('itemWeight')}"></div>
             </div>
 
             <label for="categories" class="form-label">Item Category</label>
-            <select th:field="*{categoryDao}" class="form-select mb-3" aria-label="Default select example" id="categories" name="categories">
+            <select th:field="*{categoryDao}" class="form-select mb-3" aria-label="Default select example"
+                    id="categories" name="categories">
                 <option th:value="null">SELECT ONE</option>
                 <option th:each="category : ${categories}"
                         th:text="${category.categoryName}"

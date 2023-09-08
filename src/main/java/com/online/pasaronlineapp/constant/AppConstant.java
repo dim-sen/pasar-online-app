@@ -1,14 +1,16 @@
 package com.online.pasaronlineapp.constant;
 
+import lombok.Getter;
+
 public class AppConstant {
 
     public static final String DEFAULT_SYSTEM = "SYSTEM";
-    public static final String ITEM_DIRECTORY = "D:\\pasar-online-app\\src\\main\\resources\\static\\img\\item-img";
     public static final Integer PAGE_MAX = 3;
 
     public AppConstant() {
     }
 
+    @Getter
     public enum ResponseCode {
 
         SUCCESS("SUCCESS", "success"),
@@ -26,27 +28,36 @@ public class AppConstant {
             this.message = message;
         }
 
-        public String getCode() {
-            return code;
-        }
-
-        public String getMessage() {
-            return message;
-        }
     }
 
+    @Getter
     public enum Role {
         ADMIN("ADMIN"),
         CUSTOMER("CUSTOMER");
 
-        private String roleName;
+        private final String roleName;
 
         Role(String roleName) {
             this.roleName = roleName;
         }
 
-        public String getRoleName() {
-            return roleName;
+    }
+
+    @Getter
+    public enum FlashAttribute {
+        SAVE_SUCCESS("success", "Successfully Added"),
+        SAVE_FAILED("failed", "Failed to Add"),
+        UPDATE_SUCCESS("success", "Successfully Updated"),
+        UPDATE_FAILED("failed", "Failed to Update"),
+        DELETE_SUCCESS("success", "Successfully Deleted"),
+        DELETE_FAILED("failed", "Failed to Delete");
+
+        private final String attributeName;
+        private final String attributeValue;
+
+        FlashAttribute(String attributeName, String attributeValue) {
+            this.attributeName = attributeName;
+            this.attributeValue = attributeValue;
         }
     }
 }

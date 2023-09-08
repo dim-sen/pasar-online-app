@@ -3,14 +3,12 @@ package com.online.pasaronlineapp.domain.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.online.pasaronlineapp.domain.dao.RoleDao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Size;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -31,10 +29,10 @@ public class UserDto {
     @Size(min = 11, max = 12, message = "Invalid Phone Number (11 or 12 characters)")
     private String phoneNumber;
 
-    @Size(min = 8, message = "Invalid Password (min 8 characters")
+    @Size(min = 8, message = "Invalid Password (min 8 characters)")
     private String password;
 
-    @Size(min = 8, message = "Invalid Password (min 8 characters")
+    @Size(min = 8, message = "Invalid Password (min 8 characters)")
     private String confirmPassword;
 
 }
