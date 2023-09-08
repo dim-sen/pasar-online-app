@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Size;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,5 +20,6 @@ public class CategoryDto {
 
     private Long id;
 
+    @Size(min = 3, message = "Invalid Category Name (min 3 characters)")
     private String categoryName;
 }
