@@ -43,6 +43,8 @@ public class ItemRestServiceImpl implements ItemRestService {
                     .itemName(optionalItemDao.get().getItemName())
                     .itemPrice(optionalItemDao.get().getItemPrice())
                     .itemWeight(optionalItemDao.get().getItemWeight())
+                    .itemStock(optionalItemDao.get().getItemStock())
+                    .itemDescription(optionalItemDao.get().getItemDescription())
                     .itemImage(itemImageString)
                     .categoryDao(optionalItemDao.get().getCategoryDao())
                     .build();
@@ -71,6 +73,8 @@ public class ItemRestServiceImpl implements ItemRestService {
                                 .itemName(itemDao.getItemName())
                                 .itemPrice(itemDao.getItemPrice())
                                 .itemWeight(itemDao.getItemWeight())
+                                .itemStock(itemDao.getItemStock())
+                                .itemDescription(itemDao.getItemDescription())
                                 .itemImage(itemImageString)
                                 .categoryDao(itemDao.getCategoryDao())
                         .build());
