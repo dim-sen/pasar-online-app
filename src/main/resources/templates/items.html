@@ -47,6 +47,8 @@
                                     <th scope="col">Item Name</th>
                                     <th scope="col">Price</th>
                                     <th scope="col">Weight</th>
+                                    <th scope="col">Stock</th>
+                                    <th scope="col">Description</th>
                                     <th scope="col">Image</th>
                                     <th scope="col">Category</th>
                                     <th scope="col">Action</th>
@@ -58,6 +60,8 @@
                                     <td th:text="${itemDto.itemName}"></td>
                                     <td th:text="${itemDto.itemPrice}"></td>
                                     <td th:text="${itemDto.itemWeight}"></td>
+                                    <td th:text="${itemDto.itemStock}"></td>
+                                    <td th:text="${itemDto.itemDescription}"></td>
                                     <td>
                                         <img style="height: 50px; width: 50px;"
                                              th:src="*{'data:image/jpeg;base64,' + itemDto.itemImage}"></td>

@@ -41,6 +41,8 @@ public class ItemServiceImpl implements ItemService {
                     .itemName(itemDto.getItemName())
                     .itemPrice(itemDto.getItemPrice())
                     .itemWeight(itemDto.getItemWeight())
+                    .itemStock(itemDto.getItemStock())
+                    .itemDescription(itemDto.getItemDescription())
                     .itemImage(imageUploadUtil.imgUpload(itemImage))
                     .categoryDao(itemDto.getCategoryDao())
                     .build();
@@ -72,6 +74,8 @@ public class ItemServiceImpl implements ItemService {
                     .itemName(optionalItemDao.get().getItemName())
                     .itemPrice(optionalItemDao.get().getItemPrice())
                     .itemWeight(optionalItemDao.get().getItemWeight())
+                    .itemStock(optionalItemDao.get().getItemStock())
+                    .itemDescription(optionalItemDao.get().getItemDescription())
                     .itemImage(itemImageString)
                     .categoryDao(optionalItemDao.get().getCategoryDao())
                     .build();
@@ -98,6 +102,8 @@ public class ItemServiceImpl implements ItemService {
                         .itemName(itemDao.getItemName())
                         .itemPrice(itemDao.getItemPrice())
                         .itemWeight(itemDao.getItemWeight())
+                        .itemStock(itemDao.getItemStock())
+                        .itemDescription(itemDao.getItemDescription())
                         .itemImage(itemImageString)
                         .categoryDao(itemDao.getCategoryDao())
                         .build());
@@ -127,6 +133,8 @@ public class ItemServiceImpl implements ItemService {
             itemDao.setItemName(itemDto.getItemName());
             itemDao.setItemPrice(itemDto.getItemPrice());
             itemDao.setItemWeight(itemDto.getItemWeight());
+            itemDao.setItemStock(itemDto.getItemStock());
+            itemDao.setItemDescription(itemDto.getItemDescription());
 
             if (itemImage.isEmpty()) {
                 log.info("itemImage is null");

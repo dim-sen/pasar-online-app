@@ -32,6 +32,12 @@ public class ItemDao extends BaseDao {
     @Column(name = "item_weight", nullable = false)
     private Integer itemWeight;
 
+    @Column(name = "item_stock", nullable = false)
+    private Integer itemStock;
+
+    @Column(name = "item_description")
+    private String itemDescription;
+
     @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "item_image", columnDefinition = "BYTEA")
     private byte[] itemImage;

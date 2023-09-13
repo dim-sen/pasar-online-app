@@ -26,6 +26,12 @@ public class PackageDao extends BaseDao {
     @Column(name = "package_name", nullable = false)
     private String packageName;
 
+    @Column(name = "package_price", nullable = false)
+    private Integer packagePrice;
+
+    @Column(name = "package_description")
+    private String packageDescription;
+
     @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "package_image", columnDefinition = "BYTEA")
     private String packageImage;
