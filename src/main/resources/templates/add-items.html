@@ -49,6 +49,20 @@
                      th:if="${#fields.hasErrors('itemWeight')}"></div>
             </div>
 
+            <div class="mb-3">
+                <label for="itemStock" class="col-sm-2 col-form-label">Item Stock</label>
+                <div class="col-sm">
+                    <input th:field="*{itemStock}" type="text" class="form-control" id="itemStock" required>
+                </div>
+                <div class="alert alert-danger" th:errors="*{itemStock}"
+                     th:if="${#fields.hasErrors('itemStock')}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="itemDescription" class="col-sm-2 col-form-label">Item Description</label>
+                <textarea th:field="*{itemDescription}" class="form-control" id="itemDescription" style="height: 150px;"></textarea>
+            </div>
+
             <label for="categories" class="form-label">Item Category</label>
             <select th:field="*{categoryDao}" class="form-select mb-3" aria-label="Default select example"
                     id="categories" name="categories">

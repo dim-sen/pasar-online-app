@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 @Data
@@ -30,6 +31,11 @@ public class ItemDto {
 
     @Min(value = 1, message = "Invalid Item Weight (> 0)")
     private Integer itemWeight;
+
+    @PositiveOrZero
+    private Integer itemStock;
+
+    private String itemDescription;
 
     private String itemImage;
 
