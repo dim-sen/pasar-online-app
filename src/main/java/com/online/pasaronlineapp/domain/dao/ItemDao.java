@@ -49,4 +49,8 @@ public class ItemDao extends BaseDao {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<PackageItemDao> packageItemDaos;
+
+    @OneToMany(mappedBy = "items", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<CartDao> cartDaos;
 }
