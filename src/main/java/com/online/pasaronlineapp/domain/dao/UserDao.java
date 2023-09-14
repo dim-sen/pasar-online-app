@@ -1,15 +1,13 @@
 package com.online.pasaronlineapp.domain.dao;
 
 import com.online.pasaronlineapp.domain.common.BaseDao;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -44,4 +42,8 @@ public class UserDao extends BaseDao {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private RoleDao roleDao;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<CartDao> cartDaos;
 }
