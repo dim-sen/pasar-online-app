@@ -70,7 +70,7 @@
                                         <a class="page-link" th:href="@{'/categories/' + 0}"><span>1</span></a>
                                     </li>
                                     <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 1)}"
-                                        th:classappend="${currentPage == totalPages - 1 ? 'active' : ''}">
+                                        th:classappend="${currentPage == i ? 'active' : ''}">
                                         <a class="page-link" th:href="@{'/categories/' + ${i}}"><span th:text="${i + 1}"></span></a>
                                     </li>
                                     <li class="page-item" th:if="${currentPage + 1 != totalPages}">
