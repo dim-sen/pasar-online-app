@@ -107,7 +107,6 @@ public class ItemServiceImpl implements ItemService {
                         .itemImage(itemImageString)
                         .categoryDao(itemDao.getCategoryDao())
                         .build());
-                log.info("Item Image: " + Base64.getEncoder().encodeToString(itemDao.getItemImage()));
             }
 
             return itemDtoList;
@@ -171,15 +170,27 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Page<ItemDao> itemPage(Integer pageNumber) {
-        log.info("Showing items pagination");
-        Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
-        return itemRepository.pageableItem(pageable);
+        try {
+            log.info("Showing items pagination");
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
+            return itemRepository.pageableItem(pageable);
+        } catch (Exception e) {
+            log.error("An error occurred in showing items. Error {}", e.getMessage());
+            throw e;
+        }
     }
 
     @Override
     public Page<ItemDao> searchItem(Integer pageNumber, String keyword) {
-        log.info("Searching an item");
-        Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
-        return itemRepository.searchItemDaoByItemNameOrItemPrice(keyword, pageable);
+        try {
+            log.info("Searching an item");
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
+            Page<ItemDao> itemDaoPage = itemRepository.searchItemDaoByItemNameOrCategoryDaoCategoryName(keyword, pageable);
+            log.info("search result i: " + itemDaoPage);
+            return itemDaoPage;
+        } catch (Exception e) {
+            log.error("An error occurred in searching for items. Error {}", e.getMessage());
+            throw e;
+        }
     }
 }

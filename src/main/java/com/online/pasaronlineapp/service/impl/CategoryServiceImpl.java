@@ -137,15 +137,27 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<CategoryDao> caategoryPage(Integer pageNumber) {
-        log.info("Showing categories pagination");
-        Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
-        return categoryRepository.pageableCategory(pageable);
+        try {
+            log.info("Showing categories pagination");
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
+            return categoryRepository.pageableCategory(pageable);
+        } catch (Exception e) {
+            log.error("An error occurred in showing categories. Error {}", e.getMessage());
+            throw e;
+        }
     }
 
     @Override
     public Page<CategoryDao> searchCategory(Integer pageNumber, String keyword) {
-        log.info("Searching a category");
-        Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
-        return categoryRepository.searchCategoryDaoByCategoryName(keyword, pageable);
+        try {
+            log.info("Searching a category");
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX);
+            Page<CategoryDao> categoryDaoPage = categoryRepository.searchCategoryDaoByCategoryName(keyword, pageable);
+            log.info("search result c: " + categoryDaoPage);
+            return categoryDaoPage;
+        } catch (Exception e) {
+            log.error("An error occurred in searching for categories. Error {}", e.getMessage());
+            throw e;
+        }
     }
 }

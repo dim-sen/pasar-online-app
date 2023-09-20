@@ -19,6 +19,7 @@ public interface CategoryRepository extends JpaRepository<CategoryDao, Long> {
     @Query("select c from CategoryDao c")
     Page<CategoryDao> pageableCategory(Pageable pageable);
 
-    @Query("select c from CategoryDao c where c.categoryName like concat('%', ?1, '%')")
-    Page<CategoryDao> searchCategoryDaoByCategoryName(String keyword, Pageable pageable);
+
+    @Query("select c from CategoryDao c where c.categoryName = :keyword")
+    Page<CategoryDao> searchCategoryDaoByCategoryName(@Param("keyword") String keyword, Pageable pageable);
 }

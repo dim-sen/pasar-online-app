@@ -18,10 +18,9 @@ public interface ItemRepository extends JpaRepository<ItemDao, Long> {
     @Query("select i from ItemDao i")
     Page<ItemDao> pageableItem(Pageable pageable);
 
-    @Query("select i from ItemDao i where i.itemName like concat('%', ?1, '%')")
-    Page<ItemDao> searchItemDaoByItemNameOrItemPrice(String keyword,
-                                                     Pageable pageable);
 
-    @Query("select i.itemImage from ItemDao i where i.id = :id")
-    byte[] findImageById(@Param(value = "id") Long id);
+
+    @Query("select i from ItemDao i where i.itemName = :keyword or i.categoryDao.categoryName = :keyword")
+    Page<ItemDao> searchItemDaoByItemNameOrCategoryDaoCategoryName(@Param("keyword") String keyword,
+                                                                   Pageable pageable);
 }

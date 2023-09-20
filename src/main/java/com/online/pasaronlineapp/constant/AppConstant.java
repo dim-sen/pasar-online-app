@@ -5,7 +5,7 @@ import lombok.Getter;
 public class AppConstant {
 
     public static final String DEFAULT_SYSTEM = "SYSTEM";
-    public static final Integer PAGE_MAX = 3;
+    public static final Integer PAGE_MAX = 10;
 
     public AppConstant() {
     }
