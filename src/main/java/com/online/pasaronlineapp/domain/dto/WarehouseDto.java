@@ -1,8 +1,6 @@
 package com.online.pasaronlineapp.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.online.pasaronlineapp.domain.dao.ItemDao;
-import com.online.pasaronlineapp.domain.dao.PackageDao;
 import lombok.*;
 
 @Data
@@ -10,11 +8,11 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PackageItemDto {
+public class WarehouseDto {
 
     private Long id;
 
-    private PackageDao packages;
+    private String warehouseName;
 
-    private ItemDao item;
+    private String warehouseAddress;
 }

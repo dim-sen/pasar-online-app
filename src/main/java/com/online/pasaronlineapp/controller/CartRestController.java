@@ -1,7 +1,5 @@
 package com.online.pasaronlineapp.controller;
 
-import com.online.pasaronlineapp.domain.dto.CartDto;
-import com.online.pasaronlineapp.service.impl.CartServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

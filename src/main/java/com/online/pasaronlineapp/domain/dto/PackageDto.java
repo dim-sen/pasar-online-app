@@ -29,6 +29,8 @@ public class PackageDto {
     @Min(value = 1, message = "Invalid Price (> 0)")
     private Integer packagePrice;
 
+    private Integer packageWeight;
+
     private String packageDescription;
 
     private String packageImage;
