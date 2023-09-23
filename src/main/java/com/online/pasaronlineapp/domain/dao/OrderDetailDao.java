@@ -10,19 +10,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "CARTS")
-public class CartDao extends BaseDao {
+@Table(name = "ORDERS_DETAILS")
+public class OrderDetailDao extends BaseDao {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
-
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "order_id")
     @ToString.Exclude
-    private UserDao user;
+    private OrderDao order;
 
     @ManyToOne
     @JoinColumn(name = "item_id")

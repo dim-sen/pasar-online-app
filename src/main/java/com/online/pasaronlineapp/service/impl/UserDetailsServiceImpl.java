@@ -1,6 +1,8 @@
 package com.online.pasaronlineapp.service.impl;
 
+import com.online.pasaronlineapp.domain.dao.AdminDao;
 import com.online.pasaronlineapp.domain.dao.UserDao;
+import com.online.pasaronlineapp.repository.AdminRepository;
 import com.online.pasaronlineapp.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,26 +24,26 @@ import java.util.stream.Collectors;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private AdminRepository adminRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Load User By Username");
-        Optional<UserDao> optionalUserDao = userRepository.findByPhoneNumber(username);
+        log.info("Load Admin By Username");
+        Optional<AdminDao> optionalAdminDao = adminRepository.findByUsername(username);
 
-        if (optionalUserDao.isEmpty()) {
+        if (optionalAdminDao.isEmpty()) {
             log.info("Username Not Found");
             throw new UsernameNotFoundException("Could Not Find Username");
         }
 
         List<GrantedAuthority> grantedAuthorities = Collections.singletonList(
-                new SimpleGrantedAuthority(optionalUserDao.get().getRoleDao().getName())
+                new SimpleGrantedAuthority(optionalAdminDao.get().getRole().getRoleName())
         );
 
         log.info("Username Found");
         return new User(
-                optionalUserDao.get().getPhoneNumber(),
-                optionalUserDao.get().getPassword(),
+                optionalAdminDao.get().getUsername(),
+                optionalAdminDao.get().getPassword(),
                 grantedAuthorities
 
         );

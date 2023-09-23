@@ -11,28 +11,24 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "PACKAGES_ITEMS")
-public class PackageItemDao extends BaseDao {
+@Table(name = "WAREHOUSES_BATCHES")
+public class WarehouseBatchDao extends BaseDao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "package_id")
+    @JoinColumn(name = "warehouse_id")
     @ToString.Exclude
-    private PackageDao packages;
+    private WarehouseDao warehouse;
 
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "batch_id")
     @ToString.Exclude
-    private ItemDao item;
+    private BatchDao batch;
 
-    @OneToMany(mappedBy = "packageItem")
+    @OneToMany(mappedBy = "warehouseBatch")
     @ToString.Exclude
-    private List<CartDao> cartDaos;
-
-    @OneToMany(mappedBy = "packageItem")
-    @ToString.Exclude
-    private List<OrderDetailDao> orderDetailDaos;
+    private List<OrderDao> orderDaos;
 }

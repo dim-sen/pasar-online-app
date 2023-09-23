@@ -11,17 +11,20 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "ROLES")
-public class RoleDao extends BaseDao {
+@Table(name = "PAYMENTS")
+public class PaymentDao extends BaseDao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role_name", nullable = false)
-    private String roleName;
+    @Column(name = "payment_status", nullable = false)
+    private String paymentStatus;
 
-    @OneToMany(mappedBy = "role")
+    @Column(name = "payment_type")
+    private String paymentType;
+
+    @OneToMany(mappedBy = "payment")
     @ToString.Exclude
-    private List<AdminDao> adminDaos;
+    private List<OrderDao> orderDaos;
 }

@@ -1,6 +1,5 @@
 package com.online.pasaronlineapp.domain.common;
 
-import com.online.pasaronlineapp.constant.AppConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,20 +21,16 @@ public abstract class BaseDao {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "created_by", nullable = false)
-    private String createdBy;
-
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "is_deleted")
-    private boolean isDeleted;
+    @Column(name = "is_active")
+    private boolean isActive;
 
     @PrePersist
     void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.createdBy = AppConstant.DEFAULT_SYSTEM;
-        this.isDeleted = Boolean.FALSE;
+        this.isActive = Boolean.FALSE;
     }
 
     @PreUpdate

@@ -4,7 +4,6 @@ import lombok.Getter;
 
 public class AppConstant {
 
-    public static final String DEFAULT_SYSTEM = "SYSTEM";
     public static final Integer PAGE_MAX = 10;
 
     public AppConstant() {
@@ -33,7 +32,7 @@ public class AppConstant {
     @Getter
     public enum Role {
         ADMIN("ADMIN"),
-        CUSTOMER("CUSTOMER");
+        CUSTOMER("SUPER_ADMIN");
 
         private final String roleName;
 

@@ -2,9 +2,7 @@ package com.online.pasaronlineapp.domain.dao;
 
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,8 +13,6 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "ITEMS")
-@SQLDelete(sql = "UPDATE ITEMS SET is_deleted = true WHERE id=?")
-@Where(clause = "is_deleted = false")
 public class ItemDao extends BaseDao {
 
     @Id
@@ -44,13 +40,18 @@ public class ItemDao extends BaseDao {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @ToString.Exclude
     private CategoryDao categoryDao;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<PackageItemDao> packageItemDaos;
 
-    @OneToMany(mappedBy = "items", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<CartDao> cartDaos;
+
+    @OneToMany(mappedBy = "item")
+    @ToString.Exclude
+    private List<OrderDetailDao> orderDetailDaos;
 }

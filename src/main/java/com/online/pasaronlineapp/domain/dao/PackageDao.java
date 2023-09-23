@@ -2,9 +2,7 @@ package com.online.pasaronlineapp.domain.dao;
 
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,8 +13,6 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "PACKAGES")
-@SQLDelete(sql = "UPDATE PACKAGES SET is_deleted = true WHERE id=?")
-@Where(clause = "is_deleted = false")
 public class PackageDao extends BaseDao {
 
     @Id
@@ -28,6 +24,9 @@ public class PackageDao extends BaseDao {
 
     @Column(name = "package_price", nullable = false)
     private Integer packagePrice;
+
+    @Column(name = "package_weight", nullable = false)
+    private Integer packageWeight;
 
     @Column(name = "package_description")
     private String packageDescription;

@@ -4,15 +4,14 @@ import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "USERS")
-public class UserDao extends BaseDao {
+@Table(name = "ADMINS")
+public class AdminDao extends BaseDao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,20 +24,13 @@ public class UserDao extends BaseDao {
     private String lastName;
 
     @Column(name = "username", nullable = false)
-    private String phoneNumber;
+    private String username;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToOne
+    @JoinColumn(name = "role_id")
     @ToString.Exclude
-    private List<LocationDao> locationDaos;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private List<CartDao> cartDaos;
-
-    @OneToMany(mappedBy = "user")
-    @ToString.Exclude
-    private List<OrderDao> orderDaos;
+    private RoleDao role;
 }

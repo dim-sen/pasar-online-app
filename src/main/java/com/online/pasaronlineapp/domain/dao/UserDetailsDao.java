@@ -16,23 +16,23 @@ import java.util.List;
 @AllArgsConstructor
 public class UserDetailsDao implements UserDetails {
 
-    private UserDao userDao;
+    private AdminDao adminDao;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-        simpleGrantedAuthorities.add(new SimpleGrantedAuthority(userDao.getRoleDao().getName()));
+        simpleGrantedAuthorities.add(new SimpleGrantedAuthority(adminDao.getRole().getRoleName()));
         return simpleGrantedAuthorities;
     }
 
     @Override
     public String getPassword() {
-        return userDao.getPassword();
+        return adminDao.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return userDao.getPhoneNumber();
+        return adminDao.getUsername();
     }
 
     @Override

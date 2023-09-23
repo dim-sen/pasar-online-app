@@ -48,33 +48,33 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public UserDao createUser(UserDto userDto) {
-        try {
-            log.info("Creating a user");
-
-            Optional<RoleDao> optionalRoleDao = roleRepository.findByName(AppConstant.Role.ADMIN.getRoleName());
-
-            if (optionalRoleDao.isEmpty()) {
-                RoleDao roleDao = RoleDao.builder()
-                        .name(AppConstant.Role.ADMIN.getRoleName())
-                        .build();
-
-                optionalRoleDao = Optional.of(roleRepository.save(roleDao));
-            }
-
-            UserDao userDao = new UserDao();
-            userDao.setFirstName(userDto.getFirstName());
-            userDao.setLastName(userDto.getLastName());
-            userDao.setPhoneNumber(userDto.getPhoneNumber());
-            userDao.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-            userDao.setRoleDao(optionalRoleDao.orElseThrow(() -> new RuntimeException("Role not found")));
-
-            return userRepository.save(userDao);
-
-        } catch (Exception e) {
-            log.error("An error occurred in creating a user. Error {}", e.getMessage());
-            throw e;
-        }
-    }
+//    @Override
+//    public UserDao createUser(UserDto userDto) {
+//        try {
+//            log.info("Creating a user");
+//
+//            Optional<RoleDao> optionalRoleDao = roleRepository.findByName(AppConstant.Role.ADMIN.getRoleName());
+//
+//            if (optionalRoleDao.isEmpty()) {
+//                RoleDao roleDao = RoleDao.builder()
+//                        .name(AppConstant.Role.ADMIN.getRoleName())
+//                        .build();
+//
+//                optionalRoleDao = Optional.of(roleRepository.save(roleDao));
+//            }
+//
+//            UserDao userDao = new UserDao();
+//            userDao.setFirstName(userDto.getFirstName());
+//            userDao.setLastName(userDto.getLastName());
+//            userDao.setPhoneNumber(userDto.getPhoneNumber());
+//            userDao.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+//            userDao.setRoleDao(optionalRoleDao.orElseThrow(() -> new RuntimeException("Role not found")));
+//
+//            return userRepository.save(userDao);
+//
+//        } catch (Exception e) {
+//            log.error("An error occurred in creating a user. Error {}", e.getMessage());
+//            throw e;
+//        }
+//    }
 }
