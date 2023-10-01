@@ -18,7 +18,6 @@ public interface CategoryRepository extends BaseRepository<CategoryDao> {
     @Query("select c from CategoryDao c")
     Page<CategoryDao> pageableCategory(Pageable pageable);
 
-
-    @Query("select c from CategoryDao c where c.categoryName = :keyword")
-    Page<CategoryDao> searchCategoryDaoByCategoryName(@Param("keyword") String keyword, Pageable pageable);
+    @Query("select c from CategoryDao c where lower(c.categoryName) like %:keyword%")
+    Page<CategoryDao> searchCategoryDaoByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }

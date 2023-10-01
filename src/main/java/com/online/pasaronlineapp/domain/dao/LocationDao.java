@@ -27,12 +27,12 @@ public class LocationDao extends BaseDao {
     @Column(name = "detail_address", nullable = false)
     private String detailAddress;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     private UserDao user;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "location", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<OrderDao> orderDaos;
 }

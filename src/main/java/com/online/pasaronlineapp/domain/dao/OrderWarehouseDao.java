@@ -4,31 +4,26 @@ import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "WAREHOUSES_BATCHES")
-public class WarehouseBatchDao extends BaseDao {
+@Table(name = "ORDERS_WAREHOUSES")
+public class OrderWarehouseDao extends BaseDao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "warehouse_id")
+    @JoinColumn(name = "order_id")
     @ToString.Exclude
-    private WarehouseDao warehouse;
+    private OrderDao order;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "batch_id")
+    @JoinColumn(name = "warehouse_batch_id")
     @ToString.Exclude
-    private BatchDao batch;
-
-    @OneToMany(mappedBy = "warehouseBatch", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private List<OrderWarehouseDao> orderDaos;
+    private WarehouseBatchDao warehouseBatch;
 }

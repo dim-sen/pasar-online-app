@@ -20,27 +20,45 @@
         <div class="container-fluid pt-4 px-4">
             <div class="row g-4">
                 <div class="col-12">
-                    <div>
-                        <form method="get" th:action="@{/search-item/0}">
-                            <label for="search"></label>
-                            <input id="search" name="keyword" placeholder="Search an item" type="text">
-                            <button class="btn btn-primary" type="submit">Search</button>
-                        </form>
-                    </div>
                     <div class="bg-light rounded h-100 p-4">
-                        <h6 class="mb-4">Item</h6>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="mb-4">Item</h3>
+                            <form method="get" th:action="@{/search-item/0}" class="d-flex">
+                                <label for="search_item"></label>
+                                <input id="search_item" name="keyword" placeholder="Search here" type="text"
+                                       class="form-control">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </form>
+                        </div>
                         <div class="table-responsive">
-                            <a class="btn btn-primary" th:href="@{/add-item}">Add New Item</a>
-                            <div th:if="${size == 0}">
-                                <p>There is no item</p>
+                            <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
+                                    data-bs-target="#addItemModal">Add New Item</button>
+                            <div th:if="${items.isEmpty() && param.keyword == null}">
+                                <div class="alert alert-warning">
+                                    <p>There is no item</p>
+                                </div>
                             </div>
-                            <div class="text-center alert alert-success" th:if="${success}">
-                                <p th:text="${success}"></p>
+                            <div class="text-center alert alert-success" th:if="${SUCCESS}">
+                                <p th:text="${SUCCESS}"></p>
                             </div>
-                            <div class="text-center alert alert-danger" th:if="${failed}">
-                                <p th:text="${failed}"></p>
+                            <div class="text-center alert alert-danger" th:if="${FAILED}">
+                                <p th:text="${FAILED}"></p>
                             </div>
-                            <table class="table" th:if="${size > 0}">
+                            <div class="text-center alert alert-danger" th:if="${ALREADY_EXIST}">
+                                <p th:text="${ALREADY_EXIST}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${NOT_FOUND}">
+                                <p th:text="${NOT_FOUND}"></p>
+                            </div>
+                            <div th:if="${items.isEmpty() && param.keyword != null && param.keyword != ''}">
+                                <div class="text-center alert alert-warning">
+                                    <p>No results found for "<span th:text="${param.keyword}"></span>".</p>
+                                </div>
+                            </div>
+                            <div class="text-center alert alert-danger d-none" id="itemNotFoundAlert">
+                                <p>Item not found</p>
+                            </div>
+                            <table class="table" th:if="${!items.isEmpty() and size > 0}">
                                 <thead>
                                 <tr>
                                     <th scope="col">Id</th>
@@ -58,15 +76,23 @@
                                 <tr th:each="itemDto : ${items}">
                                     <th scope="row" th:text="${itemDto.id}"></th>
                                     <td th:text="${itemDto.itemName}"></td>
-                                    <td th:text="${itemDto.itemPrice}"></td>
-                                    <td th:text="${itemDto.itemWeight}"></td>
+                                    <td th:text="${'Rp' + itemDto.itemPrice}"></td>
+                                    <td th:text="${itemDto.itemWeight + ' gram'}"></td>
                                     <td th:text="${itemDto.itemStock}"></td>
                                     <td th:text="${itemDto.itemDescription}"></td>
-                                    <td th:text="${itemDto.itemImage}"></td>
+                                    <td>
+                                        <img th:src="'data:image/jpeg;base64,' + ${itemDto.itemImage}"
+                                             style="height: 50px; width: 50px;">
+                                    </td>
                                     <td th:text="${itemDto.categoryDao.categoryName}"></td>
                                     <td>
-                                        <a class="btn btn-primary" th:href="@{/update-item/{id} (id = ${itemDto.id})}">Edit</a>
-                                        <a class="btn btn-danger" th:href="@{/delete-item/{id} (id = ${itemDto.id})}">Delete</a>
+                                        <a th:if="${itemDto.isActive == true}"
+                                           class="btn btn-primary update-item-button" data-bs-toggle="modal"
+                                           data-bs-target="#updateItemModal" th:data-item-id="${itemDto.id}">Update</a>
+                                        <a th:if="${itemDto.isActive == true}" class="btn btn-danger"
+                                           th:href="@{/delete-item/{id} (id = ${itemDto.id})}">Inactive</a>
+                                        <a th:if="${itemDto.isActive == false}" class="btn btn-success"
+                                           th:href="@{/delete-item/{id} (id = ${itemDto.id})}">Active</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -83,7 +109,8 @@
                                     </li>
                                     <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 1)}"
                                         th:classappend="${currentPage == i ? 'active' : ''}">
-                                        <a class="page-link" th:href="@{'/items/' + ${i}}"><span th:text="${i + 1}"></span></a>
+                                        <a class="page-link" th:href="@{'/items/' + ${i}}"><span
+                                                th:text="${i + 1}"></span></a>
                                     </li>
                                     <li class="page-item" th:if="${currentPage + 1 != totalPages}">
                                         <a class="page-link" th:href="@{'/items/' + ${currentPage + 1}}">Next</a>
@@ -97,6 +124,182 @@
         </div>
         <!-- Table End -->
 
+        <!-- Modal for Add Item -->
+        <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addItemModalLabel">Add Item</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/save-item}" th:object="${itemDto}" method="post"
+                              enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="addItemModal_itemName" class="col-sm-2 col-form-label">Item Name</label>
+                                <div class="col-sm">
+                                    <input th:field="*{itemName}" type="text" class="form-control"
+                                           id="addItemModal_itemName" required minlength="3"
+                                           maxlength="255" pattern="[a-zA-Z\s]+">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addItemModal_itemPrice" class="col-sm-2 col-form-label">Item Price</label>
+                                <div class="col-sm">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input th:field="*{itemPrice}" type="number" class="form-control"
+                                               id="addItemModal_itemPrice" min="1" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addItemModal_itemWeight" class="col-sm-2 col-form-label">Item Weight</label>
+                                <div class="col-sm">
+                                    <div class="input-group">
+                                        <input th:field="*{itemWeight}" type="number" class="form-control"
+                                               id="addItemModal_itemWeight" min="1" required>
+                                        <span class="input-group-text">gram</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addItemModal_itemStock" class="col-sm-2 col-form-label">Item Stock</label>
+                                <div class="col-sm">
+                                    <input th:field="*{itemStock}" type="number" class="form-control"
+                                           id="addItemModal_itemStock" min="1" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addItemModal_itemDescription" class="form-label">Item Description</label>
+                                <textarea class="form-control" id="addItemModal_itemDescription"
+                                          th:field="*{itemDescription}" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addItemModal_itemCategory" class="form-label">Item Category</label>
+                                <select class="form-select" id="addItemModal_itemCategory" th:field="*{categoryDao}"
+                                        required>
+                                    <option value="" disabled selected>Select Category</option>
+                                    <option th:each="category : ${categories}"
+                                            th:text="${category.categoryName}"
+                                            th:value="${category.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Afile" class="form-label">Item Image (JPEG or PNG)</label>
+                                <input class="form-control" type="file" id="Afile" name="file"
+                                       accept=".jpg, .jpeg, .png" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Update Item -->
+        <div class="modal fade" id="updateItemModal" tabindex="-1" role="dialog" aria-labelledby="updateItemModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" style="max-width: 50%;" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateItemModalLabel">Update Item</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{'/update-item/' + ${itemDto.id}}" th:object="${itemDto}"
+                              enctype="multipart/form-data" method="post">
+                            <input type="hidden" id="itemId" name="id" th:value="${itemDto.id}"/>
+                            <div class="mb-3">
+                                <label for="editItemModal_itemId" class="col-sm-2 col-form-label">Item Id</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control" id="editItemModal_itemId"
+                                           name="editItemModal_itemId" th:field="*{id}" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editItemModal_itemName" class="col-sm-2 col-form-label">Item Name</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control" id="editItemModal_itemName"
+                                           name="editItemModal_itemName" th:field="*{itemName}" required minlength="3"
+                                           maxlength="255" pattern="[a-zA-Z\s]+" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editItemModal_itemPrice" class="col-sm-2 col-form-label">Item Price</label>
+                                <div class="col-sm">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="number" class="form-control" id="editItemModal_itemPrice"
+                                               name="editItemModal_itemPrice" th:field="*{itemPrice}" min="1" required
+                                               disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editItemModal_itemWeight" class="col-sm-2 col-form-label">Item
+                                    Weight</label>
+                                <div class="col-sm">
+                                    <div class="input-group">
+                                        <input name="editItemModal_itemWeight" th:field="*{itemWeight}" type="number"
+                                               class="form-control"
+                                               id="editItemModal_itemWeight" min="1" required disabled>
+                                        <span class="input-group-text">gram</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editItemModal_itemStock" class="col-sm-2 col-form-label">Item Stock</label>
+                                <div class="col-sm">
+                                    <input name="editItemModal_itemStock" th:field="*{itemStock}" type="number"
+                                           class="form-control"
+                                           id="editItemModal_itemStock" min="1" required disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editItemModal_itemDescription" class="form-label">Item Description</label>
+                                <textarea class="form-control" id="editItemModal_itemDescription"
+                                          name="editItemModal_itemDescription" th:field="*{itemDescription}" required
+                                          disabled></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editItemModal_itemCategory" class="form-label">Item Category</label>
+                                <select class="form-select" id="editItemModal_itemCategory"
+                                        name="editItemModal_categoryDao" th:field="*{categoryDao}" required disabled>
+                                    <option value="" disabled selected>Select Category</option>
+                                    <option th:each="category : ${categories}"
+                                            th:text="${category.categoryName}"
+                                            th:value="${category.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="file" class="form-label">Item Image (JPEG or PNG)</label>
+                                <div class="d-flex align-items-center">
+                                    <img id="editItemModal_itemImage" style="height: 100px; width: 100px;" class="mr-2">
+                                    <hr class="flex-grow-1 mx-2">
+                                    <input class="form-control" type="file" id="file" name="file"
+                                           accept=".jpg, .jpeg, .png" disabled>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
+                                <button type="submit" class="btn btn-primary" id="updateItemButton" disabled>Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Footer Start -->
         <div th:replace="fragments :: footer"></div>
     </div>
@@ -108,6 +311,9 @@
 </div>
 
 <div th:replace="fragments :: script"></div>
+
+<script th:src="@{/js/item-update.js}"></script>
+<script th:src="@{/js/item-btn.js}"></script>
 
 </body>
 

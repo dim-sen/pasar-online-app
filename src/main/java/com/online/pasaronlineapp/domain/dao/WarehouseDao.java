@@ -24,7 +24,7 @@ public class WarehouseDao extends BaseDao {
     @Column(name = "warehouse_address", nullable = false)
     private String warehouseAddress;
 
-    @OneToMany(mappedBy = "warehouse")
+    @OneToMany(mappedBy = "warehouse", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<WarehouseBatchDao> warehouseBatchDaos;
 }

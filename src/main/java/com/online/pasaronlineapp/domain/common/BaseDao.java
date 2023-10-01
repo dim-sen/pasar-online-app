@@ -30,7 +30,7 @@ public abstract class BaseDao {
     @PrePersist
     void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.isActive = Boolean.FALSE;
+        this.isActive = Boolean.TRUE;
     }
 
     @PreUpdate

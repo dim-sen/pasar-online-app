@@ -21,27 +21,34 @@ public class OrderDao extends BaseDao {
     @Column(name = "order_status", nullable = false)
     private String orderStatus;
 
-    @ManyToOne
+    @Column(name = "total_payment", nullable = false)
+    private Integer totalPayment;
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     private UserDao user;
 
-    @ManyToOne
-    @JoinColumn(name = "warehouse_batch_id")
-    @ToString.Exclude
-    private WarehouseBatchDao warehouseBatch;
-
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "location_id")
     @ToString.Exclude
     private LocationDao location;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     @ToString.Exclude
     private PaymentDao payment;
 
-    @OneToMany(mappedBy = "order")
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "batch_id")
+    @ToString.Exclude
+    private BatchDao batch;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<OrderDetailDao> orderDetailDaos;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<OrderWarehouseDao> orderWarehouseDaos;
 }

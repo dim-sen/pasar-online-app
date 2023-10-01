@@ -1,10 +1,12 @@
 package com.online.pasaronlineapp.domain.dao;
 
 import com.online.pasaronlineapp.domain.common.BaseDao;
+import com.online.pasaronlineapp.util.LocalTImeAttributeConverter;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Data
@@ -19,10 +21,15 @@ public class BatchDao extends BaseDao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "batch_time")
-    private LocalDateTime batchTime;
+    @Column(name = "batch_time", columnDefinition = "time")
+    @Convert(converter = LocalTImeAttributeConverter.class)
+    private LocalTime batchTime;
 
     @OneToMany(mappedBy = "batch")
     @ToString.Exclude
     private List<WarehouseBatchDao> warehouseBatchDaos;
+
+    @OneToMany(mappedBy = "batch", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<OrderDao> orderDaos;
 }

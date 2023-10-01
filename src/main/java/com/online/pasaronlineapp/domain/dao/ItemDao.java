@@ -38,16 +38,16 @@ public class ItemDao extends BaseDao {
     @Column(name = "item_image", columnDefinition = "BYTEA")
     private byte[] itemImage;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     @ToString.Exclude
     private CategoryDao categoryDao;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<PackageItemDao> packageItemDaos;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<CartDao> cartDaos;
 

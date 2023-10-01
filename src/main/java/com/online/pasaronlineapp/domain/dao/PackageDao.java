@@ -35,7 +35,7 @@ public class PackageDao extends BaseDao {
     @Column(name = "package_image", columnDefinition = "BYTEA")
     private String packageImage;
 
-    @OneToMany(mappedBy = "packages", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "packages", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<PackageItemDao> packageItemDaos;
 }

@@ -17,18 +17,13 @@ public class OrderDetailDao extends BaseDao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     @ToString.Exclude
     private OrderDao order;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     @ToString.Exclude
     private ItemDao item;
-
-    @ManyToOne
-    @JoinColumn(name = "package_item_id")
-    @ToString.Exclude
-    private PackageItemDao packageItem;
 }

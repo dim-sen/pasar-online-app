@@ -29,7 +29,7 @@ public class AdminDao extends BaseDao {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     @ToString.Exclude
     private RoleDao role;

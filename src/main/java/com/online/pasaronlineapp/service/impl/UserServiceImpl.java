@@ -1,9 +1,6 @@
 package com.online.pasaronlineapp.service.impl;
 
-import com.online.pasaronlineapp.constant.AppConstant;
-import com.online.pasaronlineapp.domain.dao.RoleDao;
 import com.online.pasaronlineapp.domain.dao.UserDao;
-import com.online.pasaronlineapp.domain.dto.UserDto;
 import com.online.pasaronlineapp.repository.RoleRepository;
 import com.online.pasaronlineapp.repository.UserRepository;
 import com.online.pasaronlineapp.service.UserService;
@@ -12,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 @Slf4j

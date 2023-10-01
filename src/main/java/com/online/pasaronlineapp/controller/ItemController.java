@@ -1,9 +1,10 @@
 package com.online.pasaronlineapp.controller;
 
-import com.online.pasaronlineapp.constant.AppConstant;
 import com.online.pasaronlineapp.domain.dao.ItemDao;
 import com.online.pasaronlineapp.domain.dto.CategoryDto;
 import com.online.pasaronlineapp.domain.dto.ItemDto;
+import com.online.pasaronlineapp.exception.AlreadyExistException;
+import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.service.impl.CategoryServiceImpl;
 import com.online.pasaronlineapp.service.impl.ItemServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -34,90 +36,85 @@ public class ItemController {
             return "redirect:/login";
         }
 
-        Page<ItemDao> itemDaoPage = itemService.itemPage(pageNumber);
-        List<ItemDto> itemDtoList = itemService.getAllItems();
+        Page<ItemDto> itemDtoPage = itemService.itemPage(pageNumber);
+        List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
         model.addAttribute("title", "Item");
-        model.addAttribute("size", itemDtoList.size());
-        model.addAttribute("totalPages", itemDaoPage.getTotalPages());
+        model.addAttribute("size", itemDtoPage.getSize());
+        model.addAttribute("totalPages", itemDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
-        model.addAttribute("items", itemDaoPage);
+        model.addAttribute("items", itemDtoPage);
+        model.addAttribute("itemDto", new ItemDto());
+        model.addAttribute("categories", categoryDtoList);
         return "items";
     }
 
     @GetMapping(value = "/search-item/{page}")
-    public String searchItemPage(@PathVariable(value = "page") Integer pageNumber,
-                                 @RequestParam(value = "keyword") String keyword,
+    public String searchItemPage(@RequestParam(value = "keyword") String keyword,
+                                 @PathVariable(value = "page") Integer pageNumber,
                                  Model model,
                                  Principal principal) {
         if (principal == null) {
             return "redirect:/login";
         }
-        Page<ItemDao> itemDaoPage = itemService.searchItem(pageNumber, keyword);
-        model.addAttribute("title", "Search");
-        model.addAttribute("items", itemDaoPage);
-        model.addAttribute("size", itemDaoPage.getSize());
-        model.addAttribute("totalPages", itemDaoPage.getTotalPages());
-        model.addAttribute("currentPage", pageNumber);
-        return "result-items";
-    }
-
-    @GetMapping(value = "/add-item")
-    public String addItem(Model model) {
+        Page<ItemDto> itemDtoPage = itemService.searchItem(keyword, pageNumber);
         List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
-        model.addAttribute("categories", categoryDtoList);
+        model.addAttribute("title", "Item");
+        model.addAttribute("size", itemDtoPage.getSize());
+        model.addAttribute("totalPages", itemDtoPage.getTotalPages());
+        model.addAttribute("currentPage", pageNumber);
+        model.addAttribute("items", itemDtoPage);
         model.addAttribute("itemDto", new ItemDto());
-        return "add-items";
+        model.addAttribute("categories", categoryDtoList);
+        return "items";
     }
 
     @PostMapping(value = "/save-item")
-    public String saveItem(@ModelAttribute(value = "itemDto") ItemDto itemDto,
+    public String saveItem(@ModelAttribute(value = "itemDto") @Valid ItemDto itemDto,
                            @RequestParam(value = "file") MultipartFile itemImage,
                            RedirectAttributes redirectAttributes) {
+
         try {
             itemService.createItem(itemDto, itemImage);
-            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.SAVE_SUCCESS);
+            redirectAttributes.addFlashAttribute("SUCCESS", "Item Successfully Added");
+        } catch (AlreadyExistException e) {
+            redirectAttributes.addFlashAttribute("ALREADY_EXIST", e.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.SAVE_FAILED);
+            redirectAttributes.addFlashAttribute("FAILED", "Item Failed to Add");
         }
         return "redirect:/items/0";
     }
 
-    @GetMapping(value = "/update-item/{id}")
-    public String updateItemById(@PathVariable(value = "id") Long id, Model model, Principal principal) {
-        if (principal == null) {
-            return "redirect:/login";
-        }
-        List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
-        model.addAttribute("title", "Update Item");
-        model.addAttribute("categories", categoryDtoList);
-        ItemDto itemDto = itemService.getItemById(id);
-        model.addAttribute("itemDto", itemDto);
-        return "update-items";
+    @RequestMapping(value = "/find-item-by-id", method = {RequestMethod.PUT, RequestMethod.GET})
+    @ResponseBody
+    public ItemDao findItemById(@RequestParam(value = "id") Long id) {
+        return itemService.findItemById(id);
     }
 
     @PostMapping(value = "/update-item/{id}")
-    public String doingUpdateItem(
-            @ModelAttribute(value = "itemDto") ItemDto itemDto,
+    public String updateItem(@ModelAttribute(value = "itemDto") ItemDto itemDto,
             @RequestParam(value = "file") MultipartFile itemImage,
             RedirectAttributes redirectAttributes) {
 
         try {
             itemService.updateItemById(itemDto, itemImage);
-            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.UPDATE_SUCCESS);
+            redirectAttributes.addFlashAttribute("SUCCESS", "Item Successfully Updated");
+        } catch (AlreadyExistException e) {
+            redirectAttributes.addFlashAttribute("ALREADY_EXIST", e.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.UPDATE_FAILED);
+            redirectAttributes.addFlashAttribute("FAILED", "Item Failed to Update");
         }
-
         return "redirect:/items/0";
     }
 
     @RequestMapping(value = "/delete-item/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String deleteItemByid(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
+    public String deleteItemById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
         try {
             itemService.deleteItemById(id);
-            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.DELETE_SUCCESS);
+            redirectAttributes.addFlashAttribute("SUCCESS", "Item Changed Successfully");
+        } catch (DataNotFoundException e) {
+            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute(AppConstant.FlashAttribute.DELETE_FAILED);
+            redirectAttributes.addFlashAttribute("FAILED", "Item Failed to Change");
         }
         return "redirect:/items/0";
     }

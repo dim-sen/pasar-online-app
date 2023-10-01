@@ -1,11 +1,14 @@
 package com.online.pasaronlineapp.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.online.pasaronlineapp.domain.dao.BatchDao;
 import com.online.pasaronlineapp.domain.dao.LocationDao;
 import com.online.pasaronlineapp.domain.dao.PaymentDao;
 import com.online.pasaronlineapp.domain.dao.UserDao;
-import com.online.pasaronlineapp.domain.dao.WarehouseBatchDao;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -18,11 +21,13 @@ public class OrderDto {
 
     private String orderStatus;
 
-    private UserDao user;
+    private Integer totalPayment;
 
-    private WarehouseBatchDao warehouseBatch;
+    private UserDao user;
 
     private LocationDao location;
 
     private PaymentDao payment;
+
+    private BatchDao batch;
 }

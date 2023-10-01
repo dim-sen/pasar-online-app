@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head th:replace="fragments :: header"></head>
+
+<body>
+<div class="container-xxl position-relative bg-white d-flex p-0">
+  <!-- Spinner Start -->
+  <div th:replace="fragments :: spinner"></div>
+
+  <!-- Sidebar Start -->
+  <div th:replace="fragments :: sidebar"></div>
+
+  <!-- Content Start -->
+  <div class="content">
+    <!-- Navbar Start -->
+    <nav th:replace="fragments :: navbar"></nav>
+
+    <!-- Table Start -->
+    <div class="container-fluid pt-4 px-4">
+      <div class="row g-4">
+        <div class="col-12">
+          <div class="bg-light rounded h-100 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="mb-4">Batch</h3>
+              <form method="get" th:action="@{/search-batch/0}" class="d-flex">
+                <label for="search_batch"></label>
+                <input id="search_batch" name="keyword" placeholder="Search here" type="time"
+                       class="form-control">
+                <button class="btn btn-primary" type="submit">Search</button>
+              </form>
+            </div>
+            <div class="table-responsive">
+              <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
+                      data-bs-target="#addBatchModal">Add New Category
+              </button>
+              <div th:if="${batches.isEmpty() && param.keyword == null}">
+                <div class="alert alert-warning">
+                  <p>There is no batch</p>
+                </div>
+              </div>
+              <div class="text-center alert alert-success" th:if="${SUCCESS}">
+                <p th:text="${SUCCESS}"></p>
+              </div>
+              <div class="text-center alert alert-danger" th:if="${FAILED}">
+                <p th:text="${FAILED}"></p>
+              </div>
+              <div class="text-center alert alert-danger" th:if="${ALREADY_EXIST}">
+                <p th:text="${ALREADY_EXIST}"></p>
+              </div>
+              <div class="text-center alert alert-danger" th:if="${NOT_FOUND}">
+                <p th:text="${NOT_FOUND}"></p>
+              </div>
+              <div th:if="${batches.isEmpty() && param.keyword != null && param.keyword != ''}">
+                <div class="text-center alert alert-warning">
+                  <p>No results found for "<span th:text="${param.keyword}"></span>".</p>
+                </div>
+              </div>
+              <div class="text-center alert alert-danger d-none" id="categoryNotFoundAlert">
+                <p>Batch not found</p>
+              </div>
+              <table class="table" th:if="${!batches.isEmpty() and size > 0}">
+                <thead>
+                <tr>
+                  <th scope="col">Id</th>
+                  <th scope="col">Batch Time</th>
+                  <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="batchDto : ${batches}">
+                  <th scope="row" th:text="${batchDto.id}"></th>
+                  <td th:text="${batchDto.batchTime}"></td>
+                  <td>
+                    <a th:if="${batchDto.isActive == true}"
+                       class="btn btn-primary update-batch-button" data-bs-toggle="modal"
+                       data-bs-target="#updateBatchModal"
+                       th:data-batch-id="${batchDto.id}">Update</a>
+                    <a th:if="${batchDto.isActive == true}" class="btn btn-danger"
+                       th:href="@{/delete-batch/{id} (id = ${batchDto.id})}">Inactive</a>
+                    <a th:if="${batchDto.isActive == false}" class="btn btn-success"
+                       th:href="@{/delete-batch/{id} (id = ${batchDto.id})}">Active</a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+              <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
+                <ul class="pagination">
+                  <li class="page-item" th:if="${currentPage != 0}">
+                    <a class="page-link"
+                       th:href="@{'/batches/' + ${currentPage - 1}}">Previous</a>
+                  </li>
+                  <li class="page-item"
+                      th:classappend="${currentPage == 0 ? 'active' : ''}">
+                    <a class="page-link" th:href="@{'/batches/' + 0}"><span>1</span></a>
+                  </li>
+                  <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 1)}"
+                      th:classappend="${currentPage == i ? 'active' : ''}">
+                    <a class="page-link" th:href="@{'/batches/' + ${i}}"><span
+                            th:text="${i + 1}"></span></a>
+                  </li>
+                  <li class="page-item" th:if="${currentPage + 1 != totalPages}">
+                    <a class="page-link" th:href="@{'/batches/' + ${currentPage + 1}}">Next</a>
+                  </li>
+                </ul>
+              </nav>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Table End -->
+
+    <!-- Modal for Add Category -->
+    <div class="modal fade" id="addBatchModal" tabindex="-1" aria-labelledby="addBatchModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addBatchModalLabel">Add Batch</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form th:action="@{/save-batch}" th:object="${batchDto}" method="post">
+              <div class="mb-3">
+                <label for="addBatchModal_batchTime" class="col-sm-2 col-form-label">Batch Time</label>
+                <div class="col-sm">
+                  <input th:field="*{batchTime}" type="time" class="form-control" id="addBatchModal_batchTime" required>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Update Item -->
+    <div class="modal fade" id="updateBatchModal" tabindex="-1" role="dialog" aria-labelledby="updateBatchModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog" style="max-width: 50%;" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="updateBatchModalLabel">Update Batch</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form th:action="@{'/update-batch/' + ${batchDto.id}}" th:object="${batchDto}"
+                  enctype="multipart/form-data" method="post">
+              <input type="hidden" id="batchId" name="id" th:value="${batchDto.id}"/>
+              <div class="mb-3">
+                <label for="editBatchModal_batchId" class="col-sm-2 col-form-label">Batch Id</label>
+                <div class="col-sm">
+                  <input type="text" class="form-control" id="editBatchModal_batchId"
+                         name="editBatchModal_batchId" th:field="*{id}" disabled>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="editBatchModal_batchTime" class="col-sm-2 col-form-label">Batch Time</label>
+                <div class="col-sm">
+                  <input th:field="*{batchTime}" type="time" class="form-control" name="editBatchModal_batchTime"
+                         id="editBatchModal_batchTime" required disabled>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-info" id="editButton">Edit</button>
+                <button type="submit" class="btn btn-primary" id="updateBatchButton" disabled>Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Start -->
+    <div th:replace="fragments :: footer"></div>
+  </div>
+  <!-- Content End -->
+
+  <!-- Back to Top -->
+  <a th:replace="fragments :: top"></a>
+
+</div>
+
+<div th:replace="fragments :: script"></div>
+
+<script th:src="@{/js/batch-update.js}"></script>
+<script th:src="@{/js/batch-btn.js}"></script>
+
+</body>
+
+</html>

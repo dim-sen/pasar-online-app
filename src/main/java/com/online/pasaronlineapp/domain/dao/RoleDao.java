@@ -21,7 +21,7 @@ public class RoleDao extends BaseDao {
     @Column(name = "role_name", nullable = false)
     private String roleName;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "role", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<AdminDao> adminDaos;
 }

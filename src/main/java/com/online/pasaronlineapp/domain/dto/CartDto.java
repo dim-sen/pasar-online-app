@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.online.pasaronlineapp.domain.dao.ItemDao;
-import com.online.pasaronlineapp.domain.dao.PackageItemDao;
 import com.online.pasaronlineapp.domain.dao.UserDao;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +23,4 @@ public class CartDto {
     private UserDao user;
 
     private ItemDao item;
-
-    private PackageItemDao packageItem;
 }

@@ -24,7 +24,7 @@ public class PaymentDao extends BaseDao {
     @Column(name = "payment_type")
     private String paymentType;
 
-    @OneToMany(mappedBy = "payment")
+    @OneToMany(mappedBy = "payment", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<OrderDao> orderDaos;
 }

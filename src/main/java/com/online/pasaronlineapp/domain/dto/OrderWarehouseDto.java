@@ -1,8 +1,8 @@
 package com.online.pasaronlineapp.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.online.pasaronlineapp.domain.dao.ItemDao;
 import com.online.pasaronlineapp.domain.dao.OrderDao;
+import com.online.pasaronlineapp.domain.dao.WarehouseBatchDao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OrderDetailDto {
+public class OrderWarehouseDto {
 
     private Long id;
 
     private OrderDao order;
 
-    private ItemDao item;
+    private WarehouseBatchDao warehouseBatch;
 }

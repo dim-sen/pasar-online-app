@@ -11,13 +11,14 @@ import java.util.Optional;
 
 @Repository
 public interface ItemRepository extends BaseRepository<ItemDao> {
+
     @Query("select i from ItemDao i where i.itemName like concat('%', ?1, '%')")
     Optional<ItemDao> findItemName(String itemName);
 
     @Query("select i from ItemDao i")
     Page<ItemDao> pageableItem(Pageable pageable);
 
-    @Query("select i from ItemDao i where i.itemName = :keyword or i.categoryDao.categoryName = :keyword")
-    Page<ItemDao> searchItemDaoByItemNameOrCategoryDaoCategoryName(@Param("keyword") String keyword,
-                                                                   Pageable pageable);
+    @Query("select i from ItemDao i where lower(i.itemName) like %:keyword% or lower(i.categoryDao.categoryName) like %:keyword%")
+    Page<ItemDao> searchItemDaoByKeyword(@Param("keyword") String keyword,
+                                         Pageable pageable);
 }

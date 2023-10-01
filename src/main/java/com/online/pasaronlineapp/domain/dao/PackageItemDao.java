@@ -4,7 +4,6 @@ import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,21 +17,13 @@ public class PackageItemDao extends BaseDao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "package_id")
     @ToString.Exclude
     private PackageDao packages;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     @ToString.Exclude
     private ItemDao item;
-
-    @OneToMany(mappedBy = "packageItem")
-    @ToString.Exclude
-    private List<CartDao> cartDaos;
-
-    @OneToMany(mappedBy = "packageItem")
-    @ToString.Exclude
-    private List<OrderDetailDao> orderDetailDaos;
 }

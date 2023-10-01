@@ -20,27 +20,46 @@
         <div class="container-fluid pt-4 px-4">
             <div class="row g-4">
                 <div class="col-12">
-                    <div>
-                        <form th:action="@{search-category/0}">
-                            <label for="searchCategory"></label>
-                            <input id="searchCategory" name="keyword" placeholder="Search a category" type="text">
-                            <button class="btn btn-primary" type="submit">Search</button>
-                        </form>
-                    </div>
                     <div class="bg-light rounded h-100 p-4">
-                        <h6 class="mb-4">Category</h6>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="mb-4">Category</h3>
+                            <form method="get" th:action="@{/search-category/0}" class="d-flex">
+                                <label for="search_category"></label>
+                                <input id="search_category" name="keyword" placeholder="Search here" type="text"
+                                       class="form-control">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </form>
+                        </div>
                         <div class="table-responsive">
-                            <a class="btn btn-primary" th:href="@{/add-category}">Add New Category</a>
-                            <div th:if="${size == 0}">
-                                <p>There is no category</p>
+                            <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
+                                    data-bs-target="#addCategoryModal">Add New Category
+                            </button>
+                            <div th:if="${categories.isEmpty() && param.keyword == null}">
+                                <div class="alert alert-warning">
+                                    <p>There is no category</p>
+                                </div>
                             </div>
-                            <div class="text-center alert alert-success" th:if="${success}">
-                                <p th:text="${success}"></p>
+                            <div class="text-center alert alert-success" th:if="${SUCCESS}">
+                                <p th:text="${SUCCESS}"></p>
                             </div>
-                            <div class="text-center alert alert-danger" th:if="${failed}">
-                                <p th:text="${failed}"></p>
+                            <div class="text-center alert alert-danger" th:if="${FAILED}">
+                                <p th:text="${FAILED}"></p>
                             </div>
-                            <table class="table" th:if="${size > 0}">
+                            <div class="text-center alert alert-danger" th:if="${ALREADY_EXIST}">
+                                <p th:text="${ALREADY_EXIST}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${NOT_FOUND}">
+                                <p th:text="${NOT_FOUND}"></p>
+                            </div>
+                            <div th:if="${categories.isEmpty() && param.keyword != null && param.keyword != ''}">
+                                <div class="text-center alert alert-warning">
+                                    <p>No results found for "<span th:text="${param.keyword}"></span>".</p>
+                                </div>
+                            </div>
+                            <div class="text-center alert alert-danger d-none" id="categoryNotFoundAlert">
+                                <p>Category not found</p>
+                            </div>
+                            <table class="table" th:if="${!categories.isEmpty() and size > 0}">
                                 <thead>
                                 <tr>
                                     <th scope="col">Id</th>
@@ -53,8 +72,14 @@
                                     <th scope="row" th:text="${categoryDto.id}"></th>
                                     <td th:text="${categoryDto.categoryName}"></td>
                                     <td>
-                                        <a class="btn btn-primary" th:href="@{/update-category/{id} (id = ${categoryDto.id})}">Edit</a>
-                                        <a class="btn btn-danger" th:href="@{/delete-category/{id} (id = ${categoryDto.id})}">Delete</a>
+                                        <a th:if="${categoryDto.isActive == true}"
+                                           class="btn btn-primary update-category-button" data-bs-toggle="modal"
+                                           data-bs-target="#updateCategoryModal"
+                                           th:data-category-id="${categoryDto.id}">Update</a>
+                                        <a th:if="${categoryDto.isActive == true}" class="btn btn-danger"
+                                           th:href="@{/delete-category/{id} (id = ${categoryDto.id})}">Inactive</a>
+                                        <a th:if="${categoryDto.isActive == false}" class="btn btn-success"
+                                           th:href="@{/delete-category/{id} (id = ${categoryDto.id})}">Active</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -63,7 +88,8 @@
                             <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
                                 <ul class="pagination">
                                     <li class="page-item" th:if="${currentPage != 0}">
-                                        <a class="page-link" th:href="@{'/categories/' + ${currentPage - 1}}">Previous</a>
+                                        <a class="page-link"
+                                           th:href="@{'/categories/' + ${currentPage - 1}}">Previous</a>
                                     </li>
                                     <li class="page-item"
                                         th:classappend="${currentPage == 0 ? 'active' : ''}">
@@ -71,7 +97,8 @@
                                     </li>
                                     <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 1)}"
                                         th:classappend="${currentPage == i ? 'active' : ''}">
-                                        <a class="page-link" th:href="@{'/categories/' + ${i}}"><span th:text="${i + 1}"></span></a>
+                                        <a class="page-link" th:href="@{'/categories/' + ${i}}"><span
+                                                th:text="${i + 1}"></span></a>
                                     </li>
                                     <li class="page-item" th:if="${currentPage + 1 != totalPages}">
                                         <a class="page-link" th:href="@{'/categories/' + ${currentPage + 1}}">Next</a>
@@ -86,6 +113,82 @@
         </div>
         <!-- Table End -->
 
+        <!-- Modal for Add Category -->
+        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/save-category}" th:object="${categoryDto}" method="post">
+                            <div class="mb-3">
+                                <label for="addCategoryModal_categoryName" class="col-sm-2 col-form-label">Category
+                                    Name</label>
+                                <div class="col-sm">
+                                    <input th:field="*{categoryName}" type="text" class="form-control"
+                                           id="addCategoryModal_categoryName" required minlength="3"
+                                           maxlength="255" pattern="[a-zA-Z\s]+">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Update Item -->
+        <div class="modal fade" id="updateCategoryModal" tabindex="-1" role="dialog"
+             aria-labelledby="updateCategoryModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" style="max-width: 50%;" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateCategoryModalLabel">Update Category</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{'/update-category/' + ${categoryDto.id}}" th:object="${categoryDto}"
+                              enctype="multipart/form-data" method="post">
+                            <input type="hidden" id="categoryId" name="id" th:value="${categoryDto.id}"/>
+                            <div class="mb-3">
+                                <label for="editCategoryModal_categoryId" class="col-sm-2 col-form-label">Category
+                                    Id</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control" id="editCategoryModal_categoryId"
+                                           name="editCategoryModal_categoryId" th:field="*{id}" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editCategoryModal_categoryName" class="col-sm-2 col-form-label">Category
+                                    Name</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control" id="editCategoryModal_categoryName"
+                                           name="editCategoryModal_categoryName" th:field="*{categoryName}" required
+                                           minlength="3"
+                                           maxlength="255" pattern="[a-zA-Z\s]+" disabled>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
+                                <button type="submit" class="btn btn-primary" id="updateCategoryButton" disabled>Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Footer Start -->
         <div th:replace="fragments :: footer"></div>
     </div>
@@ -97,6 +200,9 @@
 </div>
 
 <div th:replace="fragments :: script"></div>
+
+<script th:src="@{/js/category-update.js}"></script>
+<script th:src="@{/js/category-btn.js}"></script>
 
 </body>
 

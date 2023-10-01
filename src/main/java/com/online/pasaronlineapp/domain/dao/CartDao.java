@@ -24,13 +24,8 @@ public class CartDao extends BaseDao {
     @ToString.Exclude
     private UserDao user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     @ToString.Exclude
     private ItemDao item;
-
-    @ManyToOne
-    @JoinColumn(name = "package_item_id")
-    @ToString.Exclude
-    private PackageItemDao packageItem;
 }
