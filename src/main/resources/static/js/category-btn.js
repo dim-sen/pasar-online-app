@@ -10,6 +10,7 @@ $(document).ready(function () {
 
     $('#updateCategoryModal').on('hidden.bs.modal', function () {
         $('#editCategoryModal_categoryName').prop('disabled', true);
+        $('#updateCategoryButton').prop('disabled', true);
         $('#editButton').show();
     });
 });

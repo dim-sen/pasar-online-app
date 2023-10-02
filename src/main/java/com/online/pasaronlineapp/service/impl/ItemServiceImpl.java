@@ -60,20 +60,25 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDao findItemById(Long id) {
-        log.info("Finding an item by id");
-        Optional<ItemDao> optionalItemDao = itemRepository.findById(id);
+        try {
+            log.info("Finding an item by id");
+            Optional<ItemDao> optionalItemDao = itemRepository.findById(id);
 
-        if (optionalItemDao.isEmpty()) {
-            log.info("Item not Found");
-            return null;
+            if (optionalItemDao.isEmpty()) {
+                log.info("Item not Found");
+                throw new DataNotFoundException("Item not Found");
+            }
+
+            log.info("Item Found");
+            return optionalItemDao.get();
+        } catch (Exception e) {
+            log.error("An error occurred in finding an item by id. Error {}", e.getMessage());
+            throw e;
         }
-
-        log.info("Item Found");
-        return optionalItemDao.get();
     }
 
     @Override
-    public void updateItemById(ItemDto itemDto, MultipartFile itemImage) {
+    public void updateItem(ItemDto itemDto, MultipartFile itemImage) {
         try {
             log.info("Updating an item by id");
             Optional<ItemDao> optionalItemDao = itemRepository.findById(itemDto.getId());
@@ -109,9 +114,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void deleteItemById(Long id) {
+    public void inactivateItemById(Long id) {
         try {
-            log.info("Deleting an item by id");
+            log.info("Inactivating an item by id");
             Optional<ItemDao> optionalItemDao = itemRepository.findById(id);
 
             if (optionalItemDao.isEmpty()) {
@@ -122,7 +127,7 @@ public class ItemServiceImpl implements ItemService {
             log.info("Item found");
             itemRepository.updateIsActive(id, !optionalItemDao.get().isActive());
         } catch (Exception e) {
-            log.error("An error occurred in deleting an item by id. Error {}", e.getMessage());
+            log.error("An error occurred in inactivating an item by id. Error {}", e.getMessage());
             throw e;
         }
     }

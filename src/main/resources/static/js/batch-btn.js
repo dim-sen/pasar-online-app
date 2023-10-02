@@ -10,6 +10,7 @@ $(document).ready(function () {
 
     $('#updateBatchModal').on('hidden.bs.modal', function () {
         $('#editBatchModal_batchTime').prop('disabled', true);
+        $('#updateBatchButton').prop('disabled', true);
         $('#editButton').show();
     });
 });

@@ -29,7 +29,6 @@ public class CategoryController {
 
         Page<CategoryDto> categoryDtoPage = categoryService.categoryPage(pageNumber);
         model.addAttribute("title", "Category");
-        model.addAttribute("size", categoryDtoPage.getSize());
         model.addAttribute("totalPages", categoryDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("categories", categoryDtoPage);
@@ -47,7 +46,6 @@ public class CategoryController {
         }
         Page<CategoryDto> categoryDtoPage = categoryService.searchCategory(keyword, pageNumber);
         model.addAttribute("title", "Search");
-        model.addAttribute("size", categoryDtoPage.getSize());
         model.addAttribute("totalPages", categoryDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("categories", categoryDtoPage);
@@ -79,7 +77,7 @@ public class CategoryController {
     public String updateCategory(@ModelAttribute(value = "categoryDto") CategoryDto categoryDto,
                                       RedirectAttributes redirectAttributes) {
         try {
-            categoryService.updateCategoryById(categoryDto);
+            categoryService.updateCategory(categoryDto);
             redirectAttributes.addFlashAttribute("SUCCESS", "Category Successfully Updated");
         } catch (AlreadyExistException e) {
             redirectAttributes.addFlashAttribute("ALREADY_EXIST", e.getMessage());
@@ -89,10 +87,10 @@ public class CategoryController {
         return "redirect:/categories/0";
     }
 
-    @RequestMapping(value = "/delete-category/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String deleteCategoryById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
+    @RequestMapping(value = "/inactive-category/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
+    public String inactiveCategoryById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
         try {
-            categoryService.deleteCategoryById(id);
+            categoryService.inactivateCategoryById(id);
             redirectAttributes.addFlashAttribute("SUCCESS", "Category Changed Successfully");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("FAILED", "Category Failed to Change");

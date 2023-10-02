@@ -4,7 +4,6 @@ import com.online.pasaronlineapp.domain.dao.BatchDao;
 import com.online.pasaronlineapp.domain.dto.BatchDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.service.impl.BatchServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
-@Slf4j
 @Controller
 public class BatchController {
 
@@ -22,18 +20,17 @@ public class BatchController {
     private BatchServiceImpl batchService;
 
     @GetMapping(value = "/batches/{page}")
-    public String batchPage(@PathVariable(value = "page") Integer pageNUmber,
+    public String batchPage(@PathVariable(value = "page") Integer pageNumber,
                             Model model,
                             Principal principal) {
         if (principal == null) {
             return "redirect:/login";
         }
 
-        Page<BatchDto> batchDtoPage = batchService.batchPage(pageNUmber);
+        Page<BatchDto> batchDtoPage = batchService.batchPage(pageNumber);
         model.addAttribute("title", "Batch");
-        model.addAttribute("size", batchDtoPage.getSize());
         model.addAttribute("totalPages", batchDtoPage.getTotalPages());
-        model.addAttribute("currentPage", pageNUmber);
+        model.addAttribute("currentPage", pageNumber);
         model.addAttribute("batches", batchDtoPage);
         model.addAttribute("batchDto", new BatchDto());
         return "batches";
@@ -50,7 +47,6 @@ public class BatchController {
 
         Page<BatchDto> batchDtoPage = batchService.searchBatch(keyword, pageNumber);
         model.addAttribute("title", "Search");
-        model.addAttribute("size", batchDtoPage.getSize());
         model.addAttribute("totalPages", batchDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("batches", batchDtoPage);
@@ -82,7 +78,7 @@ public class BatchController {
     public String updateBatch(@ModelAttribute(value = "batchDto") BatchDto batchDto,
                               RedirectAttributes redirectAttributes) {
         try {
-            batchService.updateBatchById(batchDto);
+            batchService.updateBatch(batchDto);
             redirectAttributes.addFlashAttribute("SUCCESS", "Batch Successfully Updated");
         } catch (AlreadyExistException e) {
             redirectAttributes.addFlashAttribute("ALREADY_EXIST", e.getMessage());
@@ -92,10 +88,10 @@ public class BatchController {
         return "redirect:/batches/0";
     }
 
-    @RequestMapping(value = "/delete-batch/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String deleteBatchById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
+    @RequestMapping(value = "/inactive-batch/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
+    public String inactiveBatchById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
         try {
-            batchService.deleteBatchById(id);
+            batchService.inactivateBatchById(id);
             redirectAttributes.addFlashAttribute("SUCCESS", "Batch Changed Successfully");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("FAILED", "Batch Failed to Change");

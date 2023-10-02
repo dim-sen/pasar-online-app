@@ -16,9 +16,9 @@ public interface CategoryService {
 
     List<CategoryDto> getAllCategories();
 
-    void updateCategoryById(CategoryDto categoryDto);
+    void updateCategory(CategoryDto categoryDto);
 
-    void deleteCategoryById(Long id);
+    void inactivateCategoryById(Long id);
 
     Page<CategoryDto> categoryPage(Integer pageNumber);
 

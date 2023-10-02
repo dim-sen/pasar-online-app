@@ -58,7 +58,7 @@
                             <div class="text-center alert alert-danger d-none" id="itemNotFoundAlert">
                                 <p>Item not found</p>
                             </div>
-                            <table class="table" th:if="${!items.isEmpty() and size > 0}">
+                            <table class="table" th:if="${!items.isEmpty()}">
                                 <thead>
                                 <tr>
                                     <th scope="col">Id</th>
@@ -90,9 +90,9 @@
                                            class="btn btn-primary update-item-button" data-bs-toggle="modal"
                                            data-bs-target="#updateItemModal" th:data-item-id="${itemDto.id}">Update</a>
                                         <a th:if="${itemDto.isActive == true}" class="btn btn-danger"
-                                           th:href="@{/delete-item/{id} (id = ${itemDto.id})}">Inactive</a>
+                                           th:href="@{/inactive-item/{id} (id = ${itemDto.id})}">Inactive</a>
                                         <a th:if="${itemDto.isActive == false}" class="btn btn-success"
-                                           th:href="@{/delete-item/{id} (id = ${itemDto.id})}">Active</a>
+                                           th:href="@{/inactive-item/{id} (id = ${itemDto.id})}">Active</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -173,7 +173,7 @@
                             <div class="mb-3">
                                 <label for="addItemModal_itemDescription" class="form-label">Item Description</label>
                                 <textarea class="form-control" id="addItemModal_itemDescription"
-                                          th:field="*{itemDescription}" required></textarea>
+                                          th:field="*{itemDescription}" maxlength="255" required></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="addItemModal_itemCategory" class="form-label">Item Category</label>

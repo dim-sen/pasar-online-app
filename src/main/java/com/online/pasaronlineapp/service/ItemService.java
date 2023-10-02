@@ -13,9 +13,9 @@ public interface ItemService {
 
     ItemDao findItemById(Long id);
 
-    void updateItemById(ItemDto itemDto, MultipartFile itemImage);
+    void updateItem(ItemDto itemDto, MultipartFile itemImage);
 
-    void deleteItemById(Long id);
+    void inactivateItemById(Long id);
 
     Page<ItemDto> itemPage(Integer pageNumber);
 

@@ -32,7 +32,7 @@
             </div>
             <div class="table-responsive">
               <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
-                      data-bs-target="#addBatchModal">Add New Category
+                      data-bs-target="#addBatchModal">Add New Batch
               </button>
               <div th:if="${batches.isEmpty() && param.keyword == null}">
                 <div class="alert alert-warning">
@@ -59,7 +59,7 @@
               <div class="text-center alert alert-danger d-none" id="categoryNotFoundAlert">
                 <p>Batch not found</p>
               </div>
-              <table class="table" th:if="${!batches.isEmpty() and size > 0}">
+              <table class="table" th:if="${!batches.isEmpty()}">
                 <thead>
                 <tr>
                   <th scope="col">Id</th>
@@ -77,9 +77,9 @@
                        data-bs-target="#updateBatchModal"
                        th:data-batch-id="${batchDto.id}">Update</a>
                     <a th:if="${batchDto.isActive == true}" class="btn btn-danger"
-                       th:href="@{/delete-batch/{id} (id = ${batchDto.id})}">Inactive</a>
+                       th:href="@{/inactive-batch/{id} (id = ${batchDto.id})}">Inactive</a>
                     <a th:if="${batchDto.isActive == false}" class="btn btn-success"
-                       th:href="@{/delete-batch/{id} (id = ${batchDto.id})}">Active</a>
+                       th:href="@{/inactive-batch/{id} (id = ${batchDto.id})}">Active</a>
                   </td>
                 </tr>
                 </tbody>

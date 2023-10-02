@@ -12,9 +12,9 @@ public interface BatchService {
 
     BatchDao findBatchById(Long id);
 
-    void updateBatchById(BatchDto batchDto);
+    void updateBatch(BatchDto batchDto);
 
-    void deleteBatchById(Long id);
+    void inactivateBatchById(Long id);
 
     Page<BatchDto> batchPage(Integer pageNumber);
 

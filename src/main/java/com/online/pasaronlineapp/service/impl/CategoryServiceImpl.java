@@ -52,16 +52,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDao findCategoryById(Long id) {
-        log.info("Finding a category by id");
-        Optional<CategoryDao> optionalCategoryDao = categoryRepository.findById(id);
+        try {
+            log.info("Finding a category by id");
+            Optional<CategoryDao> optionalCategoryDao = categoryRepository.findById(id);
 
-        if (optionalCategoryDao.isEmpty()) {
-            log.info("Category not Found");
-            return null;
+            if (optionalCategoryDao.isEmpty()) {
+                log.info("Category not Found");
+                throw new DataNotFoundException("Category not Found");
+            }
+
+            log.info("Category Found");
+            return optionalCategoryDao.get();
+        } catch (Exception e) {
+            log.error("An error occurred in finding a category by id. Error {}", e.getMessage());
+            throw e;
         }
-
-        log.info("Category Found");
-        return optionalCategoryDao.get();
     }
 
     @Override
@@ -87,7 +92,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void updateCategoryById(CategoryDto categoryDto) {
+    public void updateCategory(CategoryDto categoryDto) {
         try {
             log.info("Updating a category by id");
             Optional<CategoryDao> optionalCategoryDao = categoryRepository.findById(categoryDto.getId());
@@ -110,9 +115,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategoryById(Long id) {
+    public void inactivateCategoryById(Long id) {
         try {
-            log.info("Deleting category by id");
+            log.info("Inactivating category by id");
             Optional<CategoryDao> optionalCategoryDao = categoryRepository.findById(id);
 
             if (optionalCategoryDao.isEmpty()) {
@@ -123,7 +128,7 @@ public class CategoryServiceImpl implements CategoryService {
             log.info("Category found");
             categoryRepository.updateIsActive(id, !optionalCategoryDao.get().isActive());
         } catch (Exception e) {
-            log.error("An error occurred in deleting category by id. Error {}", e.getMessage());
+            log.error("An error occurred in inactivating category by id. Error {}", e.getMessage());
             throw e;
         }
     }
@@ -153,7 +158,7 @@ public class CategoryServiceImpl implements CategoryService {
             log.info("Searching for category");
             Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
 
-            Page<CategoryDao> categoryDaoPage = categoryRepository.searchCategoryDaoByKeyword(keyword, pageable);
+            Page<CategoryDao> categoryDaoPage = categoryRepository.searchCategoryDaoByKeyword(keyword.toLowerCase(), pageable);
 
             return categoryDaoPage.<CategoryDto>map(categoryDao -> CategoryDto.builder()
                     .id(categoryDao.getId())

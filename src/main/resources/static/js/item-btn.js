@@ -28,6 +28,7 @@ $(document).ready(function () {
         $('#editItemModal_itemDescription').prop('disabled', true);
         $('#editItemModal_itemCategory').prop('disabled', true);
         $('#file').prop('disabled', true);
+        $('#updateItemButton').prop('disabled', true);
         $('#editButton').show();
     });
 });

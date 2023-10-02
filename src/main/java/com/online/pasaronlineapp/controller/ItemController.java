@@ -39,7 +39,6 @@ public class ItemController {
         Page<ItemDto> itemDtoPage = itemService.itemPage(pageNumber);
         List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
         model.addAttribute("title", "Item");
-        model.addAttribute("size", itemDtoPage.getSize());
         model.addAttribute("totalPages", itemDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("items", itemDtoPage);
@@ -59,7 +58,6 @@ public class ItemController {
         Page<ItemDto> itemDtoPage = itemService.searchItem(keyword, pageNumber);
         List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
         model.addAttribute("title", "Item");
-        model.addAttribute("size", itemDtoPage.getSize());
         model.addAttribute("totalPages", itemDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("items", itemDtoPage);
@@ -96,7 +94,7 @@ public class ItemController {
             RedirectAttributes redirectAttributes) {
 
         try {
-            itemService.updateItemById(itemDto, itemImage);
+            itemService.updateItem(itemDto, itemImage);
             redirectAttributes.addFlashAttribute("SUCCESS", "Item Successfully Updated");
         } catch (AlreadyExistException e) {
             redirectAttributes.addFlashAttribute("ALREADY_EXIST", e.getMessage());
@@ -106,10 +104,10 @@ public class ItemController {
         return "redirect:/items/0";
     }
 
-    @RequestMapping(value = "/delete-item/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String deleteItemById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
+    @RequestMapping(value = "/inactive-item/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
+    public String inactiveItemById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
         try {
-            itemService.deleteItemById(id);
+            itemService.inactivateItemById(id);
             redirectAttributes.addFlashAttribute("SUCCESS", "Item Changed Successfully");
         } catch (DataNotFoundException e) {
             redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());

@@ -31,8 +31,6 @@ public class BatchServiceImpl implements BatchService {
             log.info("Creating new batch");
             Optional<BatchDao> optionalBatchDao = batchRepository.findBatchDaoByBatchTime(LocalTime.parse(batchDto.getBatchTime()));
 
-            log.info("Batch Time Dto: " + batchDto.getBatchTime());
-
             if (optionalBatchDao.isPresent()) {
                 log.info("Batch already exists");
                 throw new AlreadyExistException("Batch Already Exist");
@@ -51,20 +49,25 @@ public class BatchServiceImpl implements BatchService {
 
     @Override
     public BatchDao findBatchById(Long id) {
-        log.info("Finding a batch by id");
-        Optional<BatchDao> optionalBatchDao = batchRepository.findById(id);
+        try {
+            log.info("Finding a batch by id");
+            Optional<BatchDao> optionalBatchDao = batchRepository.findById(id);
 
-        if (optionalBatchDao.isEmpty()) {
-            log.info("Batch not Found");
-            return null;
+            if (optionalBatchDao.isEmpty()) {
+                log.info("Batch not Found");
+                throw new DataNotFoundException("Batch not Found");
+            }
+
+            log.info("Batch Found");
+            return optionalBatchDao.get();
+        } catch (Exception e) {
+            log.error("An error occurred in finding a batch by id. Error {}", e.getMessage());
+            throw e;
         }
-
-        log.info("Batch Found");
-        return optionalBatchDao.get();
     }
 
     @Override
-    public void updateBatchById(BatchDto batchDto) {
+    public void updateBatch(BatchDto batchDto) {
         try {
             log.info("Updating a batch by id");
             Optional<BatchDao> optionalBatchDao = batchRepository.findById(batchDto.getId());
@@ -89,9 +92,9 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public void deleteBatchById(Long id) {
+    public void inactivateBatchById(Long id) {
         try {
-            log.info("Deleting batch by id");
+            log.info("Inactivating batch by id");
             Optional<BatchDao> optionalBatchDao = batchRepository.findById(id);
 
             if (optionalBatchDao.isEmpty()) {
@@ -103,7 +106,7 @@ public class BatchServiceImpl implements BatchService {
             batchRepository.updateIsActive(id, !optionalBatchDao.get().isActive());
 
         } catch (Exception e) {
-            log.error("An error occurred in deleting batch by id. Error {}", e.getMessage());
+            log.error("An error occurred in inactivating batch by id. Error {}", e.getMessage());
             throw e;
         }
     }
