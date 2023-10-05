@@ -86,7 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
             return categoryDtoList;
 
         } catch (Exception e) {
-            log.error("An error occurred in finding all categories. Error {}", e.getMessage());
+            log.error("An error occurred in getting all categories. Error {}", e.getMessage());
             return Collections.emptyList();
         }
     }

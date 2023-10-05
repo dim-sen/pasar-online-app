@@ -15,6 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -58,11 +61,33 @@ public class WarehouseServiceImpl implements WarehouseService {
                 throw new DataNotFoundException("Warehouse not Found");
             }
             log.info("Warehouse Found");
-
+            log.info("optionalWarehouseDao: " + optionalWarehouseDao.get());
             return optionalWarehouseDao.get();
         } catch (Exception e) {
             log.error("An error occurred in finding a warehouse by id. Error {}", e.getMessage());
             throw e;
+        }
+    }
+
+    @Override
+    public List<WarehouseDto> getAllWarehouses() {
+        try {
+            log.info("Getting all warehouses");
+            List<WarehouseDao> warehouseDaoList = warehouseRepository.findAll();
+            List<WarehouseDto> dtoList = new ArrayList<>();
+
+            for (WarehouseDao warehouseDao : warehouseDaoList) {
+                dtoList.add(WarehouseDto.builder()
+                                .id(warehouseDao.getId())
+                                .warehouseName(warehouseDao.getWarehouseName())
+                                .warehouseAddress(warehouseDao.getWarehouseAddress())
+                        .build());
+            }
+
+            return dtoList;
+        } catch (Exception e) {
+            log.error("An error occurred in getting all warehouses. Error {}", e.getMessage());
+            return Collections.emptyList();
         }
     }
 

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,10 +17,13 @@ public interface BatchRepository extends BaseRepository<BatchDao> {
     @Query("select b from BatchDao b where b.batchTime = :batch")
     Optional<BatchDao> findBatchDaoByBatchTime(@Param("batch") LocalTime batch);
 
+    @Query("select b from BatchDao b where b.id = :id")
+    BatchDao findAllById(@Param(value = "id") Long id);
+
     @Query("select b from BatchDao b")
     Page<BatchDao> pageableBatch(Pageable pageable);
 
-    @Query("SELECT b FROM BatchDao b WHERE to_char(b.batchTime, 'HH24:MI') LIKE %:keyword%")
+    @Query("select b from BatchDao b where to_char(b.batchTime, 'HH24:MI') like %:keyword%")
     Page<BatchDao> searchBatchDaoByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
 }

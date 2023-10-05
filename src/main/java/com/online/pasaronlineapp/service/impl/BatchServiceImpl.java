@@ -16,6 +16,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -63,6 +66,27 @@ public class BatchServiceImpl implements BatchService {
         } catch (Exception e) {
             log.error("An error occurred in finding a batch by id. Error {}", e.getMessage());
             throw e;
+        }
+    }
+
+    @Override
+    public List<BatchDto> getAllBatches() {
+        try {
+            log.info("Getting all batches");
+            List<BatchDao> batchDaoList = batchRepository.findAll();
+            List<BatchDto> batchDtoList = new ArrayList<>();
+
+            for (BatchDao batchDao : batchDaoList) {
+                batchDtoList.add(BatchDto.builder()
+                                .id(batchDao.getId())
+                                .batchTime(String.valueOf(batchDao.getBatchTime()))
+                        .build());
+            }
+
+            return batchDtoList;
+        } catch (Exception e) {
+            log.error("An error occurred in getting all batches. Error {}", e.getMessage());
+            return Collections.emptyList();
         }
     }
 

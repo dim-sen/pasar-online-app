@@ -1,5 +1,6 @@
 package com.online.pasaronlineapp.domain.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import com.online.pasaronlineapp.util.LocalTImeAttributeConverter;
 import lombok.*;
@@ -27,9 +28,10 @@ public class BatchDao extends BaseDao {
 
     @OneToMany(mappedBy = "batch")
     @ToString.Exclude
+    @JsonIgnore
     private List<WarehouseBatchDao> warehouseBatchDaos;
 
-    @OneToMany(mappedBy = "batch", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "batch", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<OrderDao> orderDaos;
 }
