@@ -57,43 +57,11 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
         }
     }
 
-//    @Override
-//    public void createWarehouseBatch(WarehouseBatchDto warehouseBatchDto) {
-//        try {
-//            log.info("Creating new Warehouse-Batch");
-//            List<BatchDao> batchDaoList = warehouseBatchDto.getBatchList();
-//
-//            for (BatchDao batchDao : batchDaoList) {
-//                log.info("find By Warehouse Id And Batch Id");
-//                Optional<WarehouseBatchDao> optionalWarehouseBatchDao = warehouseBatchRepository.
-//                        findByWarehouseIdAndBatchId(warehouseBatchDto.getWarehouse().getId(),
-//                                batchDao.getId()
-//                        );
-//
-//                if (optionalWarehouseBatchDao.isPresent()) {
-//                    log.info("Warehouse-Batch already exist");
-//                    throw new AlreadyExistException("Warehouse-Batch Already Exist");
-//                }
-//
-//                log.info("Found it and save it");
-//                WarehouseBatchDao warehouseBatchDao = WarehouseBatchDao.builder()
-//                        .warehouse(warehouseBatchDto.getWarehouse())
-//                        .batch(batchDao)
-//                        .build();
-//
-//                warehouseBatchRepository.save(warehouseBatchDao);
-//            }
-//        } catch (Exception e) {
-//            log.error("An error occurred in creating Warehouse-Batch. Error {}", e.getMessage());
-//            throw e;
-//        }
-//    }
-
     @Override
     public WarehouseBatchDao findWarehouseBatchById(Long id) {
         try {
             log.info("Finding a Warehouse-Batch by id");
-            Optional<WarehouseBatchDao> optionalWarehouseBatchDao = warehouseBatchRepository.findWarehouseBatchDaoById(id);
+            Optional<WarehouseBatchDao> optionalWarehouseBatchDao = warehouseBatchRepository.findById(id);
 
             if (optionalWarehouseBatchDao.isEmpty()) {
                 log.info("Warehouse-Batch not found");
@@ -117,9 +85,6 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
             Optional<WarehouseBatchDao> warehouseBatchDaoOptional = warehouseBatchRepository.
                     findByWarehouseIdAndBatchId(warehouseBatchDto.getWarehouseDao().getId(),
                             warehouseBatchDto.getBatchDao().getId());
-
-            log.info("warehouseBatchDto.getWarehouseDao().getId(): " + warehouseBatchDto.getWarehouseDao().getId());
-            log.info("warehouseBatchDto.getBatchDao().getId(): " + warehouseBatchDto.getBatchDao().getId());
 
             if (warehouseBatchDaoOptional.isPresent() && !warehouseBatchDaoOptional.get().getId().equals(warehouseBatchDto.getId())) {
                 log.info("Warehouse-Batch already exist");
@@ -183,8 +148,6 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
         try {
             log.info("Searching for Warehouse-Batch");
             Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
-
-            log.info("keyword: " + keyword.toLowerCase());
 
             Page<WarehouseBatchDao> warehouseBatchDaoPage = warehouseBatchRepository.searchWarehouseBatchDaoByKeyword(keyword.toLowerCase(), pageable);
 

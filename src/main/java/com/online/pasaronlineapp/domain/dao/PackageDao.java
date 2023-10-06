@@ -1,5 +1,6 @@
 package com.online.pasaronlineapp.domain.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 import org.hibernate.annotations.Type;
@@ -35,7 +36,8 @@ public class PackageDao extends BaseDao {
     @Column(name = "package_image", columnDefinition = "BYTEA")
     private byte[] packageImage;
 
-    @OneToMany(mappedBy = "packages", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "packages", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
+    @JsonIgnore
     private List<PackageItemDao> packageItemDaos;
 }

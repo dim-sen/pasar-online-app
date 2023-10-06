@@ -1,6 +1,5 @@
 package com.online.pasaronlineapp.controller;
 
-import com.online.pasaronlineapp.domain.dao.BatchDao;
 import com.online.pasaronlineapp.domain.dao.WarehouseBatchDao;
 import com.online.pasaronlineapp.domain.dto.BatchDto;
 import com.online.pasaronlineapp.domain.dto.WarehouseBatchDto;
@@ -10,7 +9,6 @@ import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.service.impl.BatchServiceImpl;
 import com.online.pasaronlineapp.service.impl.WarehouseBatchServiceImpl;
 import com.online.pasaronlineapp.service.impl.WarehouseServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -21,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
 import java.util.List;
 
-@Slf4j
 @Controller
 public class WarehouseBatchController {
 

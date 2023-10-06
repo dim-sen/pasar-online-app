@@ -17,7 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -73,6 +75,35 @@ public class ItemServiceImpl implements ItemService {
             return optionalItemDao.get();
         } catch (Exception e) {
             log.error("An error occurred in finding an item by id. Error {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    @Override
+    public List<ItemDto> getAllItems() {
+        try {
+            log.info("Getting all items");
+            List<ItemDao> itemDaoList = itemRepository.findAll();
+            List<ItemDto> itemDtoList = new ArrayList<>();
+
+            String itemImageString;
+
+            for (ItemDao itemDao : itemDaoList) {
+                itemImageString = Base64.getEncoder().encodeToString(itemDao.getItemImage());
+                itemDtoList.add(ItemDto.builder()
+                                .id(itemDao.getId())
+                                .itemName(itemDao.getItemName())
+                                .itemPrice(itemDao.getItemPrice())
+                                .itemWeight(itemDao.getItemWeight())
+                                .itemStock(itemDao.getItemStock())
+                                .itemDescription(itemDao.getItemDescription())
+                                .categoryDao(itemDao.getCategoryDao())
+                                .itemImage(itemImageString)
+                        .build());
+            }
+            return itemDtoList;
+        } catch (Exception e) {
+            log.error("An error occurred in getting all items. Error {}", e.getMessage());
             throw e;
         }
     }

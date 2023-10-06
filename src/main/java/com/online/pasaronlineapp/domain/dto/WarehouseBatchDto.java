@@ -25,7 +25,7 @@ public class WarehouseBatchDto {
 
     private BatchDao batchDao;
 
-    @JsonBackReference
+    @JsonIgnore
     private List<BatchDao> batchList;
 
     @JsonIgnore

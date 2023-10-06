@@ -1,5 +1,6 @@
 package com.online.pasaronlineapp.domain.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 import org.hibernate.annotations.Type;
@@ -43,8 +44,9 @@ public class ItemDao extends BaseDao {
     @ToString.Exclude
     private CategoryDao categoryDao;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "item", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
+    @JsonIgnore
     private List<PackageItemDao> packageItemDaos;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)

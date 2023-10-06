@@ -17,9 +17,6 @@ public interface BatchRepository extends BaseRepository<BatchDao> {
     @Query("select b from BatchDao b where b.batchTime = :batch")
     Optional<BatchDao> findBatchDaoByBatchTime(@Param("batch") LocalTime batch);
 
-    @Query("select b from BatchDao b where b.id = :id")
-    BatchDao findAllById(@Param(value = "id") Long id);
-
     @Query("select b from BatchDao b")
     Page<BatchDao> pageableBatch(Pageable pageable);
 
