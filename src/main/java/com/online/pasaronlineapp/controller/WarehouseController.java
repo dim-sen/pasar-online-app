@@ -3,6 +3,7 @@ package com.online.pasaronlineapp.controller;
 import com.online.pasaronlineapp.domain.dao.WarehouseDao;
 import com.online.pasaronlineapp.domain.dto.WarehouseDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
+import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.service.impl.WarehouseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -92,6 +93,8 @@ public class WarehouseController {
         try {
             warehouseService.inactivateWarehouseById(id);
             redirectAttributes.addFlashAttribute("SUCCESS", "Warehouse Changed Successfully");
+        } catch (DataNotFoundException e) {
+            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("Failed", "Warehouse Failed to Change");
         }

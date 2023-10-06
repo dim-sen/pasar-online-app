@@ -5,18 +5,13 @@
 
 <body>
 <div class="container-xxl position-relative bg-white d-flex p-0">
-    <!-- Spinner Start -->
     <div th:replace="fragments :: spinner"></div>
 
-    <!-- Sidebar Start -->
     <div th:replace="fragments :: sidebar"></div>
 
-    <!-- Content Start -->
     <div class="content">
-        <!-- Navbar Start -->
         <nav th:replace="fragments :: navbar"></nav>
 
-        <!-- Table Start -->
         <div class="container-fluid pt-4 px-4">
             <div class="row g-4">
                 <div class="col-12">
@@ -112,9 +107,7 @@
                 </div>
             </div>
         </div>
-        <!-- Table End -->
 
-        <!-- Modal for Add Warehouse-Batch -->
         <div class="modal fade" id="addWarehouseBatchModal" tabindex="-1" aria-labelledby="addWarehouseBatchModalLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -125,7 +118,7 @@
                     </div>
                     <div class="modal-body">
                         <form th:action="@{/save-warehouse-batch}" th:object="${warehouseBatchDto}" method="post"
-                              enctype="multipart/form-data">
+                              >
                             <div class="mb-3">
                                 <label for="addWarehouseBatchModal_warehouseBatchWarehouse"
                                        class="form-label">Warehouse</label>
@@ -222,12 +215,9 @@
             </div>
         </div>
 
-        <!-- Footer Start -->
         <div th:replace="fragments :: footer"></div>
     </div>
-    <!-- Content End -->
 
-    <!-- Back to Top -->
     <a th:replace="fragments :: top"></a>
 
 </div>

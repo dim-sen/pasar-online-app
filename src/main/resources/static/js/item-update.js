@@ -13,10 +13,6 @@ $(document).ready(function () {
                 });
 
             } else {
-                console.log("itemDto: " + itemDto)
-                console.log("itemDto.categoryDao: " + itemDto.categoryDao)
-                console.log("itemDto.categoryDao.id: " + itemDto.categoryDao.id)
-                console.log("itemDto.categoryDao.categoryName: " + itemDto.categoryDao.categoryName)
                 $('#editItemModal_itemId').val(itemDto.id);
                 $('#editItemModal_itemName').val(itemDto.itemName);
                 $('#editItemModal_itemPrice').val(itemDto.itemPrice);

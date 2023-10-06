@@ -5,18 +5,13 @@
 
 <body>
 <div class="container-xxl position-relative bg-white d-flex p-0">
-  <!-- Spinner Start -->
   <div th:replace="fragments :: spinner"></div>
 
-  <!-- Sidebar Start -->
   <div th:replace="fragments :: sidebar"></div>
 
-  <!-- Content Start -->
   <div class="content">
-    <!-- Navbar Start -->
     <nav th:replace="fragments :: navbar"></nav>
 
-    <!-- Table Start -->
     <div class="container-fluid pt-4 px-4">
       <div class="row g-4">
         <div class="col-12">
@@ -111,9 +106,7 @@
         </div>
       </div>
     </div>
-    <!-- Table End -->
 
-    <!-- Modal for Add Category -->
     <div class="modal fade" id="addBatchModal" tabindex="-1" aria-labelledby="addBatchModalLabel"
          aria-hidden="true">
       <div class="modal-dialog modal-lg">
@@ -140,7 +133,6 @@
       </div>
     </div>
 
-    <!-- Modal for Update Item -->
     <div class="modal fade" id="updateBatchModal" tabindex="-1" role="dialog" aria-labelledby="updateBatchModalLabel"
          aria-hidden="true">
       <div class="modal-dialog" style="max-width: 50%;" role="document">
@@ -153,7 +145,7 @@
           </div>
           <div class="modal-body">
             <form th:action="@{'/update-batch/' + ${batchDto.id}}" th:object="${batchDto}"
-                  enctype="multipart/form-data" method="post">
+                  method="post">
               <input type="hidden" id="batchId" name="id" th:value="${batchDto.id}"/>
               <div class="mb-3">
                 <label for="editBatchModal_batchId" class="col-sm-2 col-form-label">Batch Id</label>
@@ -181,12 +173,9 @@
       </div>
     </div>
 
-    <!-- Footer Start -->
     <div th:replace="fragments :: footer"></div>
   </div>
-  <!-- Content End -->
 
-  <!-- Back to Top -->
   <a th:replace="fragments :: top"></a>
 
 </div>

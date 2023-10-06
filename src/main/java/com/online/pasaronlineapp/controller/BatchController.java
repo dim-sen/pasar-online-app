@@ -3,6 +3,7 @@ package com.online.pasaronlineapp.controller;
 import com.online.pasaronlineapp.domain.dao.BatchDao;
 import com.online.pasaronlineapp.domain.dto.BatchDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
+import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.service.impl.BatchServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -93,6 +94,8 @@ public class BatchController {
         try {
             batchService.inactivateBatchById(id);
             redirectAttributes.addFlashAttribute("SUCCESS", "Batch Changed Successfully");
+        } catch (DataNotFoundException e) {
+            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("FAILED", "Batch Failed to Change");
         }

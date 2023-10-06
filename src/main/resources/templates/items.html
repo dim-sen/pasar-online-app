@@ -5,18 +5,13 @@
 
 <body>
 <div class="container-xxl position-relative bg-white d-flex p-0">
-    <!-- Spinner Start -->
     <div th:replace="fragments :: spinner"></div>
 
-    <!-- Sidebar Start -->
     <div th:replace="fragments :: sidebar"></div>
 
-    <!-- Content Start -->
     <div class="content">
-        <!-- Navbar Start -->
         <nav th:replace="fragments :: navbar"></nav>
 
-        <!-- Table Start -->
         <div class="container-fluid pt-4 px-4">
             <div class="row g-4">
                 <div class="col-12">
@@ -122,9 +117,7 @@
                 </div>
             </div>
         </div>
-        <!-- Table End -->
 
-        <!-- Modal for Add Item -->
         <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -201,7 +194,6 @@
             </div>
         </div>
 
-        <!-- Modal for Update Item -->
         <div class="modal fade" id="updateItemModal" tabindex="-1" role="dialog" aria-labelledby="updateItemModalLabel"
              aria-hidden="true">
             <div class="modal-dialog" style="max-width: 50%;" role="document">
@@ -300,12 +292,9 @@
             </div>
         </div>
 
-        <!-- Footer Start -->
         <div th:replace="fragments :: footer"></div>
     </div>
-    <!-- Content End -->
 
-    <!-- Back to Top -->
     <a th:replace="fragments :: top"></a>
 
 </div>

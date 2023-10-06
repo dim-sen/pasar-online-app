@@ -33,7 +33,7 @@ public class PackageDao extends BaseDao {
 
     @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "package_image", columnDefinition = "BYTEA")
-    private String packageImage;
+    private byte[] packageImage;
 
     @OneToMany(mappedBy = "packages", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @ToString.Exclude

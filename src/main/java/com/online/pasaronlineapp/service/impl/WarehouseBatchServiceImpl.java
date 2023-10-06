@@ -166,11 +166,6 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
 
             Page<WarehouseBatchDao> warehouseBatchDaoPage = warehouseBatchRepository.pageableWarehouseBatch(pageable);
 
-            for (WarehouseBatchDao warehouseBatchDao : warehouseBatchDaoPage.getContent()) {
-                log.info("warehouseName1: " + warehouseBatchDao.getWarehouse().getWarehouseName());
-                log.info("batchTime1: " + warehouseBatchDao.getBatch().getBatchTime());
-            }
-
             return warehouseBatchDaoPage.<WarehouseBatchDto>map(warehouseBatchDao -> WarehouseBatchDto.builder()
                     .id(warehouseBatchDao.getId())
                     .warehouseDao(warehouseBatchDao.getWarehouse())
@@ -192,11 +187,6 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
             log.info("keyword: " + keyword.toLowerCase());
 
             Page<WarehouseBatchDao> warehouseBatchDaoPage = warehouseBatchRepository.searchWarehouseBatchDaoByKeyword(keyword.toLowerCase(), pageable);
-
-            for (WarehouseBatchDao warehouseBatchDao : warehouseBatchDaoPage.getContent()) {
-                log.info("warehouseName2: " + warehouseBatchDao.getWarehouse().getWarehouseName());
-                log.info("batchTime2: " + warehouseBatchDao.getBatch().getBatchTime());
-            }
 
             return warehouseBatchDaoPage.<WarehouseBatchDto>map(warehouseBatchDao -> WarehouseBatchDto.builder()
                     .id(warehouseBatchDao.getId())
