@@ -82,7 +82,7 @@ public class ItemRestServiceImpl implements ItemRestService {
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, itemDtoList, HttpStatus.OK);
 
         } catch (Exception e) {
-            log.info("An error occurred in getting all items. Error {}", e.getMessage());
+            log.error("An error occurred in getting all items. Error {}", e.getMessage());
             return ResponseUtil.build(AppConstant.ResponseCode.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
