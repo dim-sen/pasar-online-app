@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head th:replace="fragments :: header"></head>
+
+<body>
+<div class="container-xxl position-relative bg-white d-flex p-0">
+    <div th:replace="fragments :: spinner"></div>
+
+    <div th:replace="fragments :: sidebar"></div>
+
+    <div class="content">
+        <nav th:replace="fragments :: navbar"></nav>
+
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="mb-4">Package</h3>
+                            <form method="get" th:action="@{/search-package/0}" class="d-flex">
+                                <label for="search-package"></label>
+                                <input id="search-package" name="keyword" placeholder="Search here" type="text"
+                                       class="form-control">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </form>
+                        </div>
+                        <div class="table-responsive">
+                            <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
+                                    data-bs-target="#addPackageModal">Add New Package</button>
+                            <div th:if="${packages.isEmpty() && param.keyword == null}">
+                                <div class="alert alert-warning">
+                                    <p>There is no Package</p>
+                                </div>
+                            </div>
+                            <div class="text-center alert alert-success" th:if="${SUCCESS}">
+                                <p th:text="${SUCCESS}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${FAILED}">
+                                <p th:text="${FAILED}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${ALREADY_EXIST}">
+                                <p th:text="${ALREADY_EXIST}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${NOT_FOUND}">
+                                <p th:text="${NOT_FOUND}"></p>
+                            </div>
+                            <div th:if="${packages.isEmpty() && param.keyword != null && param.keyword != ''}">
+                                <div class="text-center alert alert-warning">
+                                    <p>No results found for "<span th:text="${param.keyword}"></span>".</p>
+                                </div>
+                            </div>
+                            <div class="text-center alert alert-danger d-none" id="packageNotFoundAlert">
+                                <p>Package not found</p>
+                            </div>
+                            <table class="table" th:if="${!packages.isEmpty()}">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Package Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Weight</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="packageDto : ${packages}">
+                                    <th scope="row" th:text="${packageDto.id}"></th>
+                                    <td th:text="${packageDto.packageName}"></td>
+                                    <td th:text="${'Rp' + packageDto.packagePrice}"></td>
+                                    <td th:text="${packageDto.packageWeight + ' gram'}"></td>
+                                    <td th:text="${packageDto.packageDescription}"></td>
+                                    <td>
+                                        <img th:src="'data:image/jpeg;base64,' + ${packageDto.packageImage}"
+                                             style="height: 50px; width: 50px;">
+                                    </td>
+                                    <td>
+                                        <a th:if="${packageDto.isActive == true}"
+                                           class="btn btn-primary update-package-button" data-bs-toggle="modal"
+                                           data-bs-target="#updatePackageModal" th:data-package-id="${packageDto.id}">Update</a>
+                                        <a th:if="${packageDto.isActive == true}" class="btn btn-danger"
+                                           th:href="@{/inactive-package/{id} (id = ${packageDto.id})}">Inactive</a>
+                                        <a th:if="${packageDto.isActive == false}" class="btn btn-success"
+                                           th:href="@{/inactive-package/{id} (id = ${packageDto.id})}">Active</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
+                                <ul class="pagination">
+                                    <li class="page-item" th:if="${currentPage != 0}">
+                                        <a class="page-link" th:href="@{'/packages/' + ${currentPage - 1}}">Previous</a>
+                                    </li>
+                                    <li class="page-item"
+                                        th:classappend="${currentPage == 0 ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/packages/' + 0}"><span>1</span></a>
+                                    </li>
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 1)}"
+                                        th:classappend="${currentPage == i ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/packages/' + ${i}}"><span
+                                                th:text="${i + 1}"></span></a>
+                                    </li>
+                                    <li class="page-item" th:if="${currentPage + 1 != totalPages}">
+                                        <a class="page-link" th:href="@{'/packages/' + ${currentPage + 1}}">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addPackageModal" tabindex="-1" aria-labelledby="addPackageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addPackageModalLabel">Add Item</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/save-package}" th:object="${packageDto}" method="post"
+                              enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="addPackageModal_packageName" class="col-sm-2 col-form-label">Package Name</label>
+                                <div class="col-sm">
+                                    <input th:field="*{packageName}" type="text" class="form-control"
+                                           id="addPackageModal_packageName" required minlength="3"
+                                           maxlength="255" pattern="[a-zA-Z\s]+">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addPackageModal_packagePrice" class="col-sm-2 col-form-label">Package Price</label>
+                                <div class="col-sm">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input th:field="*{packagePrice}" type="number" class="form-control"
+                                               id="addPackageModal_packagePrice" min="1" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addPackageModal_packageWeight" class="col-sm-2 col-form-label">Package Weight</label>
+                                <div class="col-sm">
+                                    <div class="input-group">
+                                        <input th:field="*{packageWeight}" type="number" class="form-control"
+                                               id="addPackageModal_packageWeight" min="1" required>
+                                        <span class="input-group-text">gram</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addPackageModal_packageDescription" class="form-label">Package Description</label>
+                                <textarea class="form-control" id="addPackageModal_packageDescription"
+                                          th:field="*{packageDescription}" maxlength="255" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Afile" class="form-label">Package Image (JPEG or PNG)</label>
+                                <input class="form-control" type="file" id="Afile" name="file"
+                                       accept=".jpg, .jpeg, .png" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="updatePackageModal" tabindex="-1" role="dialog" aria-labelledby="updatePackageModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" style="max-width: 50%;" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updatePackageModalLabel">Update Package</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{'/update-package/' + ${packageDto.id}}" th:object="${packageDto}"
+                              enctype="multipart/form-data" method="post">
+                            <input type="hidden" id="packageId" name="id" th:value="${packageDto.id}"/>
+                            <div class="mb-3">
+                                <label for="editPackageModal_packageId" class="col-sm-2 col-form-label">Package Id</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control" id="editPackageModal_packageId"
+                                           name="editPackageModal_packageId" th:field="*{id}" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPackageModal_packageName" class="col-sm-2 col-form-label">Package Name</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control" id="editPackageModal_packageName"
+                                           name="editPackageModal_packageName" th:field="*{packageName}" required minlength="3"
+                                           maxlength="255" pattern="[a-zA-Z\s]+" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPackageModal_packagePrice" class="col-sm-2 col-form-label">Package Price</label>
+                                <div class="col-sm">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="number" class="form-control" id="editPackageModal_packagePrice"
+                                               name="editPackageModal_packagePrice" th:field="*{packagePrice}" min="1" required
+                                               disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPackageModal_packageWeight" class="col-sm-2 col-form-label">Package
+                                    Weight</label>
+                                <div class="col-sm">
+                                    <div class="input-group">
+                                        <input name="editPackageModal_packageWeight" th:field="*{packageWeight}" type="number"
+                                               class="form-control"
+                                               id="editPackageModal_packageWeight" min="1" required disabled>
+                                        <span class="input-group-text">gram</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPackageModal_packageDescription" class="form-label">Package Description</label>
+                                <textarea class="form-control" id="editPackageModal_packageDescription"
+                                          name="editPackageModal_packageDescription" th:field="*{packageDescription}" required
+                                          disabled></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="file" class="form-label">Package Image (JPEG or PNG)</label>
+                                <div class="d-flex align-items-center">
+                                    <img id="editPackageModal_packageImage" style="height: 100px; width: 100px;" class="mr-2">
+                                    <hr class="flex-grow-1 mx-2">
+                                    <input class="form-control" type="file" id="file" name="file"
+                                           accept=".jpg, .jpeg, .png" disabled>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
+                                <button type="submit" class="btn btn-primary" id="updatePackageButton" disabled>Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="fragments :: footer"></div>
+    </div>
+
+    <a th:replace="fragments :: top"></a>
+
+</div>
+
+<div th:replace="fragments :: script"></div>
+
+<script th:src="@{/js/package-update.js}"></script>
+<script th:src="@{/js/package-btn.js}"></script>
+
+</body>
+
+</html>

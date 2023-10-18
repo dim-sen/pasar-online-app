@@ -1,5 +1,6 @@
 package com.online.pasaronlineapp.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -8,10 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
@@ -23,16 +20,12 @@ public class ItemDto {
 
     private Long id;
 
-    @Size(min = 3, message = "Invalid Item Name (min 3 characters)")
     private String itemName;
 
-    @Min(value = 1, message = "Invalid Item Price (> 0)")
     private Integer itemPrice;
 
-    @Min(value = 1, message = "Invalid Item Weight (> 0)")
     private Integer itemWeight;
 
-    @PositiveOrZero
     private Integer itemStock;
 
     private String itemDescription;
@@ -40,4 +33,7 @@ public class ItemDto {
     private String itemImage;
 
     private CategoryDao categoryDao;
+
+    @JsonIgnore
+    private Boolean isActive;
 }

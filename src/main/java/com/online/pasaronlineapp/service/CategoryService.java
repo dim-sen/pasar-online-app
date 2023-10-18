@@ -10,17 +10,17 @@ import java.util.List;
 @Service
 public interface CategoryService {
 
-    CategoryDao createCategory(CategoryDto categoryDto);
+    void createCategory(CategoryDto categoryDto);
 
-    CategoryDto getCategoryById(Long id);
+    CategoryDao findCategoryById(Long id);
 
     List<CategoryDto> getAllCategories();
 
-    CategoryDao updateCategoryById(CategoryDto categoryDto);
+    void updateCategory(CategoryDto categoryDto);
 
-    void deleteCategoryById(Long id);
+    void inactivateCategoryById(Long id);
 
-    Page<CategoryDao> caategoryPage(Integer pageNumber);
+    Page<CategoryDto> categoryPage(Integer pageNumber);
 
-    Page<CategoryDao> searchCategory(Integer pageNumber, String keyword);
+    Page<CategoryDto> searchCategory(String keyword, Integer pageNumber);
 }

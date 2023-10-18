@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head th:replace="fragments :: header"></head>
+
+<body>
+<div class="container-xxl position-relative bg-white d-flex p-0">
+    <div th:replace="fragments :: spinner"></div>
+
+    <div th:replace="fragments :: sidebar"></div>
+
+    <div class="content">
+        <nav th:replace="fragments :: navbar"></nav>
+
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="mb-4">Package-Item</h3>
+                            <form method="get" th:action="@{/search-package-item/0}" class="d-flex">
+                                <label for="search-package-item"></label>
+                                <input id="search-package-item" name="keyword" placeholder="Search here" type="text"
+                                       class="form-control">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </form>
+                        </div>
+                        <div class="table-responsive">
+                            <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
+                                    data-bs-target="#addPackageItemModal">Add New Package-Item
+                            </button>
+                            <div th:if="${packageItem.isEmpty() && param.keyword == null}">
+                                <div class="alert alert-warning">
+                                    <p>There is no Package-Item</p>
+                                </div>
+                            </div>
+                            <div class="text-center alert alert-success" th:if="${SUCCESS}">
+                                <p th:text="${SUCCESS}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${FAILED}">
+                                <p th:text="${FAILED}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${ALREADY_EXIST}">
+                                <p th:text="${ALREADY_EXIST}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${NOT_FOUND}">
+                                <p th:text="${NOT_FOUND}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${INACTIVE}">
+                                <p th:text="${INACTIVE}"></p>
+                            </div>
+                            <div th:if="${packageItem.isEmpty() && param.keyword != null && param.keyword != ''}">
+                                <div class="text-center alert alert-warning">
+                                    <p>No results found for "<span th:text="${param.keyword}"></span>".</p>
+                                </div>
+                            </div>
+                            <div class="text-center alert alert-danger d-none" id="packageItemNotFoundAlert">
+                                <p>Package-Item not found</p>
+                            </div>
+                            <table class="table" th:if="${!packageItem.isEmpty()}">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Package</th>
+                                    <th scope="col">Item</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="packageItemDto : ${packageItem}">
+                                    <th scope="row" th:text="${packageItemDto.id}"></th>
+                                    <td th:text="${packageItemDto.getPackageDao.packageName}"></td>
+                                    <td th:text="${packageItemDto.getItemDao.itemName}"></td>
+                                    <td>
+                                        <a th:if="${packageItemDto.isActive == true}"
+                                           class="btn btn-primary update-package-item-button" data-bs-toggle="modal"
+                                           data-bs-target="#updatePackageItemModal"
+                                           th:data-pi-id="${packageItemDto.id}">Update</a>
+                                        <a th:if="${packageItemDto.isActive == true}" class="btn btn-danger"
+                                           th:href="@{/inactive-package-item/{id} (id = ${packageItemDto.id})}">Inactive</a>
+                                        <a th:if="${packageItemDto.isActive == false}" class="btn btn-success"
+                                           th:href="@{/inactive-package-item/{id} (id = ${packageItemDto.id})}">Active</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
+                                <ul class="pagination">
+                                    <li class="page-item" th:if="${currentPage != 0}">
+                                        <a class="page-link" th:href="@{'/package-item/' + ${currentPage - 1}}">Previous</a>
+                                    </li>
+                                    <li class="page-item"
+                                        th:classappend="${currentPage == 0 ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/package-item/' + 0}"><span>1</span></a>
+                                    </li>
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 1)}"
+                                        th:classappend="${currentPage == i ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/package-item/' + ${i}}"><span
+                                                th:text="${i + 1}"></span></a>
+                                    </li>
+                                    <li class="page-item" th:if="${currentPage + 1 != totalPages}">
+                                        <a class="page-link"
+                                           th:href="@{'/package-item/' + ${currentPage + 1}}">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addPackageItemModal" tabindex="-1" aria-labelledby="addPackageItemModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addPackageItemModalLabel">Add Package-Item</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/save-package-item}" th:object="${packageItemDto}" method="post">
+                            <div class="mb-3">
+                                <label for="addPackageItemModal_packageItemPackages"
+                                       class="form-label">Warehouse</label>
+                                <select class="form-select" id="addPackageItemModal_packageItemPackages"
+                                        th:field="*{packageDao}" required>
+                                    <option value="" disabled selected>Select Package</option>
+                                    <option th:each="package : ${packages}"
+                                            th:text="${package.packageName}"
+                                            th:value="${package.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addPackageItemModal_packageItemItem" class="form-label">Batch</label>
+                                <select class="form-select" id="addPackageItemModal_packageItemItem"
+                                        name="itemIds" th:field="*{itemDaoList}" multiple="multiple"
+                                        required>
+                                    <option value="" disabled selected>Select Item</option>
+                                    <option th:each="item : ${items}"
+                                            th:text="${item.itemName}"
+                                            th:value="${item.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="updatePackageItemModal" tabindex="-1" role="dialog"
+             aria-labelledby="updatePackageItemModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" style="max-width: 50%;" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updatePackageItemModalLabel">Update Package-Item</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{'/update-package-item/' + ${packageItemDto.id}}"
+                              th:object="${packageItemDto}"
+                              enctype="multipart/form-data" method="post">
+                            <input type="hidden" id="piId" name="id" th:value="${packageItemDto.id}"/>
+                            <div class="mb-3">
+                                <label for="editPackageItemModal_packageItemId" class="col-sm-2 col-form-label">
+                                    Warehouse Id</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control" id="editPackageItemModal_packageItemId"
+                                           name="editPackageItemModal_packageItemId" th:field="*{id}" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPackageItemModal_packageItemPackages" class="form-label">Package</label>
+                                <select class="form-select" id="editPackageItemModal_packageItemPackages"
+                                        name="editPackageItemModal_packageItemPackages" th:field="*{packageDao}"
+                                        required disabled>
+                                    <option value="" disabled selected>Select Package</option>
+                                    <option th:each="package : ${packages}"
+                                            th:text="${package.packageName}"
+                                            th:value="${package.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPackageItemModal_packageItemItem" class="form-label">Item</label>
+                                <select class="form-select" id="editPackageItemModal_packageItemItem"
+                                        name="editPackageItemModal_packageItemItem" th:field="*{itemDao}" required
+                                        disabled>
+                                    <option value="" disabled selected>Select Batch</option>
+                                    <option th:each="item : ${items}"
+                                            th:text="${item.itemName}"
+                                            th:value="${item.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
+                                <button type="submit" class="btn btn-primary" id="updatePackageItemButton" disabled>
+                                    Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="fragments :: footer"></div>
+    </div>
+
+    <a th:replace="fragments :: top"></a>
+
+</div>
+
+<div th:replace="fragments :: script"></div>
+
+<script th:src="@{/js/package-item-update.js}"></script>
+<script th:src="@{/js/package-item-btn.js}"></script>
+<script>
+    $(document).ready(function() {
+        $('#addPackageItemModal_packageItemItem').select2({
+            width: '100%',
+        });
+    });
+</script>
+</body>
+
+</html>

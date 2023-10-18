@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head th:replace="fragments :: header"></head>
+
+<body>
+<div class="container-xxl position-relative bg-white d-flex p-0">
+    <div th:replace="fragments :: spinner"></div>
+
+    <div th:replace="fragments :: sidebar"></div>
+
+    <div class="content">
+        <nav th:replace="fragments :: navbar"></nav>
+
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="mb-4">Warehouse-Batch</h3>
+                            <form method="get" th:action="@{/search-warehouse-batch/0}" class="d-flex">
+                                <label for="search-warehouse-batch"></label>
+                                <input id="search-warehouse-batch" name="keyword" placeholder="Search here" type="text"
+                                       class="form-control">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </form>
+                        </div>
+                        <div class="table-responsive">
+                            <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
+                                    data-bs-target="#addWarehouseBatchModal">Add New Warehouse-Batch
+                            </button>
+                            <div th:if="${warehouseBatch.isEmpty() && param.keyword == null}">
+                                <div class="alert alert-warning">
+                                    <p>There is no Warehouse-Batch</p>
+                                </div>
+                            </div>
+                            <div class="text-center alert alert-success" th:if="${SUCCESS}">
+                                <p th:text="${SUCCESS}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${FAILED}">
+                                <p th:text="${FAILED}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${ALREADY_EXIST}">
+                                <p th:text="${ALREADY_EXIST}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${NOT_FOUND}">
+                                <p th:text="${NOT_FOUND}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${INACTIVE}">
+                                <p th:text="${INACTIVE}"></p>
+                            </div>
+                            <div th:if="${warehouseBatch.isEmpty() && param.keyword != null && param.keyword != ''}">
+                                <div class="text-center alert alert-warning">
+                                    <p>No results found for "<span th:text="${param.keyword}"></span>".</p>
+                                </div>
+                            </div>
+                            <div class="text-center alert alert-danger d-none" id="warehouseBatchNotFoundAlert">
+                                <p>Warehouse-Batch not found</p>
+                            </div>
+                            <table class="table" th:if="${!warehouseBatch.isEmpty()}">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Warehouse</th>
+                                    <th scope="col">Batch</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="warehouseBatchDto : ${warehouseBatch}">
+                                    <th scope="row" th:text="${warehouseBatchDto.id}"></th>
+                                    <td th:text="${warehouseBatchDto.warehouseDao.warehouseName}"></td>
+                                    <td th:text="${warehouseBatchDto.batchDao.batchTime}"></td>
+                                    <td>
+                                        <a th:if="${warehouseBatchDto.isActive == true}"
+                                           class="btn btn-primary update-warehouse-batch-button" data-bs-toggle="modal"
+                                           data-bs-target="#updateWarehouseBatchModal"
+                                           th:data-wb-id="${warehouseBatchDto.id}">Update</a>
+                                        <a th:if="${warehouseBatchDto.isActive == true}" class="btn btn-danger"
+                                           th:href="@{/inactive-warehouse-batch/{id} (id = ${warehouseBatchDto.id})}">Inactive</a>
+                                        <a th:if="${warehouseBatchDto.isActive == false}" class="btn btn-success"
+                                           th:href="@{/inactive-warehouse-batch/{id} (id = ${warehouseBatchDto.id})}">Active</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
+                                <ul class="pagination">
+                                    <li class="page-item" th:if="${currentPage != 0}">
+                                        <a class="page-link" th:href="@{'/warehouse-batch/' + ${currentPage - 1}}">Previous</a>
+                                    </li>
+                                    <li class="page-item"
+                                        th:classappend="${currentPage == 0 ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/warehouse-batch/' + 0}"><span>1</span></a>
+                                    </li>
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 1)}"
+                                        th:classappend="${currentPage == i ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/warehouse-batch/' + ${i}}"><span
+                                                th:text="${i + 1}"></span></a>
+                                    </li>
+                                    <li class="page-item" th:if="${currentPage + 1 != totalPages}">
+                                        <a class="page-link"
+                                           th:href="@{'/warehouse-batch/' + ${currentPage + 1}}">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addWarehouseBatchModal" tabindex="-1" aria-labelledby="addWarehouseBatchModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addWarehouseBatchModalLabel">Add Warehouse-Batch</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/save-warehouse-batch}" th:object="${warehouseBatchDto}" method="post"
+                              >
+                            <div class="mb-3">
+                                <label for="addWarehouseBatchModal_warehouseBatchWarehouse"
+                                       class="form-label">Warehouse</label>
+                                <select class="form-select" id="addWarehouseBatchModal_warehouseBatchWarehouse"
+                                        th:field="*{warehouseDao}" required>
+                                    <option value="" disabled selected>Select Warehouse</option>
+                                    <option th:each="warehouse : ${warehouses}"
+                                            th:text="${warehouse.warehouseName}"
+                                            th:value="${warehouse.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addWarehouseBatchModal_warehouseBatchBatch" class="form-label">Batch</label>
+                                <select class="form-select" id="addWarehouseBatchModal_warehouseBatchBatch"
+                                        name="batchIds" th:field="*{batchList}" multiple="multiple"
+                                        required>
+                                    <option value="" disabled selected>Select Batch</option>
+                                    <option th:each="batch : ${batches}"
+                                            th:text="${batch.batchTime}"
+                                            th:value="${batch.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="updateWarehouseBatchModal" tabindex="-1" role="dialog"
+             aria-labelledby="updateWarehouseBatchModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" style="max-width: 50%;" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateWarehouseBatchModalLabel">Update Warehouse-Batch</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{'/update-warehouse-batch/' + ${warehouseBatchDto.id}}"
+                              th:object="${warehouseBatchDto}"
+                              enctype="multipart/form-data" method="post">
+                            <input type="hidden" id="wbId" name="id" th:value="${warehouseBatchDto.id}"/>
+                            <div class="mb-3">
+                                <label for="editWarehouseBatchModal_warehouseBatchId" class="col-sm-2 col-form-label">
+                                    Warehouse Id</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control" id="editWarehouseBatchModal_warehouseBatchId"
+                                           name="editWarehouseBatchModal_warehouseBatchId" th:field="*{id}" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editWarehouseBatchModal_warehouseBatchWarehouse" class="form-label">Warehouse</label>
+                                <select class="form-select" id="editWarehouseBatchModal_warehouseBatchWarehouse"
+                                        name="editWarehouseBatchModal_warehouseBatchWarehouse" th:field="*{warehouseDao}"
+                                        required disabled>
+                                    <option value="" disabled selected>Select Warehouse</option>
+                                    <option th:each="warehouse : ${warehouses}"
+                                            th:text="${warehouse.warehouseName}"
+                                            th:value="${warehouse.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editWarehouseBatchModal_warehouseBatchBatch"
+                                       class="form-label">Batch</label>
+                                <select class="form-select" id="editWarehouseBatchModal_warehouseBatchBatch"
+                                        name="editWarehouseBatchModal_warehouseBatchBatch" th:field="*{batchDao}" required
+                                        disabled>
+                                    <option value="" disabled selected>Select Batch</option>
+                                    <option th:each="batch : ${batches}"
+                                            th:text="${batch.batchTime}"
+                                            th:value="${batch.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
+                                <button type="submit" class="btn btn-primary" id="updateWarehouseBatchButton" disabled>
+                                    Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="fragments :: footer"></div>
+    </div>
+
+    <a th:replace="fragments :: top"></a>
+
+</div>
+
+<div th:replace="fragments :: script"></div>
+
+<script th:src="@{/js/warehouse-batch-update.js}"></script>
+<script th:src="@{/js/warehouse-batch-btn.js}"></script>
+<script>
+    $(document).ready(function() {
+        $('#addWarehouseBatchModal_warehouseBatchBatch').select2({
+            width: '100%',
+        });
+    });
+</script>
+</body>
+
+</html>

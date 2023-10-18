@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+
+<head th:replace="fragments :: header"></head>
+
+<body>
+<div class="container-xxl position-relative bg-white d-flex p-0">
+    <div th:replace="fragments :: spinner"></div>
+
+    <div th:replace="fragments :: sidebar"></div>
+
+    <div class="content">
+        <nav th:replace="fragments :: navbar"></nav>
+
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="bg-light rounded h-100 p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="mb-4">Warehouse</h3>
+                            <form method="get" th:action="@{/search-warehouse/0}" class="d-flex">
+                                <label for="search_warehouse"></label>
+                                <input id="search_warehouse" name="keyword" placeholder="Search here" type="text"
+                                       class="form-control">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </form>
+                        </div>
+                        <div class="table-responsive">
+                            <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
+                                    data-bs-target="#addWarehouseModal">Add New Warehouse
+                            </button>
+                            <div th:if="${warehouses.isEmpty() && param.keyword == null}">
+                                <div class="alert alert-warning">
+                                    <p>There is no warehouse</p>
+                                </div>
+                            </div>
+                            <div class="text-center alert alert-success" th:if="${SUCCESS}">
+                                <p th:text="${SUCCESS}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${FAILED}">
+                                <p th:text="${FAILED}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${ALREADY_EXIST}">
+                                <p th:text="${ALREADY_EXIST}"></p>
+                            </div>
+                            <div class="text-center alert alert-danger" th:if="${NOT_FOUND}">
+                                <p th:text="${NOT_FOUND}"></p>
+                            </div>
+                            <div th:if="${warehouses.isEmpty() && param.keyword != null && param.keyword != ''}">
+                                <div class="text-center alert alert-warning">
+                                    <p>No results found for "<span th:text="${param.keyword}"></span>".</p>
+                                </div>
+                            </div>
+                            <div class="text-center alert alert-danger d-none" id="warehouseNotFoundAlert">
+                                <p>Warehouse not found</p>
+                            </div>
+                            <table class="table" th:if="${!warehouses.isEmpty()}">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Warehouse Name</th>
+                                    <th scope="col">Warehouse Address</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="warehouseDto : ${warehouses}">
+                                    <th scope="row" th:text="${warehouseDto.id}"></th>
+                                    <td th:text="${warehouseDto.warehouseName}"></td>
+                                    <td th:text="${warehouseDto.warehouseAddress}"></td>
+                                    <td>
+                                        <a th:if="${warehouseDto.isActive == true}"
+                                           class="btn btn-primary update-warehouse-button" data-bs-toggle="modal"
+                                           data-bs-target="#updateWarehouseModal"
+                                           th:data-warehouse-id="${warehouseDto.id}">Update</a>
+                                        <a th:if="${warehouseDto.isActive == true}" class="btn btn-danger"
+                                           th:href="@{/inactive-warehouse/{id} (id = ${warehouseDto.id})}">Inactive</a>
+                                        <a th:if="${warehouseDto.isActive == false}" class="btn btn-success"
+                                           th:href="@{/inactive-warehouse/{id} (id = ${warehouseDto.id})}">Active</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
+                                <ul class="pagination">
+                                    <li class="page-item" th:if="${currentPage != 0}">
+                                        <a class="page-link"
+                                           th:href="@{'/warehouses/' + ${currentPage - 1}}">Previous</a>
+                                    </li>
+                                    <li class="page-item"
+                                        th:classappend="${currentPage == 0 ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/warehouses/' + 0}"><span>1</span></a>
+                                    </li>
+                                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages - 1)}"
+                                        th:classappend="${currentPage == i ? 'active' : ''}">
+                                        <a class="page-link" th:href="@{'/warehouses/' + ${i}}"><span
+                                                th:text="${i + 1}"></span></a>
+                                    </li>
+                                    <li class="page-item" th:if="${currentPage + 1 != totalPages}">
+                                        <a class="page-link" th:href="@{'/warehouses/' + ${currentPage + 1}}">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addWarehouseModal" tabindex="-1" aria-labelledby="addWarehouseModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addWarehouseModalLabel">Add Warehouse</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/save-warehouse}" th:object="${warehouseDto}" method="post">
+                            <div class="mb-3">
+                                <label for="addWarehouseModal_warehouseName" class="col-sm-2 col-form-label">Warehouse
+                                    Name</label>
+                                <div class="col-sm">
+                                    <input th:field="*{warehouseName}" type="text" class="form-control"
+                                           id="addWarehouseModal_warehouseName" required minlength="3"
+                                           maxlength="255" pattern="[a-zA-Z\s]+">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addWarehouseModal_warehouseAddress" class="form-label">Warehouse
+                                    Address</label>
+                                <textarea class="form-control" id="addWarehouseModal_warehouseAddress"
+                                          th:field="*{warehouseAddress}" maxlength="255" required></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="updateWarehouseModal" tabindex="-1" role="dialog"
+             aria-labelledby="updateWarehouseModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" style="max-width: 50%;" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateWarehouseModalLabel">Update Warehouse</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{'/update-warehouse/' + ${warehouseDto.id}}" th:object="${warehouseDto}"
+                              method="post">
+                            <input type="hidden" id="warehouseId" name="id" th:value="${warehouseDto.id}"/>
+                            <div class="mb-3">
+                                <label for="editWarehouseModal_warehouseId" class="col-sm-2 col-form-label">Warehouse
+                                    Id</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control" id="editWarehouseModal_warehouseId"
+                                           name="editWarehouseModal_warehouseId" th:field="*{id}" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editWarehouseModal_warehouseName" class="col-sm-2 col-form-label">Warehouse
+                                    Name</label>
+                                <div class="col-sm">
+                                    <input type="text" class="form-control" id="editWarehouseModal_warehouseName"
+                                           name="editWarehouseModal_warehouseName" th:field="*{warehouseName}" required
+                                           minlength="3"
+                                           maxlength="255" pattern="[a-zA-Z\s]+" disabled>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editWarehouseModal_warehouseAddress" class="form-label">Warehouse
+                                    Address</label>
+                                <textarea class="form-control" id="editWarehouseModal_warehouseAddress"
+                                          name="editWarehouseModal_warehouseAddress" th:field="*{warehouseAddress}"
+                                          maxlength="255" required disabled></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
+                                <button type="submit" class="btn btn-primary" id="updateWarehouseButton" disabled>Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:replace="fragments :: footer"></div>
+    </div>
+
+    <a th:replace="fragments :: top"></a>
+
+</div>
+
+<div th:replace="fragments :: script"></div>
+
+<script th:src="@{/js/warehouse-update.js}"></script>
+<script th:src="@{/js/warehouse-btn.js}"></script>
+
+</body>
+
+</html>

@@ -4,8 +4,7 @@ import lombok.Getter;
 
 public class AppConstant {
 
-    public static final String DEFAULT_SYSTEM = "SYSTEM";
-    public static final Integer PAGE_MAX = 3;
+    public static final Integer PAGE_MAX = 10;
 
     public AppConstant() {
     }
@@ -33,7 +32,7 @@ public class AppConstant {
     @Getter
     public enum Role {
         ADMIN("ADMIN"),
-        CUSTOMER("CUSTOMER");
+        CUSTOMER("SUPER ADMIN");
 
         private final String roleName;
 
@@ -41,23 +40,5 @@ public class AppConstant {
             this.roleName = roleName;
         }
 
-    }
-
-    @Getter
-    public enum FlashAttribute {
-        SAVE_SUCCESS("success", "Successfully Added"),
-        SAVE_FAILED("failed", "Failed to Add"),
-        UPDATE_SUCCESS("success", "Successfully Updated"),
-        UPDATE_FAILED("failed", "Failed to Update"),
-        DELETE_SUCCESS("success", "Successfully Deleted"),
-        DELETE_FAILED("failed", "Failed to Delete");
-
-        private final String attributeName;
-        private final String attributeValue;
-
-        FlashAttribute(String attributeName, String attributeValue) {
-            this.attributeName = attributeName;
-            this.attributeValue = attributeValue;
-        }
     }
 }

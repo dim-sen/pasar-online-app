@@ -25,8 +25,4 @@ public class ImageUploadUtil {
             return new byte[0];
         }
     }
-
-    public String convertImageToBase64(byte[] image) {
-        return Base64.getEncoder().encodeToString(image);
-    }
 }
