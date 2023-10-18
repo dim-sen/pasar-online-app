@@ -1,5 +1,7 @@
 package com.online.pasaronlineapp.domain.dao;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +16,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "CATEGORIES")
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CategoryDao extends BaseDao {
 
     @Id

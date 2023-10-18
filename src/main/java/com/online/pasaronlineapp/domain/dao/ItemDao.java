@@ -16,7 +16,6 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "ITEMS")
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ItemDao extends BaseDao {
 
     @Id
