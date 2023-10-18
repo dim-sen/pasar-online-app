@@ -6,6 +6,7 @@ import com.online.pasaronlineapp.domain.dto.WarehouseBatchDto;
 import com.online.pasaronlineapp.domain.dto.WarehouseDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
+import com.online.pasaronlineapp.exception.InactiveException;
 import com.online.pasaronlineapp.service.impl.BatchServiceImpl;
 import com.online.pasaronlineapp.service.impl.WarehouseBatchServiceImpl;
 import com.online.pasaronlineapp.service.impl.WarehouseServiceImpl;
@@ -113,6 +114,8 @@ public class WarehouseBatchController {
             redirectAttributes.addFlashAttribute("SUCCESS", "Warehouse Batch Changed Successfully");
         } catch (DataNotFoundException e) {
             redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
+        } catch (InactiveException e) {
+            redirectAttributes.addFlashAttribute("INACTIVE", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("FAILED", "Warehouse Batch Failed to Change");
         }

@@ -44,7 +44,7 @@ public class ItemDao extends BaseDao {
     @ToString.Exclude
     private CategoryDao categoryDao;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "itemDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
     @JsonIgnore
     private List<PackageItemDao> packageItemDaos;

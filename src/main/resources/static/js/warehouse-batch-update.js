@@ -14,8 +14,8 @@ $(document).ready(function () {
 
             } else {
                 $('#editWarehouseBatchModal_warehouseBatchId').val(warehouseBatchDto.id);
-                $('#editWarehouseBatchModal_warehouseBatchWarehouse').val(warehouseBatchDto.warehouse.id);
-                $('#editWarehouseBatchModal_warehouseBatchBatch').val(warehouseBatchDto.batch.id);
+                $('#editWarehouseBatchModal_warehouseBatchWarehouse').val(warehouseBatchDto.warehouseDao.id);
+                $('#editWarehouseBatchModal_warehouseBatchBatch').val(warehouseBatchDto.batchDao.id);
                 $('#warehouseBatchNotFoundAlert').addClass('d-none');
                 $('#updateWarehouseBatchModal').modal('show');
             }

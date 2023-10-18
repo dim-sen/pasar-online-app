@@ -46,6 +46,9 @@
                             <div class="text-center alert alert-danger" th:if="${NOT_FOUND}">
                                 <p th:text="${NOT_FOUND}"></p>
                             </div>
+                            <div class="text-center alert alert-danger" th:if="${INACTIVE}">
+                                <p th:text="${INACTIVE}"></p>
+                            </div>
                             <div th:if="${packageItem.isEmpty() && param.keyword != null && param.keyword != ''}">
                                 <div class="text-center alert alert-warning">
                                     <p>No results found for "<span th:text="${param.keyword}"></span>".</p>

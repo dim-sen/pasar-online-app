@@ -14,8 +14,8 @@ $(document).ready(function () {
 
             } else {
                 $('#editPackageItemModal_packageItemId').val(packageItemDto.id);
-                $('#editPackageItemModal_packageItemPackages').val(packageItemDto.packages.id);
-                $('#editPackageItemModal_packageItemItem').val(packageItemDto.item.id);
+                $('#editPackageItemModal_packageItemPackages').val(packageItemDto.packageDao.id);
+                $('#editPackageItemModal_packageItemItem').val(packageItemDto.itemDao.id);
                 $('#packageItemNotFoundAlert').addClass('d-none');
                 $('#updatePackageItemModal').modal('show');
             }

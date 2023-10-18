@@ -2,10 +2,12 @@ package com.online.pasaronlineapp.service.impl;
 
 import com.online.pasaronlineapp.constant.AppConstant;
 import com.online.pasaronlineapp.domain.dao.ItemDao;
+import com.online.pasaronlineapp.domain.dao.PackageItemDao;
 import com.online.pasaronlineapp.domain.dto.ItemDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.repository.ItemRepository;
+import com.online.pasaronlineapp.repository.PackageItemRepository;
 import com.online.pasaronlineapp.service.ItemService;
 import com.online.pasaronlineapp.util.ImageUploadUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -31,6 +34,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private ImageUploadUtil imageUploadUtil;
+
+    @Autowired
+    private PackageItemRepository packageItemRepository;
 
     @Override
     public void createItem(ItemDto itemDto, MultipartFile itemImage) {
@@ -156,7 +162,17 @@ public class ItemServiceImpl implements ItemService {
             }
 
             log.info("Item found");
-            itemRepository.updateIsActive(id, !optionalItemDao.get().isActive());
+            if (optionalItemDao.get().isActive()) {
+                List<PackageItemDao> packageItemDaoList = packageItemRepository.findAllByItemId(id);
+                for (PackageItemDao packageItemDao : packageItemDaoList) {
+                    if (packageItemDao.isActive()) {
+                        packageItemRepository.updateIsActive(packageItemDao.getId(), false, LocalDateTime.now());
+                    }
+                }
+                itemRepository.updateIsActive(id, false, LocalDateTime.now());
+            } else {
+                itemRepository.updateIsActive(id, true, LocalDateTime.now());
+            }
         } catch (Exception e) {
             log.error("An error occurred in inactivating an item by id. Error {}", e.getMessage());
             throw e;
@@ -167,7 +183,7 @@ public class ItemServiceImpl implements ItemService {
     public Page<ItemDto> itemPage(Integer pageNumber) {
         try {
             log.info("Showing items pagination");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
             Page<ItemDao> itemDaoPage = itemRepository.pageableItem(pageable);
 
@@ -192,7 +208,7 @@ public class ItemServiceImpl implements ItemService {
     public Page<ItemDto> searchItem(String keyword, Integer pageNumber) {
         try {
             log.info("Searching for item");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
             Page<ItemDao> itemDaoPage = itemRepository.searchItemDaoByKeyword(keyword.toLowerCase(), pageable);
 

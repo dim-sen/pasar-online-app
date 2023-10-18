@@ -7,16 +7,16 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @NoRepositoryBean
 public interface BaseRepository<T> extends JpaRepository<T, Long> {
 
     @Modifying
     @Transactional
-    @Query("update #{#entityName} e set e.isActive = :isActive where e.id = :id")
-    void updateIsActive(@Param("id") Long id, @Param("isActive") Boolean isActive);
+    @Query("update #{#entityName} e set e.isActive = :isActive, e.updatedAt = :updatedAt where e.id = :id")
+    void updateIsActive(@Param("id") Long id, @Param("isActive") Boolean isActive, @Param("updatedAt") LocalDateTime updatedAt);
 
-    @Query("select e from #{#entityName} e where e.isActive = true ")
-    List<T> findByIsActiveTrue();
+    @Query("select count(e) > 0 from #{#entityName} e where e.id = :id and e.isActive = false")
+    boolean checkIfIsActiveFalse(@Param("id") Long id);
 }

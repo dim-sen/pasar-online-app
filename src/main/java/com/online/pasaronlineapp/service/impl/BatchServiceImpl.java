@@ -2,10 +2,12 @@ package com.online.pasaronlineapp.service.impl;
 
 import com.online.pasaronlineapp.constant.AppConstant;
 import com.online.pasaronlineapp.domain.dao.BatchDao;
+import com.online.pasaronlineapp.domain.dao.WarehouseBatchDao;
 import com.online.pasaronlineapp.domain.dto.BatchDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.repository.BatchRepository;
+import com.online.pasaronlineapp.repository.WarehouseBatchRepository;
 import com.online.pasaronlineapp.service.BatchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +30,9 @@ public class BatchServiceImpl implements BatchService {
 
     @Autowired
     private BatchRepository batchRepository;
+
+    @Autowired
+    private WarehouseBatchRepository warehouseBatchRepository;
 
     @Override
     public void createBatch(BatchDto batchDto) {
@@ -127,7 +133,17 @@ public class BatchServiceImpl implements BatchService {
             }
 
             log.info("Batch found");
-            batchRepository.updateIsActive(id, !optionalBatchDao.get().isActive());
+            if (optionalBatchDao.get().isActive()) {
+                List<WarehouseBatchDao> warehouseBatchDaoList = warehouseBatchRepository.findAllByBatchId(id);
+                for (WarehouseBatchDao warehouseBatchDao : warehouseBatchDaoList) {
+                    if (warehouseBatchDao.isActive()) {
+                        warehouseBatchRepository.updateIsActive(warehouseBatchDao.getId(), false, LocalDateTime.now());
+                    }
+                }
+                batchRepository.updateIsActive(id, false, LocalDateTime.now());
+            } else {
+                batchRepository.updateIsActive(id, true, LocalDateTime.now());
+            }
 
         } catch (Exception e) {
             log.error("An error occurred in inactivating batch by id. Error {}", e.getMessage());
@@ -139,7 +155,7 @@ public class BatchServiceImpl implements BatchService {
     public Page<BatchDto> batchPage(Integer pageNumber) {
         try {
             log.info("Showing batches pagination");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
             Page<BatchDao> batchDaoPage = batchRepository.pageableBatch(pageable);
 
@@ -158,7 +174,7 @@ public class BatchServiceImpl implements BatchService {
     public Page<BatchDto> searchBatch(String keyword, Integer pageNumber) {
         try {
             log.info("Searching for batch");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
             Page<BatchDao> batchDaoPage = batchRepository.searchBatchDaoByKeyword(keyword, pageable);
 

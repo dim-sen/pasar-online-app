@@ -1,6 +1,5 @@
 package com.online.pasaronlineapp.domain.dao;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 
@@ -22,12 +21,12 @@ public class WarehouseBatchDao extends BaseDao {
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "warehouse_id")
     @ToString.Exclude
-    private WarehouseDao warehouse;
+    private WarehouseDao warehouseDao;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "batch_id")
     @ToString.Exclude
-    private BatchDao batch;
+    private BatchDao batchDao;
 
     @OneToMany(mappedBy = "warehouseBatch", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @ToString.Exclude

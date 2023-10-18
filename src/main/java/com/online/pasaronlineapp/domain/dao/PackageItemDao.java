@@ -1,6 +1,5 @@
 package com.online.pasaronlineapp.domain.dao;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 
@@ -21,10 +20,10 @@ public class PackageItemDao extends BaseDao {
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "package_id")
     @ToString.Exclude
-    private PackageDao packages;
+    private PackageDao packageDao;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "item_id")
     @ToString.Exclude
-    private ItemDao item;
+    private ItemDao itemDao;
 }

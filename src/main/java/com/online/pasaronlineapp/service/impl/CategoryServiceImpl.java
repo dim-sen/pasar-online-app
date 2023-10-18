@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -126,7 +127,7 @@ public class CategoryServiceImpl implements CategoryService {
             }
 
             log.info("Category found");
-            categoryRepository.updateIsActive(id, !optionalCategoryDao.get().isActive());
+            categoryRepository.updateIsActive(id, !optionalCategoryDao.get().isActive(), LocalDateTime.now());
         } catch (Exception e) {
             log.error("An error occurred in inactivating category by id. Error {}", e.getMessage());
             throw e;
@@ -137,7 +138,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Page<CategoryDto> categoryPage(Integer pageNumber) {
         try {
             log.info("Showing categories pagination");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
             Page<CategoryDao> categoryDaoPage = categoryRepository.pageableCategory(pageable);
 
@@ -156,7 +157,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Page<CategoryDto> searchCategory(String keyword, Integer pageNumber) {
         try {
             log.info("Searching for category");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
             Page<CategoryDao> categoryDaoPage = categoryRepository.searchCategoryDaoByKeyword(keyword.toLowerCase(), pageable);
 

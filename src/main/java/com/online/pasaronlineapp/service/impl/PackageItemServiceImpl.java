@@ -6,7 +6,10 @@ import com.online.pasaronlineapp.domain.dao.PackageItemDao;
 import com.online.pasaronlineapp.domain.dto.PackageItemDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
+import com.online.pasaronlineapp.exception.InactiveException;
+import com.online.pasaronlineapp.repository.ItemRepository;
 import com.online.pasaronlineapp.repository.PackageItemRepository;
+import com.online.pasaronlineapp.repository.PackageRepository;
 import com.online.pasaronlineapp.service.PackageItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,12 @@ public class PackageItemServiceImpl implements PackageItemService {
 
     @Autowired
     private PackageItemRepository packageItemRepository;
+
+    @Autowired
+    private PackageRepository packageRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Override
     public void createPackageItem(PackageItemDto packageItemDto) {
@@ -46,8 +56,8 @@ public class PackageItemServiceImpl implements PackageItemService {
 
                 log.info("Found it");
                 PackageItemDao packageItemDao = new PackageItemDao();
-                packageItemDao.setPackages(packageItemDto.getPackageDao());
-                packageItemDao.setItem(itemDao);
+                packageItemDao.setPackageDao(packageItemDto.getPackageDao());
+                packageItemDao.setItemDao(itemDao);
 
                 packageItemRepository.save(packageItemDao);
             }
@@ -93,8 +103,8 @@ public class PackageItemServiceImpl implements PackageItemService {
             }
             log.info("Package-Item Found");
             PackageItemDao packageItemDao = optionalPackageItemDao.get();
-            packageItemDao.setPackages(packageItemDto.getPackageDao());
-            packageItemDao.setItem(packageItemDto.getItemDao());
+            packageItemDao.setPackageDao(packageItemDto.getPackageDao());
+            packageItemDao.setItemDao(packageItemDto.getItemDao());
             packageItemRepository.save(packageItemDao);
         } catch (Exception e) {
             log.error("An error occurred in updating Package-Item by id. Error {}", e.getMessage());
@@ -114,7 +124,12 @@ public class PackageItemServiceImpl implements PackageItemService {
             }
 
             log.info("Package-Item Found");
-            packageItemRepository.updateIsActive(id, !optionalPackageItemDao.get().isActive());
+            if (packageRepository.checkIfIsActiveFalse(optionalPackageItemDao.get().getPackageDao().getId()) ||
+                    itemRepository.checkIfIsActiveFalse(optionalPackageItemDao.get().getItemDao().getId())) {
+                throw new InactiveException("Failed to Change. Check Whether Package or Item is Inactive");
+            } else {
+                packageItemRepository.updateIsActive(id, !optionalPackageItemDao.get().isActive(), LocalDateTime.now());
+            }
         } catch (Exception e) {
             log.error("An error occurred in inactivating Package-Item by id. Error {}", e.getMessage());
             throw e;
@@ -131,8 +146,8 @@ public class PackageItemServiceImpl implements PackageItemService {
 
             return packageItemDaoPage.<PackageItemDto>map(packageItemDao -> PackageItemDto.builder()
                     .id(packageItemDao.getId())
-                    .packageDao(packageItemDao.getPackages())
-                    .itemDao(packageItemDao.getItem())
+                    .packageDao(packageItemDao.getPackageDao())
+                    .itemDao(packageItemDao.getItemDao())
                     .isActive(packageItemDao.isActive())
                     .build());
         } catch (Exception e) {
@@ -151,8 +166,8 @@ public class PackageItemServiceImpl implements PackageItemService {
 
             return packageItemDaoPage.<PackageItemDto>map(packageItemDao -> PackageItemDto.builder()
                     .id(packageItemDao.getId())
-                    .packageDao(packageItemDao.getPackages())
-                    .itemDao(packageItemDao.getItem())
+                    .packageDao(packageItemDao.getPackageDao())
+                    .itemDao(packageItemDao.getItemDao())
                     .isActive(packageItemDao.isActive())
                     .build());
         } catch (Exception e) {

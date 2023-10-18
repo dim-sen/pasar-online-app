@@ -6,7 +6,6 @@ import com.online.pasaronlineapp.util.LocalTImeAttributeConverter;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class BatchDao extends BaseDao {
     @Convert(converter = LocalTImeAttributeConverter.class)
     private LocalTime batchTime;
 
-    @OneToMany(mappedBy = "batch")
+    @OneToMany(mappedBy = "batchDao")
     @ToString.Exclude
     @JsonIgnore
     private List<WarehouseBatchDao> warehouseBatchDaos;

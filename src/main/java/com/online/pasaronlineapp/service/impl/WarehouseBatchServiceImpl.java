@@ -6,7 +6,10 @@ import com.online.pasaronlineapp.domain.dao.WarehouseBatchDao;
 import com.online.pasaronlineapp.domain.dto.WarehouseBatchDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
+import com.online.pasaronlineapp.exception.InactiveException;
+import com.online.pasaronlineapp.repository.BatchRepository;
 import com.online.pasaronlineapp.repository.WarehouseBatchRepository;
+import com.online.pasaronlineapp.repository.WarehouseRepository;
 import com.online.pasaronlineapp.service.WarehouseBatchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,12 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
 
     @Autowired
     private WarehouseBatchRepository warehouseBatchRepository;
+
+    @Autowired
+    private WarehouseRepository warehouseRepository;
+
+    @Autowired
+    private BatchRepository batchRepository;
 
     @Override
     public void createWarehouseBatch(WarehouseBatchDto warehouseBatchDto) {
@@ -46,8 +56,8 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
 
                 log.info("Found it and save it");
                 WarehouseBatchDao dao = new WarehouseBatchDao();
-                dao.setWarehouse(warehouseBatchDto.getWarehouseDao());
-                dao.setBatch(batchDao);
+                dao.setWarehouseDao(warehouseBatchDto.getWarehouseDao());
+                dao.setBatchDao(batchDao);
 
                 warehouseBatchRepository.save(dao);
             }
@@ -93,8 +103,8 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
 
             log.info("Warehouse-Batch Found");
             WarehouseBatchDao warehouseBatchDao = optionalWarehouseBatchDao.get();
-            warehouseBatchDao.setWarehouse(warehouseBatchDto.getWarehouseDao());
-            warehouseBatchDao.setBatch(warehouseBatchDto.getBatchDao());
+            warehouseBatchDao.setWarehouseDao(warehouseBatchDto.getWarehouseDao());
+            warehouseBatchDao.setBatchDao(warehouseBatchDto.getBatchDao());
             warehouseBatchRepository.save(warehouseBatchDao);
 
         } catch (Exception e) {
@@ -115,8 +125,12 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
             }
 
             log.info("Warehouse-Batch Found");
-            warehouseBatchRepository.updateIsActive(id, !optionalWarehouseBatchDao.get().isActive());
-
+            if (warehouseRepository.checkIfIsActiveFalse(optionalWarehouseBatchDao.get().getWarehouseDao().getId()) ||
+                    batchRepository.checkIfIsActiveFalse(optionalWarehouseBatchDao.get().getBatchDao().getId())) {
+                throw new InactiveException("Failed to Change. Check Whether Warehouse or Batch is Inactive");
+            } else {
+                warehouseBatchRepository.updateIsActive(id, !optionalWarehouseBatchDao.get().isActive(), LocalDateTime.now());
+            }
         } catch (Exception e) {
             log.error("An error occurred in inactivating Warehouse-Batch by id. Error {}", e.getMessage());
             throw e;
@@ -133,8 +147,8 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
 
             return warehouseBatchDaoPage.<WarehouseBatchDto>map(warehouseBatchDao -> WarehouseBatchDto.builder()
                     .id(warehouseBatchDao.getId())
-                    .warehouseDao(warehouseBatchDao.getWarehouse())
-                    .batchDao(warehouseBatchDao.getBatch())
+                    .warehouseDao(warehouseBatchDao.getWarehouseDao())
+                    .batchDao(warehouseBatchDao.getBatchDao())
                     .isActive(warehouseBatchDao.isActive())
                     .build());
         } catch (Exception e) {
@@ -153,8 +167,8 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
 
             return warehouseBatchDaoPage.<WarehouseBatchDto>map(warehouseBatchDao -> WarehouseBatchDto.builder()
                     .id(warehouseBatchDao.getId())
-                    .warehouseDao(warehouseBatchDao.getWarehouse())
-                    .batchDao(warehouseBatchDao.getBatch())
+                    .warehouseDao(warehouseBatchDao.getWarehouseDao())
+                    .batchDao(warehouseBatchDao.getBatchDao())
                     .isActive(warehouseBatchDao.isActive())
                     .build());
         } catch (Exception e) {

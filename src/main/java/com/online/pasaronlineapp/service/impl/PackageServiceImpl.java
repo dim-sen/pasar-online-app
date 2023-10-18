@@ -2,9 +2,11 @@ package com.online.pasaronlineapp.service.impl;
 
 import com.online.pasaronlineapp.constant.AppConstant;
 import com.online.pasaronlineapp.domain.dao.PackageDao;
+import com.online.pasaronlineapp.domain.dao.PackageItemDao;
 import com.online.pasaronlineapp.domain.dto.PackageDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
+import com.online.pasaronlineapp.repository.PackageItemRepository;
 import com.online.pasaronlineapp.repository.PackageRepository;
 import com.online.pasaronlineapp.service.PackageService;
 import com.online.pasaronlineapp.util.ImageUploadUtil;
@@ -17,11 +19,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
 @Service
 public class PackageServiceImpl implements PackageService {
+    @Autowired
+    private PackageItemRepository packageItemRepository;
 
     @Autowired
     private PackageRepository packageRepository;
@@ -147,7 +152,18 @@ public class PackageServiceImpl implements PackageService {
             }
 
             log.info("Package Found");
-            packageRepository.updateIsActive(id, !optionalPackageDao.get().isActive());
+            if (optionalPackageDao.get().isActive()) {
+                List<PackageItemDao> packageItemDaoList = packageItemRepository.findAllByPackageId(id);
+                for (PackageItemDao packageItemDao : packageItemDaoList) {
+                    if (packageItemDao.isActive()) {
+                        packageItemRepository.updateIsActive(packageItemDao.getId(), false, LocalDateTime.now());
+                    }
+                }
+                packageRepository.updateIsActive(id, false, LocalDateTime.now());
+            } else {
+                packageRepository.updateIsActive(id, true, LocalDateTime.now());
+
+            }
         } catch (Exception e) {
             log.error("An error occurred in inactivating a package by id. Error {}", e.getMessage());
             throw e;
@@ -158,7 +174,7 @@ public class PackageServiceImpl implements PackageService {
     public Page<PackageDto> packagePage(Integer pageNumber) {
         try {
             log.info("Showing packages pagination");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
             Page<PackageDao> packageDaoPage = packageRepository.pageablePackage(pageable);
 
@@ -181,7 +197,7 @@ public class PackageServiceImpl implements PackageService {
     public Page<PackageDto> searchPackage(String keyword, Integer pageNumber) {
         try {
             log.info("Searching for package");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
             Page<PackageDao> packageDaoPage = packageRepository.searchPackageDaoByKeyword(keyword.toLowerCase(), pageable);
 

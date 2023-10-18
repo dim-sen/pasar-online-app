@@ -1,10 +1,12 @@
 package com.online.pasaronlineapp.service.impl;
 
 import com.online.pasaronlineapp.constant.AppConstant;
+import com.online.pasaronlineapp.domain.dao.WarehouseBatchDao;
 import com.online.pasaronlineapp.domain.dao.WarehouseDao;
 import com.online.pasaronlineapp.domain.dto.WarehouseDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
+import com.online.pasaronlineapp.repository.WarehouseBatchRepository;
 import com.online.pasaronlineapp.repository.WarehouseRepository;
 import com.online.pasaronlineapp.service.WarehouseService;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +29,9 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Autowired
     private WarehouseRepository warehouseRepository;
+
+    @Autowired
+    private WarehouseBatchRepository warehouseBatchRepository;
 
     @Override
     public void createWarehouse(WarehouseDto warehouseDto) {
@@ -128,7 +134,17 @@ public class WarehouseServiceImpl implements WarehouseService {
             }
 
             log.info("Warehouse found");
-            warehouseRepository.updateIsActive(id, !optionalWarehouseDao.get().isActive());
+            if (optionalWarehouseDao.get().isActive()) {
+                List<WarehouseBatchDao> warehouseBatchDaoList = warehouseBatchRepository.findAllByWarehouseId(id);
+                for (WarehouseBatchDao warehouseBatchDao : warehouseBatchDaoList) {
+                    if (warehouseBatchDao.isActive()) {
+                        warehouseBatchRepository.updateIsActive(warehouseBatchDao.getId(), false, LocalDateTime.now());
+                    }
+                }
+                warehouseRepository.updateIsActive(id, false, LocalDateTime.now());
+            } else {
+                warehouseRepository.updateIsActive(id, true, LocalDateTime.now());
+            }
         } catch (Exception e) {
             log.error("An error occurred in inactivating warehouse by id. Error {}", e.getMessage());
             throw e;
@@ -139,7 +155,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     public Page<WarehouseDto> warehousePage(Integer pageNumber) {
         try {
             log.info("Showing warehouse pagination");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
             Page<WarehouseDao> warehouseDaoPage = warehouseRepository.pageableWarehouse(pageable);
 
@@ -159,7 +175,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     public Page<WarehouseDto> searchWarehouse(String keyword, Integer pageNumber) {
         try {
             log.info("Searching for warehouse");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by("isActive").descending());
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
             Page<WarehouseDao> warehouseDaoPage = warehouseRepository.searchWarehouseDaoByKeyword(keyword.toLowerCase(), pageable);
 

@@ -6,6 +6,7 @@ import com.online.pasaronlineapp.domain.dto.PackageDto;
 import com.online.pasaronlineapp.domain.dto.PackageItemDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
+import com.online.pasaronlineapp.exception.InactiveException;
 import com.online.pasaronlineapp.service.impl.ItemServiceImpl;
 import com.online.pasaronlineapp.service.impl.PackageItemServiceImpl;
 import com.online.pasaronlineapp.service.impl.PackageServiceImpl;
@@ -113,6 +114,8 @@ public class PackageItemController {
             redirectAttributes.addFlashAttribute("SUCCESS", "Package Item Changed Successfully");
         } catch (DataNotFoundException e) {
             redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
+        } catch (InactiveException e) {
+            redirectAttributes.addFlashAttribute("INACTIVE", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("FAILED", "Package Item Failed to Change");
         }
