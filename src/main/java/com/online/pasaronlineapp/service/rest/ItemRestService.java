@@ -1,4 +1,4 @@
-package com.online.pasaronlineapp.service;
+package com.online.pasaronlineapp.service.rest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
