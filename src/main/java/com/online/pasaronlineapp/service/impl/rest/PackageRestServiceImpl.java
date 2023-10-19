@@ -1,10 +1,10 @@
-package com.online.pasaronlineapp.service.impl;
+package com.online.pasaronlineapp.service.impl.rest;
 
 import com.online.pasaronlineapp.constant.AppConstant;
 import com.online.pasaronlineapp.domain.dao.PackageDao;
 import com.online.pasaronlineapp.domain.dto.PackageDto;
 import com.online.pasaronlineapp.repository.PackageRepository;
-import com.online.pasaronlineapp.service.PackageRestService;
+import com.online.pasaronlineapp.service.rest.PackageRestService;
 import com.online.pasaronlineapp.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

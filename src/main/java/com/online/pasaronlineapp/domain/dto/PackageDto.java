@@ -32,8 +32,6 @@ public class PackageDto {
 
     private String packageImage;
 
-    private List<PackageItemDao> packageItemDaos;
-
     @JsonIgnore
     private Boolean isActive;
 }

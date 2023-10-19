@@ -1,6 +1,6 @@
 package com.online.pasaronlineapp.controller;
 
-import com.online.pasaronlineapp.service.impl.PackageRestServiceImpl;
+import com.online.pasaronlineapp.service.impl.rest.PackageRestServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
