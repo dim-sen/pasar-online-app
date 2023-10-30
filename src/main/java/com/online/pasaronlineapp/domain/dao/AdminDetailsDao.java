@@ -4,31 +4,35 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDetailsDao implements UserDetails {
+public class AdminDetailsDao implements UserDetails {
 
-    private UserDao userDao;
+    private AdminDao adminDao;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.EMPTY_LIST;
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        simpleGrantedAuthorities.add(new SimpleGrantedAuthority(adminDao.getRole().getRoleName()));
+        return simpleGrantedAuthorities;
     }
 
     @Override
     public String getPassword() {
-        return userDao.getPassword();
+        return adminDao.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return userDao.getPhoneNumber();
+        return adminDao.getUsername();
     }
 
     @Override

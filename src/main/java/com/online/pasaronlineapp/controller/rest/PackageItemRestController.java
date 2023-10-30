@@ -1,4 +1,4 @@
-package com.online.pasaronlineapp.controller;
+package com.online.pasaronlineapp.controller.rest;
 
 import com.online.pasaronlineapp.service.impl.rest.PackageItemRestServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

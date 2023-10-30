@@ -30,11 +30,13 @@ public class PackageItemRestServiceImpl implements PackageItemRestService {
             List<PackageItemDto> packageItemDtoList = new ArrayList<>();
 
             for (PackageItemDao packageItemDao : packageItemDaoList) {
-                packageItemDtoList.add(PackageItemDto.builder()
-                                .id(packageItemDao.getId())
-                                .packageDao(packageItemDao.getPackageDao())
-                                .itemDao(packageItemDao.getItemDao())
-                        .build());
+                if (packageItemDao.isActive()) {
+                    packageItemDtoList.add(PackageItemDto.builder()
+                            .id(packageItemDao.getId())
+                            .packageDao(packageItemDao.getPackageDao())
+                            .itemDao(packageItemDao.getItemDao())
+                            .build());
+                }
             }
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, packageItemDtoList, HttpStatus.OK);
         } catch (Exception e) {

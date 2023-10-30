@@ -30,10 +30,12 @@ public class CategoryRestServiceImpl implements CategoryRestService {
             List<CategoryDto> categoryDtoList = new ArrayList<>();
 
             for (CategoryDao categoryDao : categoryDaoList) {
-                categoryDtoList.add(CategoryDto.builder()
-                                .id(categoryDao.getId())
-                                .categoryName(categoryDao.getCategoryName())
-                        .build());
+                if (categoryDao.isActive()) {
+                    categoryDtoList.add(CategoryDto.builder()
+                            .id(categoryDao.getId())
+                            .categoryName(categoryDao.getCategoryName())
+                            .build());
+                }
             }
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, categoryDtoList, HttpStatus.OK);
         } catch (Exception e) {

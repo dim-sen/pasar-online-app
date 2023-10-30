@@ -67,17 +67,19 @@ public class ItemRestServiceImpl implements ItemRestService {
             String itemImageString;
 
             for (ItemDao itemDao : itemDaoList) {
-                itemImageString = Base64.getEncoder().encodeToString(itemDao.getItemImage());
-                itemDtoList.add(ItemDto.builder()
-                        .id(itemDao.getId())
-                        .itemName(itemDao.getItemName())
-                        .itemPrice(itemDao.getItemPrice())
-                        .itemWeight(itemDao.getItemWeight())
-                        .itemStock(itemDao.getItemStock())
-                        .itemDescription(itemDao.getItemDescription())
-                        .itemImage(itemImageString)
-                        .categoryDao(itemDao.getCategoryDao())
-                        .build());
+               if (itemDao.isActive()) {
+                   itemImageString = Base64.getEncoder().encodeToString(itemDao.getItemImage());
+                   itemDtoList.add(ItemDto.builder()
+                           .id(itemDao.getId())
+                           .itemName(itemDao.getItemName())
+                           .itemPrice(itemDao.getItemPrice())
+                           .itemWeight(itemDao.getItemWeight())
+                           .itemStock(itemDao.getItemStock())
+                           .itemDescription(itemDao.getItemDescription())
+                           .itemImage(itemImageString)
+                           .categoryDao(itemDao.getCategoryDao())
+                           .build());
+               }
             }
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, itemDtoList, HttpStatus.OK);
 
