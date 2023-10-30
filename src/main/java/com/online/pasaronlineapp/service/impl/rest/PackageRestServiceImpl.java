@@ -33,15 +33,17 @@ public class PackageRestServiceImpl implements PackageRestService {
             String packageImageString;
 
             for (PackageDao packageDao : packageDaoList) {
-                packageImageString = Base64.getEncoder().encodeToString(packageDao.getPackageImage());
-                packageDtoList.add(PackageDto.builder()
-                                .id(packageDao.getId())
-                                .packageName(packageDao.getPackageName())
-                                .packagePrice(packageDao.getPackagePrice())
-                                .packageWeight(packageDao.getPackageWeight())
-                                .packageDescription(packageDao.getPackageDescription())
-                                .packageImage(packageImageString)
-                        .build());
+                if (packageDao.isActive()) {
+                    packageImageString = Base64.getEncoder().encodeToString(packageDao.getPackageImage());
+                    packageDtoList.add(PackageDto.builder()
+                            .id(packageDao.getId())
+                            .packageName(packageDao.getPackageName())
+                            .packagePrice(packageDao.getPackagePrice())
+                            .packageWeight(packageDao.getPackageWeight())
+                            .packageDescription(packageDao.getPackageDescription())
+                            .packageImage(packageImageString)
+                            .build());
+                }
             }
             return ResponseUtil.build(AppConstant.ResponseCode.SUCCESS, packageDtoList, HttpStatus.OK);
         } catch (Exception e) {
