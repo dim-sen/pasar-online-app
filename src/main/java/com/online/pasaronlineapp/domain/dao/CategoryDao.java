@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "CATEGORIES")
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CategoryDao extends BaseDao {
 
     @Id

@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +21,7 @@ public class BatchDto {
 
     private Long id;
 
-    private String batchTime;
+    private LocalTime batchTime;
 
     @JsonIgnore
     private Boolean isActive;

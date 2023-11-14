@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "PACKAGES")
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PackageDao extends BaseDao {
 
     @Id

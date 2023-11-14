@@ -34,6 +34,43 @@
 
 </head>
 <body>
+
+<!-- Dynamic Alert -->
+<div th:fragment="dynamicAlert" class="modal position-fixed" id="dynamicAlertModal" tabindex="-1" role="dialog" aria-labelledby="dynamicAlertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm position-absolute top-0 end-0" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dynamicAlertModalLabel">Alert</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <th:block th:if="${SUCCESS}">
+                    <div class="text-center alert alert-success">
+                        <p th:text="${SUCCESS}"></p>
+                    </div>
+                </th:block>
+                <th:block th:if="${FAILED}">
+                    <div class="text-center alert alert-danger">
+                        <p th:text="${FAILED}"></p>
+                    </div>
+                </th:block>
+                <th:block th:if="${ALREADY_EXIST}">
+                    <div class="text-center alert alert-danger">
+                        <p th:text="${ALREADY_EXIST}"></p>
+                    </div>
+                </th:block>
+                <th:block th:if="${NOT_FOUND}">
+                    <div class="text-center alert alert-danger">
+                        <p th:text="${NOT_FOUND}"></p>
+                    </div>
+                </th:block>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Navbar Start -->
 <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0" th:fragment="navbar">
     <a class="navbar-brand d-flex d-lg-none me-4" href="index.html">

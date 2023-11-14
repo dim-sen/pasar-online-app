@@ -70,7 +70,7 @@ public class WarehouseController {
 
     @RequestMapping(value = "/find-warehouse-by-id", method = {RequestMethod.PUT, RequestMethod.GET})
     @ResponseBody
-    public WarehouseDao findWarehouseById(@RequestParam(value = "id") Long id) {
+    public WarehouseDto findWarehouseById(@RequestParam(value = "id") Long id) {
         return warehouseService.findWarehouseById(id);
     }
 

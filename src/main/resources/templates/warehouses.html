@@ -57,26 +57,23 @@
                             <table class="table" th:if="${!warehouses.isEmpty()}">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Id</th>
                                     <th scope="col">Warehouse Name</th>
                                     <th scope="col">Warehouse Address</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="warehouseDto : ${warehouses}">
-                                    <th scope="row" th:text="${warehouseDto.id}"></th>
                                     <td th:text="${warehouseDto.warehouseName}"></td>
                                     <td th:text="${warehouseDto.warehouseAddress}"></td>
+                                    <td th:if="${warehouseDto.isActive == true}">Active</td>
+                                    <td th:if="${warehouseDto.isActive == false}">Inactive</td>
                                     <td>
                                         <a th:if="${warehouseDto.isActive == true}"
                                            class="btn btn-primary update-warehouse-button" data-bs-toggle="modal"
                                            data-bs-target="#updateWarehouseModal"
-                                           th:data-warehouse-id="${warehouseDto.id}">Update</a>
-                                        <a th:if="${warehouseDto.isActive == true}" class="btn btn-danger"
-                                           th:href="@{/inactive-warehouse/{id} (id = ${warehouseDto.id})}">Inactive</a>
-                                        <a th:if="${warehouseDto.isActive == false}" class="btn btn-success"
-                                           th:href="@{/inactive-warehouse/{id} (id = ${warehouseDto.id})}">Active</a>
+                                           th:data-warehouse-id="${warehouseDto.id}">Edit</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -174,7 +171,7 @@
                                     <input type="text" class="form-control" id="editWarehouseModal_warehouseName"
                                            name="editWarehouseModal_warehouseName" th:field="*{warehouseName}" required
                                            minlength="3"
-                                           maxlength="255" pattern="[a-zA-Z\s]+" disabled>
+                                           maxlength="255" pattern="[a-zA-Z\s]+">
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -182,12 +179,16 @@
                                     Address</label>
                                 <textarea class="form-control" id="editWarehouseModal_warehouseAddress"
                                           name="editWarehouseModal_warehouseAddress" th:field="*{warehouseAddress}"
-                                          maxlength="255" required disabled></textarea>
+                                          maxlength="255" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="col-sm-2 col-form-label">Status</label>
+                                <div class="col-sm">
+                                </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
-                                <button type="submit" class="btn btn-primary" id="updateWarehouseButton" disabled>Save
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="updateWarehouseButton">Save
                                 </button>
                             </div>
                         </form>
@@ -206,7 +207,6 @@
 <div th:replace="fragments :: script"></div>
 
 <script th:src="@{/js/warehouse-update.js}"></script>
-<script th:src="@{/js/warehouse-btn.js}"></script>
 
 </body>
 

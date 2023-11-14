@@ -12,7 +12,7 @@ public interface WarehouseService {
 
     void createWarehouse(WarehouseDto warehouseDto);
 
-    WarehouseDao findWarehouseById(Long id);
+    WarehouseDto findWarehouseById(Long id);
 
     List<WarehouseDto> getAllWarehouses();
 

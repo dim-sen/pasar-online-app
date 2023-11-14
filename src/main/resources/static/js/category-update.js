@@ -4,17 +4,19 @@ $(document).ready(function () {
         $('#categoryId').val(categoryId);
 
         var url = '/admin/find-category-by-id?id=' + categoryId;
+        console.log("categoryId: ", categoryId);
 
-        $.get(url, function (categoryDto) {
-            if (categoryDto === null || Object.keys(categoryDto).length === 0) {
+        $.get(url, function (categoryDao) {
+            if (categoryDao === null || Object.keys(categoryDao).length === 0) {
                 $('#categoryNotFoundAlert').removeClass('d-none');
                 $('#updateCategoryModal').on('shown.bs.modal', function () {
                     $('#updateCategoryModal').modal('hide');
                 });
 
             } else {
-                $('#editCategoryModal_categoryId').val(categoryDto.id);
-                $('#editCategoryModal_categoryName').val(categoryDto.categoryName);
+                $('#editCategoryModal_categoryId').val(categoryDao.id);
+                $('#editCategoryModal_categoryName').val(categoryDao.categoryName);
+                console.log("categoryName: ", categoryDao.categoryName);
                 $('#categoryNotFoundAlert').addClass('d-none');
                 $('#updateCategoryModal').modal('show');
             }

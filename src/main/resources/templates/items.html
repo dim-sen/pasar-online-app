@@ -33,18 +33,6 @@
                                     <p>There is no item</p>
                                 </div>
                             </div>
-                            <div class="text-center alert alert-success" th:if="${SUCCESS}">
-                                <p th:text="${SUCCESS}"></p>
-                            </div>
-                            <div class="text-center alert alert-danger" th:if="${FAILED}">
-                                <p th:text="${FAILED}"></p>
-                            </div>
-                            <div class="text-center alert alert-danger" th:if="${ALREADY_EXIST}">
-                                <p th:text="${ALREADY_EXIST}"></p>
-                            </div>
-                            <div class="text-center alert alert-danger" th:if="${NOT_FOUND}">
-                                <p th:text="${NOT_FOUND}"></p>
-                            </div>
                             <div th:if="${items.isEmpty() && param.keyword != null && param.keyword != ''}">
                                 <div class="text-center alert alert-warning">
                                     <p>No results found for "<span th:text="${param.keyword}"></span>".</p>
@@ -56,38 +44,30 @@
                             <table class="table" th:if="${!items.isEmpty()}">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Id</th>
                                     <th scope="col">Item Name</th>
                                     <th scope="col">Price</th>
                                     <th scope="col">Weight</th>
                                     <th scope="col">Stock</th>
                                     <th scope="col">Description</th>
-                                    <th scope="col">Image</th>
                                     <th scope="col">Category</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="itemDto : ${items}">
-                                    <th scope="row" th:text="${itemDto.id}"></th>
                                     <td th:text="${itemDto.itemName}"></td>
                                     <td th:text="${'Rp' + itemDto.itemPrice}"></td>
                                     <td th:text="${itemDto.itemWeight + ' gram'}"></td>
                                     <td th:text="${itemDto.itemStock}"></td>
                                     <td th:text="${itemDto.itemDescription}"></td>
-                                    <td>
-                                        <img th:src="'data:image/jpeg;base64,' + ${itemDto.itemImage}"
-                                             style="height: 50px; width: 50px;">
-                                    </td>
                                     <td th:text="${itemDto.categoryDao.categoryName}"></td>
+                                    <td th:if="${itemDto.isActive == true}">Active</td>
+                                    <td th:if="${itemDto.isActive == false}">Inactive</td>
                                     <td>
                                         <a th:if="${itemDto.isActive == true}"
                                            class="btn btn-primary update-item-button" data-bs-toggle="modal"
-                                           data-bs-target="#updateItemModal" th:data-item-id="${itemDto.id}">Update</a>
-                                        <a th:if="${itemDto.isActive == true}" class="btn btn-danger"
-                                           th:href="@{/inactive-item/{id} (id = ${itemDto.id})}">Inactive</a>
-                                        <a th:if="${itemDto.isActive == false}" class="btn btn-success"
-                                           th:href="@{/inactive-item/{id} (id = ${itemDto.id})}">Active</a>
+                                           data-bs-target="#updateItemModal" th:data-item-id="${itemDto.id}">Edit</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -220,7 +200,7 @@
                                 <div class="col-sm">
                                     <input type="text" class="form-control" id="editItemModal_itemName"
                                            name="editItemModal_itemName" th:field="*{itemName}" required minlength="3"
-                                           maxlength="255" pattern="[a-zA-Z\s]+" disabled>
+                                           maxlength="255" pattern="[a-zA-Z\s]+">
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -229,8 +209,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text">Rp</span>
                                         <input type="number" class="form-control" id="editItemModal_itemPrice"
-                                               name="editItemModal_itemPrice" th:field="*{itemPrice}" min="1" required
-                                               disabled>
+                                               name="editItemModal_itemPrice" th:field="*{itemPrice}" min="1" required>
                                     </div>
                                 </div>
                             </div>
@@ -241,7 +220,7 @@
                                     <div class="input-group">
                                         <input name="editItemModal_itemWeight" th:field="*{itemWeight}" type="number"
                                                class="form-control"
-                                               id="editItemModal_itemWeight" min="1" required disabled>
+                                               id="editItemModal_itemWeight" min="1" required>
                                         <span class="input-group-text">gram</span>
                                     </div>
                                 </div>
@@ -251,19 +230,19 @@
                                 <div class="col-sm">
                                     <input name="editItemModal_itemStock" th:field="*{itemStock}" type="number"
                                            class="form-control"
-                                           id="editItemModal_itemStock" min="1" required disabled>
+                                           id="editItemModal_itemStock" min="1" required>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="editItemModal_itemDescription" class="form-label">Item Description</label>
                                 <textarea class="form-control" id="editItemModal_itemDescription"
                                           name="editItemModal_itemDescription" th:field="*{itemDescription}" required
-                                          disabled></textarea>
+                                          ></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="editItemModal_itemCategory" class="form-label">Item Category</label>
                                 <select class="form-select" id="editItemModal_itemCategory"
-                                        name="editItemModal_categoryDao" th:field="*{categoryDao}" required disabled>
+                                        name="editItemModal_categoryDao" th:field="*{categoryDao}" required>
                                     <option value="" disabled selected>Select Category</option>
                                     <option th:each="category : ${categories}"
                                             th:text="${category.categoryName}"
@@ -272,18 +251,23 @@
                                 </select>
                             </div>
                             <div class="mb-3">
+                                <label class="col-sm-2 col-form-label">Status</label>
+                                <div class="col-sm">
+
+                                </div>
+                            </div>
+                            <div class="mb-3">
                                 <label for="file" class="form-label">Item Image (JPEG or PNG)</label>
                                 <div class="d-flex align-items-center">
                                     <img id="editItemModal_itemImage" style="height: 100px; width: 100px;" class="mr-2">
                                     <hr class="flex-grow-1 mx-2">
                                     <input class="form-control" type="file" id="file" name="file"
-                                           accept=".jpg, .jpeg, .png" disabled>
+                                           accept=".jpg, .jpeg, .png">
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
-                                <button type="submit" class="btn btn-primary" id="updateItemButton" disabled>Save
+                                <button type="submit" class="btn btn-primary" id="updateItemButton">Save
                                 </button>
                             </div>
                         </form>
@@ -291,6 +275,8 @@
                 </div>
             </div>
         </div>
+
+        <div th:replace="fragments :: dynamicAlert"></div>
 
         <div th:replace="fragments :: footer"></div>
     </div>
@@ -302,7 +288,29 @@
 <div th:replace="fragments :: script"></div>
 
 <script th:src="@{/js/item-update.js}"></script>
-<script th:src="@{/js/item-btn.js}"></script>
+
+<script th:inline="javascript">
+    $(document).ready(function() {
+
+        var successMessage = [[${SUCCESS}]];
+        var alreadyExistMessage = [[${ALREADY_EXIST}]];
+        var failedMessage = [[${FAILED}]];
+
+        if (successMessage) {
+            $('#dynamicAlertModalLabel').text('Success');
+            $('#dynamicAlertModal .modal-body p').text(successMessage);
+            $('#dynamicAlertModal').modal('show');
+        } else if (alreadyExistMessage) {
+            $('#dynamicAlertModalLabel').text('Error');
+            $('#dynamicAlertModal .modal-body p').text(alreadyExistMessage);
+            $('#dynamicAlertModal').modal('show');
+        } else if (failedMessage) {
+            $('#dynamicAlertModalLabel').text('Error');
+            $('#dynamicAlertModal .modal-body p').text(failedMessage);
+            $('#dynamicAlertModal').modal('show');
+        }
+    });
+</script>
 
 </body>
 

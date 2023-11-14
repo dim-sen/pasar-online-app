@@ -63,6 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
             }
 
             log.info("Category Found");
+            log.info("Category update: " + optionalCategoryDao.get());
             return optionalCategoryDao.get();
         } catch (Exception e) {
             log.error("An error occurred in finding a category by id. Error {}", e.getMessage());

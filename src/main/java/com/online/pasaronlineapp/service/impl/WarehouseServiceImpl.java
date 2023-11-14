@@ -57,7 +57,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public WarehouseDao findWarehouseById(Long id) {
+    public WarehouseDto findWarehouseById(Long id) {
         try {
             log.info("Finding a warehouse by id");
             Optional<WarehouseDao> optionalWarehouseDao = warehouseRepository.findById(id);
@@ -67,8 +67,12 @@ public class WarehouseServiceImpl implements WarehouseService {
                 throw new DataNotFoundException("Warehouse not Found");
             }
             log.info("Warehouse Found");
-            log.info("optionalWarehouseDao: " + optionalWarehouseDao.get());
-            return optionalWarehouseDao.get();
+
+            return WarehouseDto.builder()
+                    .id(optionalWarehouseDao.get().getId())
+                    .warehouseName(optionalWarehouseDao.get().getWarehouseName())
+                    .warehouseAddress(optionalWarehouseDao.get().getWarehouseAddress())
+                    .build();
         } catch (Exception e) {
             log.error("An error occurred in finding a warehouse by id. Error {}", e.getMessage());
             throw e;
