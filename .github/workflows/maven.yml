@@ -57,4 +57,4 @@ jobs:
             sudo docker stop pasar-project
             sudo docker rmi dimsen0/pasar-project:latest
             sudo docker pull dimsen0/pasar-project:latest
-            sudo docker run -d --rm --name pasar-project -p 8080:8080 --env-file=.dev.env --network ta_network dimsen0/pasar-project:latest
+            sudo docker run -d --rm --name pasar-project -p 80:8080 --env-file=.dev.env --network ta_network dimsen0/pasar-project:latest
