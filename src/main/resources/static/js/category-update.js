@@ -16,7 +16,8 @@ $(document).ready(function () {
             } else {
                 $('#editCategoryModal_categoryId').val(categoryDao.id);
                 $('#editCategoryModal_categoryName').val(categoryDao.categoryName);
-                console.log("categoryName: ", categoryDao.categoryName);
+                $('#editCategoryModal_status').val(categoryDao.isActive.toString());
+                console.log("isActive: ", categoryDao.isActive)
                 $('#categoryNotFoundAlert').addClass('d-none');
                 $('#updateCategoryModal').modal('show');
             }

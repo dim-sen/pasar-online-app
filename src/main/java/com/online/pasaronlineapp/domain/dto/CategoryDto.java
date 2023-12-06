@@ -21,6 +21,6 @@ public class CategoryDto {
 
     private String categoryName;
 
-    @JsonIgnore
+
     private Boolean isActive;
 }

@@ -87,17 +87,4 @@ public class CategoryController {
         }
         return "redirect:/categories/0";
     }
-
-    @RequestMapping(value = "/inactive-category/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String inactiveCategoryById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            categoryService.inactivateCategoryById(id);
-            redirectAttributes.addFlashAttribute("SUCCESS", "Category Changed Successfully");
-        } catch (DataNotFoundException e) {
-            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("FAILED", "Category Failed to Change");
-        }
-        return "redirect:/categories/0";
-    }
 }

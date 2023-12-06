@@ -108,6 +108,7 @@ public class CategoryServiceImpl implements CategoryService {
             log.info("Category found");
             CategoryDao categoryDao = optionalCategoryDao.get();
             categoryDao.setCategoryName(categoryDto.getCategoryName());
+            categoryDao.setActive(categoryDto.getIsActive());
             categoryRepository.save(categoryDao);
 
         } catch (Exception e) {

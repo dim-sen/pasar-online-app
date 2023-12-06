@@ -56,8 +56,7 @@
                                     <td th:if="${categoryDto.isActive == true}">Active</td>
                                     <td th:if="${categoryDto.isActive == false}">Inactive</td>
                                     <td>
-                                        <a th:if="${categoryDto.isActive == true}"
-                                           class="btn btn-primary update-category-button" data-bs-toggle="modal"
+                                        <a class="btn btn-primary update-category-button" data-bs-toggle="modal"
                                            data-bs-target="#updateCategoryModal"
                                            th:data-category-id="${categoryDto.id}">Edit</a>
                                     </td>
@@ -153,11 +152,12 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="col-sm-2 col-form-label">Status</label>
-                                <div class="col-sm">
-                                </div>
+                                <label for="editCategoryModal_status" class="form-label">Status</label>
+                                <select class="form-select" id="editCategoryModal_status" name="editCategoryModal_status" th:field="*{isActive}">
+                                    <option value="false">Inactive</option>
+                                    <option value="true">Active</option>
+                                </select>
                             </div>
-
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                 <button type="submit" class="btn btn-primary" id="updateCategoryButton">Save
@@ -171,10 +171,7 @@
 
         <div th:replace="fragments :: dynamicAlert"></div>
 
-        <div th:replace="fragments :: footer"></div>
     </div>
-
-    <a th:replace="fragments :: top"></a>
 
 </div>
 

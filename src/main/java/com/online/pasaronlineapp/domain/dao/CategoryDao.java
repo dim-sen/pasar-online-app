@@ -25,4 +25,5 @@ public class CategoryDao extends BaseDao {
 
     @Column(name = "category_name", nullable = false)
     private String categoryName;
+
 }

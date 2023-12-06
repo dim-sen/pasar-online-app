@@ -121,6 +121,7 @@ public class ItemServiceImpl implements ItemService {
             Optional<ItemDao> optionalItemDao = itemRepository.findById(itemDto.getId());
 
             Optional<ItemDao> optionalItemDaoItemName = itemRepository.findItemName(itemDto.getItemName());
+
             if (optionalItemDaoItemName.isPresent() && !optionalItemDaoItemName.get().getId().equals(itemDto.getId())) {
                 log.info("Item Already Exist");
                 throw new AlreadyExistException("Item Already Exist");

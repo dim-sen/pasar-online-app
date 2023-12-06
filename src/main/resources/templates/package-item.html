@@ -120,7 +120,7 @@
                         <form th:action="@{/save-package-item}" th:object="${packageItemDto}" method="post">
                             <div class="mb-3">
                                 <label for="addPackageItemModal_packageItemPackages"
-                                       class="form-label">Warehouse</label>
+                                       class="form-label">Package</label>
                                 <select class="form-select" id="addPackageItemModal_packageItemPackages"
                                         th:field="*{packageDao}" required>
                                     <option value="" disabled selected>Select Package</option>
@@ -131,7 +131,7 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="addPackageItemModal_packageItemItem" class="form-label">Batch</label>
+                                <label for="addPackageItemModal_packageItemItem" class="form-label">Item</label>
                                 <select class="form-select" id="addPackageItemModal_packageItemItem"
                                         name="itemIds" th:field="*{itemDaoList}" multiple="multiple"
                                         required>
@@ -214,10 +214,7 @@
             </div>
         </div>
 
-        <div th:replace="fragments :: footer"></div>
     </div>
-
-    <a th:replace="fragments :: top"></a>
 
 </div>
 

@@ -57,8 +57,8 @@
                                 <tbody>
                                 <tr th:each="itemDto : ${items}">
                                     <td th:text="${itemDto.itemName}"></td>
-                                    <td th:text="${'Rp' + itemDto.itemPrice}"></td>
-                                    <td th:text="${itemDto.itemWeight + ' gram'}"></td>
+                                    <td th:text="${'Rp' + #numbers.formatDecimal(itemDto.itemPrice, 0, 'POINT', 2, 'COMMA')}"></td>
+                                    <td th:text="${#numbers.formatInteger(itemDto.itemWeight, 0, 'POINT') + ' gram'}"></td>
                                     <td th:text="${itemDto.itemStock}"></td>
                                     <td th:text="${itemDto.itemDescription}"></td>
                                     <td th:text="${itemDto.categoryDao.categoryName}"></td>
@@ -278,10 +278,7 @@
 
         <div th:replace="fragments :: dynamicAlert"></div>
 
-        <div th:replace="fragments :: footer"></div>
     </div>
-
-    <a th:replace="fragments :: top"></a>
 
 </div>
 
