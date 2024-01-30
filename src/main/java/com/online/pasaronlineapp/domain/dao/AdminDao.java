@@ -1,9 +1,11 @@
 package com.online.pasaronlineapp.domain.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -33,4 +35,34 @@ public class AdminDao extends BaseDao {
     @JoinColumn(name = "role_id")
     @ToString.Exclude
     private RoleDao role;
+
+    @OneToMany(mappedBy = "adminDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<BarangDao> barangDaos;
+
+    @OneToMany(mappedBy = "adminDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<PackageDao> packageDaos;
+
+    @OneToMany(mappedBy = "adminDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<CategoryDao> categoryDaos;
+
+    @OneToMany(mappedBy = "adminDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<WarehouseDao> warehouseDaos;
+
+    @OneToMany(mappedBy = "adminDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<BatchDao> batchDaos;
+
+    @OneToMany(mappedBy = "adminDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<OrderDao> orderDaos;
 }

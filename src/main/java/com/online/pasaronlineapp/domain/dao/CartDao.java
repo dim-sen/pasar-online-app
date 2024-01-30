@@ -1,9 +1,11 @@
 package com.online.pasaronlineapp.domain.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,16 +18,16 @@ public class CartDao extends BaseDao {
     @Id
     private Long id;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    @Column(name = "total_price", nullable = false)
+    private Integer totalPrice;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "pembeli_id")
     @ToString.Exclude
-    private UserDao user;
+    private PembeliDao pembeli;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
+    @OneToMany(mappedBy = "cartDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
-    private ItemDao item;
+    @JsonIgnore
+    private List<CartBarangDao> cartBarangDaos;
 }

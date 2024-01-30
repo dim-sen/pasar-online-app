@@ -52,7 +52,7 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="categoryDto : ${categories}">
-                                    <td th:text="${categoryDto.categoryName}"></td>
+                                    <td th:text="${#strings.capitalizeWords(categoryDto.categoryName)}"></td>
                                     <td th:if="${categoryDto.isActive == true}">Active</td>
                                     <td th:if="${categoryDto.isActive == false}">Inactive</td>
                                     <td>

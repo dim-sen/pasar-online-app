@@ -2,7 +2,7 @@ package com.online.pasaronlineapp.service.impl;
 
 import com.online.pasaronlineapp.constant.AppConstant;
 import com.online.pasaronlineapp.domain.dao.PackageDao;
-import com.online.pasaronlineapp.domain.dao.PackageItemDao;
+import com.online.pasaronlineapp.domain.dao.PackageBarangDao;
 import com.online.pasaronlineapp.domain.dto.PackageDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
@@ -153,8 +153,8 @@ public class PackageServiceImpl implements PackageService {
 
             log.info("Package Found");
             if (optionalPackageDao.get().isActive()) {
-                List<PackageItemDao> packageItemDaoList = packageItemRepository.findAllByPackageId(id);
-                for (PackageItemDao packageItemDao : packageItemDaoList) {
+                List<PackageBarangDao> packageItemDaoList = packageItemRepository.findAllByPackageId(id);
+                for (PackageBarangDao packageItemDao : packageItemDaoList) {
                     if (packageItemDao.isActive()) {
                         packageItemRepository.updateIsActive(packageItemDao.getId(), false, LocalDateTime.now());
                     }

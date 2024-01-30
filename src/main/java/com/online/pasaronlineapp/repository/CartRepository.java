@@ -10,6 +10,4 @@ import java.util.Optional;
 @Repository
 public interface CartRepository extends BaseRepository<CartDao> {
 
-    @Query("select c from CartDao c where c.user.id = :user_id and c.item.id = :item_id")
-    Optional<CartDao> findByUserIdAndItemIdAndPackageItemId(@Param("user_id") Long user_id, @Param("item_id") Long item_id);
 }

@@ -1,6 +1,6 @@
 package com.online.pasaronlineapp.service;
 
-import com.online.pasaronlineapp.domain.dao.PackageItemDao;
+import com.online.pasaronlineapp.domain.dao.PackageBarangDao;
 import com.online.pasaronlineapp.domain.dto.PackageItemDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ public interface PackageItemService {
 
     void createPackageItem(PackageItemDto packageItemDto);
 
-    PackageItemDao findPackageItemById(Long id);
+    PackageBarangDao findPackageItemById(Long id);
 
     void updatePackageItem(PackageItemDto packageItemDto);
 

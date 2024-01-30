@@ -137,7 +137,7 @@
                                         required>
                                     <option value="" disabled selected>Select Item</option>
                                     <option th:each="item : ${items}"
-                                            th:text="${item.itemName}"
+                                            th:text="${item.getBarangName}"
                                             th:value="${item.id}">
                                     </option>
                                 </select>
@@ -194,7 +194,7 @@
                                         name="editPackageItemModal_packageItemItem" th:field="*{itemDao}" required>
                                     <option value="" disabled selected>Select Batch</option>
                                     <option th:each="item : ${items}"
-                                            th:text="${item.itemName}"
+                                            th:text="${item.getBarangName}"
                                             th:value="${item.id}">
                                     </option>
                                 </select>

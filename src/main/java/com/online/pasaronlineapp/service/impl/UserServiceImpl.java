@@ -1,6 +1,6 @@
 package com.online.pasaronlineapp.service.impl;
 
-import com.online.pasaronlineapp.domain.dao.UserDao;
+import com.online.pasaronlineapp.domain.dao.PembeliDao;
 import com.online.pasaronlineapp.repository.RoleRepository;
 import com.online.pasaronlineapp.repository.UserRepository;
 import com.online.pasaronlineapp.service.UserService;
@@ -25,10 +25,10 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public Optional<UserDao> findByUsername(String username) {
+    public Optional<PembeliDao> findByUsername(String username) {
         try {
             log.info("Finding username");
-            Optional<UserDao> optionalUserDao = userRepository.findByPhoneNumber(username);
+            Optional<PembeliDao> optionalUserDao = userRepository.findByPhoneNumber(username);
 
             if (optionalUserDao.isEmpty()) {
                 log.info("User not found");

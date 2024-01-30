@@ -1,9 +1,9 @@
 package com.online.pasaronlineapp.service.impl;
 
 import com.online.pasaronlineapp.constant.AppConstant;
-import com.online.pasaronlineapp.domain.dao.ItemDao;
-import com.online.pasaronlineapp.domain.dao.PackageItemDao;
-import com.online.pasaronlineapp.domain.dto.ItemDto;
+import com.online.pasaronlineapp.domain.dao.BarangDao;
+import com.online.pasaronlineapp.domain.dao.PackageBarangDao;
+import com.online.pasaronlineapp.domain.dto.BarangDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.repository.ItemRepository;
@@ -39,26 +39,26 @@ public class ItemServiceImpl implements ItemService {
     private PackageItemRepository packageItemRepository;
 
     @Override
-    public void createItem(ItemDto itemDto, MultipartFile itemImage) {
+    public void createItem(BarangDto barangDto, MultipartFile itemImage) {
         try {
             log.info("Creating new item");
-            Optional<ItemDao> optionalItemDao = itemRepository.findItemName(itemDto.getItemName());
+            Optional<BarangDao> optionalItemDao = itemRepository.findItemName(barangDto.getBarangName());
 
             if (optionalItemDao.isPresent()) {
                 log.info("Item Already Exist");
                 throw new AlreadyExistException("Item Already Exist");
             }
 
-            ItemDao itemDao = ItemDao.builder()
-                    .itemName(itemDto.getItemName())
-                    .itemPrice(itemDto.getItemPrice())
-                    .itemWeight(itemDto.getItemWeight())
-                    .itemStock(itemDto.getItemStock())
-                    .itemDescription(itemDto.getItemDescription())
-                    .itemImage(imageUploadUtil.imgUpload(itemImage))
-                    .categoryDao(itemDto.getCategoryDao())
+            BarangDao barangDao = BarangDao.builder()
+                    .barangName(barangDto.getBarangName())
+                    .barangPrice(barangDto.getBarangPrice())
+                    .barangWeight(barangDto.getBarangWeight())
+                    .barangStock(barangDto.getBarangStock())
+                    .barangDescription(barangDto.getBarangDescription())
+                    .barangImage(imageUploadUtil.imgUpload(itemImage))
+                    .categoryDao(barangDto.getCategoryDao())
                     .build();
-            itemRepository.save(itemDao);
+            itemRepository.save(barangDao);
 
         } catch (Exception e) {
             log.error("An error occurred in creating Item. Error: {}", e.getMessage());
@@ -67,10 +67,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDao findItemById(Long id) {
+    public BarangDao findItemById(Long id) {
         try {
             log.info("Finding an item by id");
-            Optional<ItemDao> optionalItemDao = itemRepository.findById(id);
+            Optional<BarangDao> optionalItemDao = itemRepository.findById(id);
 
             if (optionalItemDao.isEmpty()) {
                 log.info("Item not Found");
@@ -86,25 +86,25 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllItems() {
+    public List<BarangDto> getAllItems() {
         try {
             log.info("Getting all items");
-            List<ItemDao> itemDaoList = itemRepository.findAll();
-            List<ItemDto> itemDtoList = new ArrayList<>();
+            List<BarangDao> itemDaoList = itemRepository.findAll();
+            List<BarangDto> itemDtoList = new ArrayList<>();
 
             String itemImageString;
 
-            for (ItemDao itemDao : itemDaoList) {
-                itemImageString = Base64.getEncoder().encodeToString(itemDao.getItemImage());
-                itemDtoList.add(ItemDto.builder()
-                                .id(itemDao.getId())
-                                .itemName(itemDao.getItemName())
-                                .itemPrice(itemDao.getItemPrice())
-                                .itemWeight(itemDao.getItemWeight())
-                                .itemStock(itemDao.getItemStock())
-                                .itemDescription(itemDao.getItemDescription())
-                                .categoryDao(itemDao.getCategoryDao())
-                                .itemImage(itemImageString)
+            for (BarangDao barangDao : itemDaoList) {
+                itemImageString = Base64.getEncoder().encodeToString(barangDao.getBarangImage());
+                itemDtoList.add(BarangDto.builder()
+                                .id(barangDao.getId())
+                                .barangName(barangDao.getBarangName())
+                                .barangPrice(barangDao.getBarangPrice())
+                                .barangWeight(barangDao.getBarangWeight())
+                                .barangStock(barangDao.getBarangStock())
+                                .barangDescription(barangDao.getBarangDescription())
+                                .categoryDao(barangDao.getCategoryDao())
+                                .barangImage(itemImageString)
                         .build());
             }
             return itemDtoList;
@@ -115,35 +115,35 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void updateItem(ItemDto itemDto, MultipartFile itemImage) {
+    public void updateItem(BarangDto barangDto, MultipartFile itemImage) {
         try {
             log.info("Updating an item by id");
-            Optional<ItemDao> optionalItemDao = itemRepository.findById(itemDto.getId());
+            Optional<BarangDao> optionalItemDao = itemRepository.findById(barangDto.getId());
 
-            Optional<ItemDao> optionalItemDaoItemName = itemRepository.findItemName(itemDto.getItemName());
+            Optional<BarangDao> optionalItemDaoItemName = itemRepository.findItemName(barangDto.getBarangName());
 
-            if (optionalItemDaoItemName.isPresent() && !optionalItemDaoItemName.get().getId().equals(itemDto.getId())) {
+            if (optionalItemDaoItemName.isPresent() && !optionalItemDaoItemName.get().getId().equals(barangDto.getId())) {
                 log.info("Item Already Exist");
                 throw new AlreadyExistException("Item Already Exist");
             }
 
             log.info("Item found");
-            ItemDao itemDao = optionalItemDao.get();
-            itemDao.setItemName(itemDto.getItemName());
-            itemDao.setItemPrice(itemDto.getItemPrice());
-            itemDao.setItemWeight(itemDto.getItemWeight());
-            itemDao.setItemStock(itemDto.getItemStock());
-            itemDao.setItemDescription(itemDto.getItemDescription());
-            itemDao.setCategoryDao(itemDto.getCategoryDao());
+            BarangDao barangDao = optionalItemDao.get();
+            barangDao.setBarangName(barangDto.getBarangName());
+            barangDao.setBarangPrice(barangDto.getBarangPrice());
+            barangDao.setBarangWeight(barangDto.getBarangWeight());
+            barangDao.setBarangStock(barangDto.getBarangStock());
+            barangDao.setBarangDescription(barangDto.getBarangDescription());
+            barangDao.setCategoryDao(barangDto.getCategoryDao());
 
             if (itemImage.isEmpty()) {
                 log.info("itemImage is null");
-                itemDao.setItemImage(optionalItemDao.get().getItemImage());
+                barangDao.setBarangImage(optionalItemDao.get().getBarangImage());
             } else {
-                itemDao.setItemImage(imageUploadUtil.imgUpload(itemImage));
+                barangDao.setBarangImage(imageUploadUtil.imgUpload(itemImage));
             }
 
-            itemRepository.save(itemDao);
+            itemRepository.save(barangDao);
 
         } catch (Exception e) {
             log.error("An error occurred in updating an item by id. Error {}", e.getMessage());
@@ -155,7 +155,7 @@ public class ItemServiceImpl implements ItemService {
     public void inactivateItemById(Long id) {
         try {
             log.info("Inactivating an item by id");
-            Optional<ItemDao> optionalItemDao = itemRepository.findById(id);
+            Optional<BarangDao> optionalItemDao = itemRepository.findById(id);
 
             if (optionalItemDao.isEmpty()) {
                 log.info("Item not found");
@@ -164,8 +164,8 @@ public class ItemServiceImpl implements ItemService {
 
             log.info("Item found");
             if (optionalItemDao.get().isActive()) {
-                List<PackageItemDao> packageItemDaoList = packageItemRepository.findAllByItemId(id);
-                for (PackageItemDao packageItemDao : packageItemDaoList) {
+                List<PackageBarangDao> packageItemDaoList = packageItemRepository.findAllByItemId(id);
+                for (PackageBarangDao packageItemDao : packageItemDaoList) {
                     if (packageItemDao.isActive()) {
                         packageItemRepository.updateIsActive(packageItemDao.getId(), false, LocalDateTime.now());
                     }
@@ -181,23 +181,23 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<ItemDto> itemPage(Integer pageNumber) {
+    public Page<BarangDto> itemPage(Integer pageNumber) {
         try {
             log.info("Showing items pagination");
             Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
-            Page<ItemDao> itemDaoPage = itemRepository.pageableItem(pageable);
+            Page<BarangDao> barangDaoPage = itemRepository.pageableItem(pageable);
 
-            return itemDaoPage.<ItemDto>map(itemDao -> ItemDto.builder()
-                    .id(itemDao.getId())
-                    .itemName(itemDao.getItemName())
-                    .itemPrice(itemDao.getItemPrice())
-                    .itemWeight(itemDao.getItemWeight())
-                    .itemStock(itemDao.getItemStock())
-                    .itemDescription(itemDao.getItemDescription())
-                    .itemImage(Base64.getEncoder().encodeToString(itemDao.getItemImage()))
-                    .categoryDao(itemDao.getCategoryDao())
-                    .isActive(itemDao.isActive())
+            return barangDaoPage.<BarangDto>map(barangDao -> BarangDto.builder()
+                    .id(barangDao.getId())
+                    .barangName(barangDao.getBarangName())
+                    .barangPrice(barangDao.getBarangPrice())
+                    .barangWeight(barangDao.getBarangWeight())
+                    .barangStock(barangDao.getBarangStock())
+                    .barangDescription(barangDao.getBarangDescription())
+                    .barangImage(Base64.getEncoder().encodeToString(barangDao.getBarangImage()))
+                    .categoryDao(barangDao.getCategoryDao())
+                    .isActive(barangDao.isActive())
                     .build());
         } catch (Exception e) {
             log.error("An error occurred in showing items. Error {}", e.getMessage());
@@ -206,23 +206,23 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<ItemDto> searchItem(String keyword, Integer pageNumber) {
+    public Page<BarangDto> searchItem(String keyword, Integer pageNumber) {
         try {
             log.info("Searching for item");
             Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
-            Page<ItemDao> itemDaoPage = itemRepository.searchItemDaoByKeyword(keyword.toLowerCase(), pageable);
+            Page<BarangDao> barangDaoPage = itemRepository.searchItemDaoByKeyword(keyword.toLowerCase(), pageable);
 
-            return itemDaoPage.<ItemDto>map(itemDao -> ItemDto.builder()
-                    .id(itemDao.getId())
-                    .itemName(itemDao.getItemName())
-                    .itemPrice(itemDao.getItemPrice())
-                    .itemWeight(itemDao.getItemWeight())
-                    .itemStock(itemDao.getItemStock())
-                    .itemDescription(itemDao.getItemDescription())
-                    .itemImage(Base64.getEncoder().encodeToString(itemDao.getItemImage()))
-                    .categoryDao(itemDao.getCategoryDao())
-                    .isActive(itemDao.isActive())
+            return barangDaoPage.<BarangDto>map(barangDao -> BarangDto.builder()
+                    .id(barangDao.getId())
+                    .barangName(barangDao.getBarangName())
+                    .barangPrice(barangDao.getBarangPrice())
+                    .barangWeight(barangDao.getBarangWeight())
+                    .barangStock(barangDao.getBarangStock())
+                    .barangDescription(barangDao.getBarangDescription())
+                    .barangImage(Base64.getEncoder().encodeToString(barangDao.getBarangImage()))
+                    .categoryDao(barangDao.getCategoryDao())
+                    .isActive(barangDao.isActive())
                     .build());
         } catch (Exception e) {
             log.error("An error occurred in searching for items. Error {}", e.getMessage());

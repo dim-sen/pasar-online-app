@@ -1,12 +1,10 @@
 package com.online.pasaronlineapp.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.online.pasaronlineapp.domain.dao.ItemDao;
+import com.online.pasaronlineapp.domain.dao.BarangDao;
 import com.online.pasaronlineapp.domain.dao.PackageDao;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,10 +25,10 @@ public class PackageItemDto {
 
     private PackageDao packageDao;
 
-    private ItemDao itemDao;
+    private BarangDao itemDao;
 
     @JsonIgnore
-    private List<ItemDao> itemDaoList;
+    private List<BarangDao> itemDaoList;
 
     @JsonIgnore
     private Boolean isActive;

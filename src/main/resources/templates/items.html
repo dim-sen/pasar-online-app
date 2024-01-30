@@ -56,11 +56,11 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="itemDto : ${items}">
-                                    <td th:text="${itemDto.itemName}"></td>
-                                    <td th:text="${'Rp' + #numbers.formatDecimal(itemDto.itemPrice, 0, 'POINT', 2, 'COMMA')}"></td>
-                                    <td th:text="${#numbers.formatInteger(itemDto.itemWeight, 0, 'POINT') + ' gram'}"></td>
-                                    <td th:text="${itemDto.itemStock}"></td>
-                                    <td th:text="${itemDto.itemDescription}"></td>
+                                    <td th:text="${itemDto.getBarangName}"></td>
+                                    <td th:text="${'Rp' + #numbers.formatDecimal(itemDto.getBarangPrice, 0, 'POINT', 2, 'COMMA')}"></td>
+                                    <td th:text="${#numbers.formatInteger(itemDto.getBarangWeight, 0, 'POINT') + ' gram'}"></td>
+                                    <td th:text="${itemDto.getBarangStock}"></td>
+                                    <td th:text="${itemDto.getBarangDescription}"></td>
                                     <td th:text="${itemDto.categoryDao.categoryName}"></td>
                                     <td th:if="${itemDto.isActive == true}">Active</td>
                                     <td th:if="${itemDto.isActive == false}">Inactive</td>
@@ -111,7 +111,7 @@
                             <div class="mb-3">
                                 <label for="addItemModal_itemName" class="col-sm-2 col-form-label">Item Name</label>
                                 <div class="col-sm">
-                                    <input th:field="*{itemName}" type="text" class="form-control"
+                                    <input th:field="*{getBarangName}" type="text" class="form-control"
                                            id="addItemModal_itemName" required minlength="3"
                                            maxlength="255" pattern="[a-zA-Z\s]+">
                                 </div>
@@ -121,7 +121,7 @@
                                 <div class="col-sm">
                                     <div class="input-group">
                                         <span class="input-group-text">Rp</span>
-                                        <input th:field="*{itemPrice}" type="number" class="form-control"
+                                        <input th:field="*{getBarangPrice}" type="number" class="form-control"
                                                id="addItemModal_itemPrice" min="1" required>
                                     </div>
                                 </div>
@@ -130,7 +130,7 @@
                                 <label for="addItemModal_itemWeight" class="col-sm-2 col-form-label">Item Weight</label>
                                 <div class="col-sm">
                                     <div class="input-group">
-                                        <input th:field="*{itemWeight}" type="number" class="form-control"
+                                        <input th:field="*{getBarangWeight}" type="number" class="form-control"
                                                id="addItemModal_itemWeight" min="1" required>
                                         <span class="input-group-text">gram</span>
                                     </div>
@@ -139,14 +139,14 @@
                             <div class="mb-3">
                                 <label for="addItemModal_itemStock" class="col-sm-2 col-form-label">Item Stock</label>
                                 <div class="col-sm">
-                                    <input th:field="*{itemStock}" type="number" class="form-control"
+                                    <input th:field="*{getBarangStock}" type="number" class="form-control"
                                            id="addItemModal_itemStock" min="1" required>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="addItemModal_itemDescription" class="form-label">Item Description</label>
                                 <textarea class="form-control" id="addItemModal_itemDescription"
-                                          th:field="*{itemDescription}" maxlength="255" required></textarea>
+                                          th:field="*{getBarangDescription}" maxlength="255" required></textarea>
                             </div>
                             <div class="mb-3">
                                 <label for="addItemModal_itemCategory" class="form-label">Item Category</label>
@@ -199,7 +199,7 @@
                                 <label for="editItemModal_itemName" class="col-sm-2 col-form-label">Item Name</label>
                                 <div class="col-sm">
                                     <input type="text" class="form-control" id="editItemModal_itemName"
-                                           name="editItemModal_itemName" th:field="*{itemName}" required minlength="3"
+                                           name="editItemModal_itemName" th:field="*{getBarangName}" required minlength="3"
                                            maxlength="255" pattern="[a-zA-Z\s]+">
                                 </div>
                             </div>
@@ -209,7 +209,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text">Rp</span>
                                         <input type="number" class="form-control" id="editItemModal_itemPrice"
-                                               name="editItemModal_itemPrice" th:field="*{itemPrice}" min="1" required>
+                                               name="editItemModal_itemPrice" th:field="*{getBarangPrice}" min="1" required>
                                     </div>
                                 </div>
                             </div>
@@ -218,7 +218,7 @@
                                     Weight</label>
                                 <div class="col-sm">
                                     <div class="input-group">
-                                        <input name="editItemModal_itemWeight" th:field="*{itemWeight}" type="number"
+                                        <input name="editItemModal_itemWeight" th:field="*{getBarangWeight}" type="number"
                                                class="form-control"
                                                id="editItemModal_itemWeight" min="1" required>
                                         <span class="input-group-text">gram</span>
@@ -228,7 +228,7 @@
                             <div class="mb-3">
                                 <label for="editItemModal_itemStock" class="col-sm-2 col-form-label">Item Stock</label>
                                 <div class="col-sm">
-                                    <input name="editItemModal_itemStock" th:field="*{itemStock}" type="number"
+                                    <input name="editItemModal_itemStock" th:field="*{getBarangStock}" type="number"
                                            class="form-control"
                                            id="editItemModal_itemStock" min="1" required>
                                 </div>
@@ -236,7 +236,7 @@
                             <div class="mb-3">
                                 <label for="editItemModal_itemDescription" class="form-label">Item Description</label>
                                 <textarea class="form-control" id="editItemModal_itemDescription"
-                                          name="editItemModal_itemDescription" th:field="*{itemDescription}" required
+                                          name="editItemModal_itemDescription" th:field="*{getBarangDescription}" required
                                           ></textarea>
                             </div>
                             <div class="mb-3">

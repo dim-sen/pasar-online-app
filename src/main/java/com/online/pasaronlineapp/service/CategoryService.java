@@ -18,8 +18,6 @@ public interface CategoryService {
 
     void updateCategory(CategoryDto categoryDto);
 
-    void inactivateCategoryById(Long id);
-
     Page<CategoryDto> categoryPage(Integer pageNumber);
 
     Page<CategoryDto> searchCategory(String keyword, Integer pageNumber);

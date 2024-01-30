@@ -1,14 +1,13 @@
 package com.online.pasaronlineapp.domain.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.online.pasaronlineapp.domain.common.BaseDao;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +15,6 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "CATEGORIES")
-//@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CategoryDao extends BaseDao {
 
     @Id
@@ -25,5 +23,15 @@ public class CategoryDao extends BaseDao {
 
     @Column(name = "category_name", nullable = false)
     private String categoryName;
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "admin_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private AdminDao adminDao;
+
+    @OneToMany(mappedBy = "categoryDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<BarangDao> barangDaos;
 
 }

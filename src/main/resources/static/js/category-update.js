@@ -15,7 +15,11 @@ $(document).ready(function () {
 
             } else {
                 $('#editCategoryModal_categoryId').val(categoryDao.id);
-                $('#editCategoryModal_categoryName').val(categoryDao.categoryName);
+                var categoryName = categoryDao.categoryName;
+                var capitalizedCategoryName = categoryName.replace(/\b\w/g, function(match) {
+                    return match.toUpperCase();
+                });
+                $('#editCategoryModal_categoryName').val(capitalizedCategoryName);
                 $('#editCategoryModal_status').val(categoryDao.isActive.toString());
                 console.log("isActive: ", categoryDao.isActive)
                 $('#categoryNotFoundAlert').addClass('d-none');

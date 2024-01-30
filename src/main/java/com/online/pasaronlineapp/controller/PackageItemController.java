@@ -1,7 +1,7 @@
 package com.online.pasaronlineapp.controller;
 
-import com.online.pasaronlineapp.domain.dao.PackageItemDao;
-import com.online.pasaronlineapp.domain.dto.ItemDto;
+import com.online.pasaronlineapp.domain.dao.PackageBarangDao;
+import com.online.pasaronlineapp.domain.dto.BarangDto;
 import com.online.pasaronlineapp.domain.dto.PackageDto;
 import com.online.pasaronlineapp.domain.dto.PackageItemDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
@@ -40,7 +40,7 @@ public class PackageItemController {
 
         Page<PackageItemDto> packageItemDtoPage = packageItemService.packageItemPage(pageNumber);
         List<PackageDto> packageDtoList = packageService.getAllPackages();
-        List<ItemDto> itemDtoList = itemService.getAllItems();
+        List<BarangDto> itemDtoList = itemService.getAllItems();
         model.addAttribute("title", "Package-Item");
         model.addAttribute("totalPages", packageItemDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
@@ -62,7 +62,7 @@ public class PackageItemController {
 
         Page<PackageItemDto> packageItemDtoPage = packageItemService.searchPackageItem(keyword, pageNumber);
         List<PackageDto> packageDtoList = packageService.getAllPackages();
-        List<ItemDto> itemDtoList = itemService.getAllItems();
+        List<BarangDto> itemDtoList = itemService.getAllItems();
         model.addAttribute("title", "Search");
         model.addAttribute("totalPages", packageItemDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
@@ -89,7 +89,7 @@ public class PackageItemController {
 
     @RequestMapping(value = "/find-pi-by-id", method = {RequestMethod.PUT, RequestMethod.GET})
     @ResponseBody
-    public PackageItemDao findPackageItemById(@RequestParam(value = "id") Long id) {
+    public PackageBarangDao findPackageItemById(@RequestParam(value = "id") Long id) {
         return packageItemService.findPackageItemById(id);
     }
 

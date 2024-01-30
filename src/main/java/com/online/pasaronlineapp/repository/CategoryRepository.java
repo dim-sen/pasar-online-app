@@ -12,12 +12,12 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends BaseRepository<CategoryDao> {
 
-    @Query("select c from CategoryDao c where c.categoryName like concat('%', ?1, '%')")
+    @Query("select c from CategoryDao c where c.categoryName = ?1")
     Optional<CategoryDao> findCategoryDaoByCategoryName(String name);
 
     @Query("select c from CategoryDao c")
     Page<CategoryDao> pageableCategory(Pageable pageable);
 
-    @Query("select c from CategoryDao c where lower(c.categoryName) like %:keyword%")
+    @Query("select c from CategoryDao c where c.categoryName like %:keyword%")
     Page<CategoryDao> searchCategoryDaoByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }

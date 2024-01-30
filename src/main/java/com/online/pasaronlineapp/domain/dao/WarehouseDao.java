@@ -25,6 +25,17 @@ public class WarehouseDao extends BaseDao {
     @Column(name = "warehouse_address", nullable = false)
     private String warehouseAddress;
 
+    @Column(name = "latitude", nullable = false)
+    private String latitude;
+
+    @Column(name = "longitude", nullable = false)
+    private String longitude;
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "admin_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private AdminDao adminDao;
+
     @OneToMany(mappedBy = "warehouseDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
     @JsonIgnore

@@ -1,5 +1,6 @@
 package com.online.pasaronlineapp.domain.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 
@@ -23,5 +24,6 @@ public class RoleDao extends BaseDao {
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
+    @JsonIgnore
     private List<AdminDao> adminDaos;
 }

@@ -17,21 +17,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ItemDto {
+public class BarangDto {
 
     private Long id;
 
-    private String itemName;
+    private String barangName;
 
-    private Integer itemPrice;
+    private Integer barangPrice;
 
-    private Integer itemWeight;
+    private Integer barangWeight;
 
-    private Integer itemStock;
+    private Integer barangStock;
 
-    private String itemDescription;
+    private String barangDescription;
 
-    private String itemImage;
+    private String barangImage;
 
     @JsonProperty("category_dao")
     private CategoryDao categoryDao;

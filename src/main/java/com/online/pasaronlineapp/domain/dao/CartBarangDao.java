@@ -10,20 +10,26 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "PACKAGES_ITEMS")
-public class PackageItemDao extends BaseDao {
+@Table(name = "CART_BARANG")
+public class CartBarangDao extends BaseDao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinColumn(name = "package_id")
-    @ToString.Exclude
-    private PackageDao packageDao;
+    @Column(name = "quantity")
+    private Integer quantity;
+
+    @Column(name = "status")
+    private String status;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "cart_id")
     @ToString.Exclude
-    private ItemDao itemDao;
+    private CartDao cartDao;
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "barang_id")
+    @ToString.Exclude
+    private BarangDao barangDao;
 }
