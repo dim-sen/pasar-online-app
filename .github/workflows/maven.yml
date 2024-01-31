@@ -1,9 +1,9 @@
 name: Pasar Online
 
 on:
-  push:
+  pull_request:
     branches:
-      - feature/tableAlert
+      - development
 
 jobs:
   build:
