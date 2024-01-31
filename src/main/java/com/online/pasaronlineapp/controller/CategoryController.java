@@ -3,7 +3,6 @@ package com.online.pasaronlineapp.controller;
 import com.online.pasaronlineapp.domain.dao.CategoryDao;
 import com.online.pasaronlineapp.domain.dto.CategoryDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
-import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.service.impl.CategoryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -91,17 +91,4 @@ public class PackageController {
         }
         return "redirect:/packages/0";
     }
-
-    @RequestMapping(value = "/inactive-package/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String inactivePackageById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            packageService.inactivePackageById(id);
-            redirectAttributes.addFlashAttribute("SUCCESS", "Package Changed Successfully");
-        } catch (DataNotFoundException e) {
-            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("FAILED", "Package Failed to Change");
-        }
-        return "redirect:/packages/0";
-    }
 }

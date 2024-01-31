@@ -14,8 +14,6 @@ public interface WarehouseBatchService {
 
     void updateWarehouseBatch(WarehouseBatchDto warehouseBatchDto);
 
-    void inactiveWarehouseBatchById(Long id);
-
     Page<WarehouseBatchDto> warehouseBatchPage(Integer pageNumber);
 
     Page<WarehouseBatchDto> searchWarehouseBatch(String keyword, Integer pageNumber);

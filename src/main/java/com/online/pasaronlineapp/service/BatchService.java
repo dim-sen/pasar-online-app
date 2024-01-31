@@ -18,8 +18,6 @@ public interface BatchService {
 
     void updateBatch(BatchDto batchDto);
 
-    void inactivateBatchById(Long id);
-
     Page<BatchDto> batchPage(Integer pageNumber);
 
     Page<BatchDto> searchBatch(String keyword, Integer pageNumber);

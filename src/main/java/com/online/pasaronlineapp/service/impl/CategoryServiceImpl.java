@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -112,7 +111,7 @@ public class CategoryServiceImpl implements CategoryService {
             log.info("Category found");
             CategoryDao categoryDao = optionalCategoryDao.get();
             categoryDao.setCategoryName(categoryDto.getCategoryName().toLowerCase());
-            categoryDao.setActive(categoryDto.getIsActive());
+            categoryDao.setActive(categoryDto.isActive());
             categoryRepository.save(categoryDao);
 
         } catch (Exception e) {

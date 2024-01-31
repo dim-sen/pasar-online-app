@@ -19,8 +19,6 @@ public interface PackageService {
 
     void updatePackage(PackageDto packageDto, MultipartFile packageImage);
 
-    void inactivePackageById(Long id);
-
     Page<PackageDto> packagePage(Integer pageNumber);
 
     Page<PackageDto> searchPackage(String keyword, Integer pageNumber);

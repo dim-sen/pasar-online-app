@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -112,6 +111,7 @@ public class BatchServiceImpl implements BatchService {
             log.info("Batch found");
             BatchDao batchDao = optionalBatchDao.get();
             batchDao.setBatchTime(batchDto.getBatchTime());
+            batchDao.setActive(batchDto.isActive());
             batchRepository.save(batchDao);
 
         } catch (Exception e) {
@@ -119,36 +119,6 @@ public class BatchServiceImpl implements BatchService {
             throw e;
         }
 
-    }
-
-    @Override
-    public void inactivateBatchById(Long id) {
-        try {
-            log.info("Inactivating batch by id");
-            Optional<BatchDao> optionalBatchDao = batchRepository.findById(id);
-
-            if (optionalBatchDao.isEmpty()) {
-                log.info("Batch not found");
-                throw new DataNotFoundException("Batch Not Found");
-            }
-
-            log.info("Batch found");
-            if (optionalBatchDao.get().isActive()) {
-                List<WarehouseBatchDao> warehouseBatchDaoList = warehouseBatchRepository.findAllByBatchId(id);
-                for (WarehouseBatchDao warehouseBatchDao : warehouseBatchDaoList) {
-                    if (warehouseBatchDao.isActive()) {
-                        warehouseBatchRepository.updateIsActive(warehouseBatchDao.getId(), false, LocalDateTime.now());
-                    }
-                }
-                batchRepository.updateIsActive(id, false, LocalDateTime.now());
-            } else {
-                batchRepository.updateIsActive(id, true, LocalDateTime.now());
-            }
-
-        } catch (Exception e) {
-            log.error("An error occurred in inactivating batch by id. Error {}", e.getMessage());
-            throw e;
-        }
     }
 
     @Override

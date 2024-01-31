@@ -143,39 +143,12 @@ public class ItemServiceImpl implements ItemService {
                 barangDao.setBarangImage(imageUploadUtil.imgUpload(itemImage));
             }
 
+            barangDao.setActive(barangDto.isActive());
+
             itemRepository.save(barangDao);
 
         } catch (Exception e) {
             log.error("An error occurred in updating an item by id. Error {}", e.getMessage());
-            throw e;
-        }
-    }
-
-    @Override
-    public void inactivateItemById(Long id) {
-        try {
-            log.info("Inactivating an item by id");
-            Optional<BarangDao> optionalItemDao = itemRepository.findById(id);
-
-            if (optionalItemDao.isEmpty()) {
-                log.info("Item not found");
-                throw new DataNotFoundException("Item Not Found");
-            }
-
-            log.info("Item found");
-            if (optionalItemDao.get().isActive()) {
-                List<PackageBarangDao> packageItemDaoList = packageItemRepository.findAllByItemId(id);
-                for (PackageBarangDao packageItemDao : packageItemDaoList) {
-                    if (packageItemDao.isActive()) {
-                        packageItemRepository.updateIsActive(packageItemDao.getId(), false, LocalDateTime.now());
-                    }
-                }
-                itemRepository.updateIsActive(id, false, LocalDateTime.now());
-            } else {
-                itemRepository.updateIsActive(id, true, LocalDateTime.now());
-            }
-        } catch (Exception e) {
-            log.error("An error occurred in inactivating an item by id. Error {}", e.getMessage());
             throw e;
         }
     }

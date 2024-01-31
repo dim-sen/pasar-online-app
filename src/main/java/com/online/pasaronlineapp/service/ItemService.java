@@ -19,8 +19,6 @@ public interface ItemService {
 
     void updateItem(BarangDto itemDto, MultipartFile itemImage);
 
-    void inactivateItemById(Long id);
-
     Page<BarangDto> itemPage(Integer pageNumber);
 
     Page<BarangDto> searchItem(String keyword, Integer pageNumber);

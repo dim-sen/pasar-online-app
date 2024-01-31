@@ -88,17 +88,4 @@ public class BatchController {
         }
         return "redirect:/batches/0";
     }
-
-    @RequestMapping(value = "/inactive-batch/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String inactiveBatchById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            batchService.inactivateBatchById(id);
-            redirectAttributes.addFlashAttribute("SUCCESS", "Batch Changed Successfully");
-        } catch (DataNotFoundException e) {
-            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("FAILED", "Batch Failed to Change");
-        }
-        return "redirect:/batches/0";
-    }
 }

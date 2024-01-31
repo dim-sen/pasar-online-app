@@ -2,15 +2,13 @@ package com.online.pasaronlineapp.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.online.pasaronlineapp.domain.dao.CategoryDao;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
+/**
+ * DTO for {@link com.online.pasaronlineapp.domain.dao.BarangDao}
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,23 +17,15 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class BarangDto {
 
-    private Long id;
-
-    private String barangName;
-
-    private Integer barangPrice;
-
-    private Integer barangWeight;
-
-    private Integer barangStock;
-
-    private String barangDescription;
-
-    private String barangImage;
-
-    @JsonProperty("category_dao")
-    private CategoryDao categoryDao;
-
+    Long id;
+    String barangName;
+    Integer barangPrice;
+    Integer barangWeight;
+    Integer barangStock;
+    String barangDescription;
+    String barangImage;
     @JsonIgnore
-    private Boolean isActive;
+    boolean isActive;
+    CategoryDao categoryDao;
+    AdminDto adminDao;
 }

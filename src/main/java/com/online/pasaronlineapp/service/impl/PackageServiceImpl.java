@@ -133,39 +133,11 @@ public class PackageServiceImpl implements PackageService {
                 packageDao.setPackageImage(imageUploadUtil.imgUpload(packageImage));
             }
 
+            packageDao.setActive(packageDto.isActive());
+
             packageRepository.save(packageDao);
         } catch (Exception e) {
             log.error("An error occurred in updating a package by id. Error {}", e.getMessage());
-            throw e;
-        }
-    }
-
-    @Override
-    public void inactivePackageById(Long id) {
-        try {
-            log.info("Inactivating a package by id");
-            Optional<PackageDao> optionalPackageDao = packageRepository.findById(id);
-
-            if (optionalPackageDao.isEmpty()) {
-                log.info("Package not found");
-                throw new DataNotFoundException("Package not Found");
-            }
-
-            log.info("Package Found");
-            if (optionalPackageDao.get().isActive()) {
-                List<PackageBarangDao> packageItemDaoList = packageItemRepository.findAllByPackageId(id);
-                for (PackageBarangDao packageItemDao : packageItemDaoList) {
-                    if (packageItemDao.isActive()) {
-                        packageItemRepository.updateIsActive(packageItemDao.getId(), false, LocalDateTime.now());
-                    }
-                }
-                packageRepository.updateIsActive(id, false, LocalDateTime.now());
-            } else {
-                packageRepository.updateIsActive(id, true, LocalDateTime.now());
-
-            }
-        } catch (Exception e) {
-            log.error("An error occurred in inactivating a package by id. Error {}", e.getMessage());
             throw e;
         }
     }

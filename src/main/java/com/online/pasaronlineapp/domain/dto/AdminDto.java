@@ -1,23 +1,28 @@
 package com.online.pasaronlineapp.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.online.pasaronlineapp.domain.dao.RoleDao;
+import lombok.*;
 
+/**
+ * DTO for {@link com.online.pasaronlineapp.domain.dao.AdminDao}
+ */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class AdminDto {
-
-    private Long id;
-
-    private String firstName;
-
-    private String lastName;
-
-    private String username;
-
-    private String password;
+    Long id;
+    String firstName;
+    String lastName;
+    String username;
+    String password;
+    @JsonIgnore
+    boolean isActive;
+    RoleDao role;
 }

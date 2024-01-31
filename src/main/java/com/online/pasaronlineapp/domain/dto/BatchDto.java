@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.online.pasaronlineapp.domain.dao.AdminDao;
+import lombok.*;
 
 import java.time.LocalTime;
 
+/**
+ * DTO for {@link com.online.pasaronlineapp.domain.dao.BatchDao}
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,10 +20,9 @@ import java.time.LocalTime;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class BatchDto {
 
-    private Long id;
-
-    private LocalTime batchTime;
-
+    Long id;
+    LocalTime batchTime;
     @JsonIgnore
-    private Boolean isActive;
+    boolean isActive;
+    AdminDao adminDao;
 }

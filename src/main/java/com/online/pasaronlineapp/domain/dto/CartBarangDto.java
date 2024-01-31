@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.online.pasaronlineapp.domain.dao.AdminDao;
+import com.online.pasaronlineapp.domain.dao.BarangDao;
+import com.online.pasaronlineapp.domain.dao.CartDao;
 import lombok.*;
 
 /**
- * DTO for {@link com.online.pasaronlineapp.domain.dao.WarehouseDao}
+ * DTO for {@link com.online.pasaronlineapp.domain.dao.CartBarangDao}
  */
 @Data
 @NoArgsConstructor
@@ -16,14 +17,13 @@ import lombok.*;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class WarehouseDto {
+public class CartBarangDto {
 
     Long id;
-    String warehouseName;
-    String warehouseAddress;
-    String latitude;
-    String longitude;
-    AdminDao adminDao;
+    Integer quantity;
+    String status;
     @JsonIgnore
     boolean isActive;
+    CartDao cartDao;
+    BarangDao barangDao;
 }

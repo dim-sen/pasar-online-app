@@ -1,8 +1,8 @@
 package com.online.pasaronlineapp.controller;
 
 import com.online.pasaronlineapp.domain.dao.BarangDao;
-import com.online.pasaronlineapp.domain.dto.CategoryDto;
 import com.online.pasaronlineapp.domain.dto.BarangDto;
+import com.online.pasaronlineapp.domain.dto.CategoryDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.service.impl.CategoryServiceImpl;
@@ -100,19 +100,6 @@ public class ItemController {
             redirectAttributes.addFlashAttribute("ALREADY_EXIST", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("FAILED", "Item Failed to Update");
-        }
-        return "redirect:/items/0";
-    }
-
-    @RequestMapping(value = "/inactive-item/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String inactiveItemById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            itemService.inactivateItemById(id);
-            redirectAttributes.addFlashAttribute("SUCCESS", "Item Changed Successfully");
-        } catch (DataNotFoundException e) {
-            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("FAILED", "Item Failed to Change");
         }
         return "redirect:/items/0";
     }

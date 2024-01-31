@@ -40,7 +40,7 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
     public void createWarehouseBatch(WarehouseBatchDto warehouseBatchDto) {
         try {
             log.info("Creating new Warehouse-Batch");
-            List<BatchDao> batchDaoList = warehouseBatchDto.getBatchList();
+            List<BatchDao> batchDaoList = warehouseBatchDto.getBatchDaoList();
 
             for (BatchDao batchDao : batchDaoList) {
                 log.info("find By Warehouse Id And Batch Id");
@@ -105,34 +105,11 @@ public class WarehouseBatchServiceImpl implements WarehouseBatchService {
             WarehouseBatchDao warehouseBatchDao = optionalWarehouseBatchDao.get();
             warehouseBatchDao.setWarehouseDao(warehouseBatchDto.getWarehouseDao());
             warehouseBatchDao.setBatchDao(warehouseBatchDto.getBatchDao());
+            warehouseBatchDao.setActive(warehouseBatchDto.isActive());
             warehouseBatchRepository.save(warehouseBatchDao);
 
         } catch (Exception e) {
             log.error("An error occurred in updating Warehouse-Batch by id. Error {}", e.getMessage());
-            throw e;
-        }
-    }
-
-    @Override
-    public void inactiveWarehouseBatchById(Long id) {
-        try {
-            log.info("Inactivating Warehouse-Batch by id");
-            Optional<WarehouseBatchDao> optionalWarehouseBatchDao = warehouseBatchRepository.findById(id);
-
-            if (optionalWarehouseBatchDao.isEmpty()) {
-                log.info("Warehouse-Batch not found");
-                throw new DataNotFoundException("Warehouse-Batch not Found");
-            }
-
-            log.info("Warehouse-Batch Found");
-            if (warehouseRepository.checkIfIsActiveFalse(optionalWarehouseBatchDao.get().getWarehouseDao().getId()) ||
-                    batchRepository.checkIfIsActiveFalse(optionalWarehouseBatchDao.get().getBatchDao().getId())) {
-                throw new InactiveException("Failed to Change. Check Whether Warehouse or Batch is Inactive");
-            } else {
-                warehouseBatchRepository.updateIsActive(id, !optionalWarehouseBatchDao.get().isActive(), LocalDateTime.now());
-            }
-        } catch (Exception e) {
-            log.error("An error occurred in inactivating Warehouse-Batch by id. Error {}", e.getMessage());
             throw e;
         }
     }
