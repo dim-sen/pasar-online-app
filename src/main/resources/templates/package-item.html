@@ -60,26 +60,23 @@
                             <table class="table" th:if="${!packageItem.isEmpty()}">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Id</th>
                                     <th scope="col">Package</th>
                                     <th scope="col">Item</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="packageItemDto : ${packageItem}">
-                                    <th scope="row" th:text="${packageItemDto.id}"></th>
                                     <td th:text="${packageItemDto.getPackageDao.packageName}"></td>
                                     <td th:text="${packageItemDto.getItemDao.itemName}"></td>
+                                    <td th:if="${packageItemDto.isActive == true}">Active</td>
+                                    <td th:if="${packageItemDto.isActive == false}">Inactive</td>
                                     <td>
                                         <a th:if="${packageItemDto.isActive == true}"
                                            class="btn btn-primary update-package-item-button" data-bs-toggle="modal"
                                            data-bs-target="#updatePackageItemModal"
-                                           th:data-pi-id="${packageItemDto.id}">Update</a>
-                                        <a th:if="${packageItemDto.isActive == true}" class="btn btn-danger"
-                                           th:href="@{/inactive-package-item/{id} (id = ${packageItemDto.id})}">Inactive</a>
-                                        <a th:if="${packageItemDto.isActive == false}" class="btn btn-success"
-                                           th:href="@{/inactive-package-item/{id} (id = ${packageItemDto.id})}">Active</a>
+                                           th:data-pi-id="${packageItemDto.id}">Edit</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -123,7 +120,7 @@
                         <form th:action="@{/save-package-item}" th:object="${packageItemDto}" method="post">
                             <div class="mb-3">
                                 <label for="addPackageItemModal_packageItemPackages"
-                                       class="form-label">Warehouse</label>
+                                       class="form-label">Package</label>
                                 <select class="form-select" id="addPackageItemModal_packageItemPackages"
                                         th:field="*{packageDao}" required>
                                     <option value="" disabled selected>Select Package</option>
@@ -134,13 +131,13 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="addPackageItemModal_packageItemItem" class="form-label">Batch</label>
+                                <label for="addPackageItemModal_packageItemItem" class="form-label">Item</label>
                                 <select class="form-select" id="addPackageItemModal_packageItemItem"
                                         name="itemIds" th:field="*{itemDaoList}" multiple="multiple"
                                         required>
                                     <option value="" disabled selected>Select Item</option>
                                     <option th:each="item : ${items}"
-                                            th:text="${item.itemName}"
+                                            th:text="${item.getBarangName}"
                                             th:value="${item.id}">
                                     </option>
                                 </select>
@@ -183,7 +180,7 @@
                                 <label for="editPackageItemModal_packageItemPackages" class="form-label">Package</label>
                                 <select class="form-select" id="editPackageItemModal_packageItemPackages"
                                         name="editPackageItemModal_packageItemPackages" th:field="*{packageDao}"
-                                        required disabled>
+                                        required>
                                     <option value="" disabled selected>Select Package</option>
                                     <option th:each="package : ${packages}"
                                             th:text="${package.packageName}"
@@ -194,21 +191,22 @@
                             <div class="mb-3">
                                 <label for="editPackageItemModal_packageItemItem" class="form-label">Item</label>
                                 <select class="form-select" id="editPackageItemModal_packageItemItem"
-                                        name="editPackageItemModal_packageItemItem" th:field="*{itemDao}" required
-                                        disabled>
+                                        name="editPackageItemModal_packageItemItem" th:field="*{itemDao}" required>
                                     <option value="" disabled selected>Select Batch</option>
                                     <option th:each="item : ${items}"
-                                            th:text="${item.itemName}"
+                                            th:text="${item.getBarangName}"
                                             th:value="${item.id}">
                                     </option>
                                 </select>
                             </div>
+                            <div class="mb-3">
+                                <label class="col-sm-2 col-form-label">Status</label>
+                                <div class="col-sm">
+                                </div>
+                            </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
-                                <button type="submit" class="btn btn-primary" id="updatePackageItemButton" disabled>
-                                    Save
-                                </button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="updatePackageItemButton">Save</button>
                             </div>
                         </form>
                     </div>
@@ -216,17 +214,13 @@
             </div>
         </div>
 
-        <div th:replace="fragments :: footer"></div>
     </div>
-
-    <a th:replace="fragments :: top"></a>
 
 </div>
 
 <div th:replace="fragments :: script"></div>
 
 <script th:src="@{/js/package-item-update.js}"></script>
-<script th:src="@{/js/package-item-btn.js}"></script>
 <script>
     $(document).ready(function() {
         $('#addPackageItemModal_packageItemItem').select2({

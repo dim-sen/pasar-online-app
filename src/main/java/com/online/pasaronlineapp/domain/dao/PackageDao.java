@@ -1,8 +1,6 @@
 package com.online.pasaronlineapp.domain.dao;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.online.pasaronlineapp.domain.common.BaseDao;
 import lombok.*;
 import org.hibernate.annotations.Type;
@@ -16,7 +14,6 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "PACKAGES")
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PackageDao extends BaseDao {
 
     @Id
@@ -39,8 +36,13 @@ public class PackageDao extends BaseDao {
     @Column(name = "package_image", columnDefinition = "BYTEA")
     private byte[] packageImage;
 
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "admin_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private AdminDao adminDao;
+
     @OneToMany(mappedBy = "packageDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
     @JsonIgnore
-    private List<PackageItemDao> packageItemDaos;
+    private List<PackageBarangDao> packageItemDaos;
 }

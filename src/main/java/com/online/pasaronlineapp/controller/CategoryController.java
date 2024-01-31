@@ -3,7 +3,6 @@ package com.online.pasaronlineapp.controller;
 import com.online.pasaronlineapp.domain.dao.CategoryDao;
 import com.online.pasaronlineapp.domain.dto.CategoryDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
-import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.service.impl.CategoryServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -84,19 +83,6 @@ public class CategoryController {
             redirectAttributes.addFlashAttribute("ALREADY_EXIST", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("FAILED", "Category Failed to Update");
-        }
-        return "redirect:/categories/0";
-    }
-
-    @RequestMapping(value = "/inactive-category/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String inactiveCategoryById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            categoryService.inactivateCategoryById(id);
-            redirectAttributes.addFlashAttribute("SUCCESS", "Category Changed Successfully");
-        } catch (DataNotFoundException e) {
-            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("FAILED", "Category Failed to Change");
         }
         return "redirect:/categories/0";
     }

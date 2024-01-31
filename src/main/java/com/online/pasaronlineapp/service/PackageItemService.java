@@ -1,22 +1,20 @@
 package com.online.pasaronlineapp.service;
 
-import com.online.pasaronlineapp.domain.dao.PackageItemDao;
-import com.online.pasaronlineapp.domain.dto.PackageItemDto;
+import com.online.pasaronlineapp.domain.dao.PackageBarangDao;
+import com.online.pasaronlineapp.domain.dto.PackageBarangDto;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface PackageItemService {
 
-    void createPackageItem(PackageItemDto packageItemDto);
+    void createPackageItem(PackageBarangDto packageItemDto);
 
-    PackageItemDao findPackageItemById(Long id);
+    PackageBarangDao findPackageItemById(Long id);
 
-    void updatePackageItem(PackageItemDto packageItemDto);
+    void updatePackageItem(PackageBarangDto packageItemDto);
 
-    void inactivePackageItemById(Long id);
+    Page<PackageBarangDto> packageItemPage(Integer pageNumber);
 
-    Page<PackageItemDto> packageItemPage(Integer pageNumber);
-
-    Page<PackageItemDto> searchPackageItem(String keyword, Integer pageNumber);
+    Page<PackageBarangDto> searchPackageItem(String keyword, Integer pageNumber);
 }

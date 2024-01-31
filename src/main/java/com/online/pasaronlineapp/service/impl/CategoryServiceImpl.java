@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +31,10 @@ public class CategoryServiceImpl implements CategoryService {
     public void createCategory(CategoryDto categoryDto) {
         try {
             log.info("Creating new category");
-            Optional<CategoryDao> optionalCategoryDao = categoryRepository.findCategoryDaoByCategoryName(categoryDto.getCategoryName());
+
+            Optional<CategoryDao> optionalCategoryDao = categoryRepository.findCategoryDaoByCategoryName(categoryDto.getCategoryName().toLowerCase());
+
+            log.info("optionalCategoryDao: " + optionalCategoryDao);
 
             if (optionalCategoryDao.isPresent()) {
                 log.info("Category already exists");
@@ -40,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
             }
 
             CategoryDao categoryDao = CategoryDao.builder()
-                    .categoryName(categoryDto.getCategoryName())
+                    .categoryName(categoryDto.getCategoryName().toLowerCase())
                     .build();
 
             categoryRepository.save(categoryDao);
@@ -63,6 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
             }
 
             log.info("Category Found");
+            log.info("Category update: " + optionalCategoryDao.get());
             return optionalCategoryDao.get();
         } catch (Exception e) {
             log.error("An error occurred in finding a category by id. Error {}", e.getMessage());
@@ -98,38 +101,21 @@ public class CategoryServiceImpl implements CategoryService {
             log.info("Updating a category by id");
             Optional<CategoryDao> optionalCategoryDao = categoryRepository.findById(categoryDto.getId());
 
-            Optional<CategoryDao> categoryDaoByCategoryName = categoryRepository.findCategoryDaoByCategoryName(categoryDto.getCategoryName());
-            if (categoryDaoByCategoryName.isPresent() && !categoryDaoByCategoryName.get().getId().equals(categoryDto.getId())) {
+            Optional<CategoryDao> categoryDaoByCategoryName = categoryRepository.findCategoryDaoByCategoryName(categoryDto.getCategoryName().toLowerCase());
+            log.info("categoryDaoByCategoryName: " + categoryDaoByCategoryName);
+            if (categoryDaoByCategoryName.isPresent() && categoryDaoByCategoryName.get().getCategoryName().equals(categoryDto.getCategoryName().toLowerCase())) {
                 log.info("Category already exist");
                 throw new AlreadyExistException("Category Already Exist");
             }
 
             log.info("Category found");
             CategoryDao categoryDao = optionalCategoryDao.get();
-            categoryDao.setCategoryName(categoryDto.getCategoryName());
+            categoryDao.setCategoryName(categoryDto.getCategoryName().toLowerCase());
+            categoryDao.setActive(categoryDto.isActive());
             categoryRepository.save(categoryDao);
 
         } catch (Exception e) {
             log.error("An error occurred in updating category by id. Error {}", e.getMessage());
-            throw e;
-        }
-    }
-
-    @Override
-    public void inactivateCategoryById(Long id) {
-        try {
-            log.info("Inactivating category by id");
-            Optional<CategoryDao> optionalCategoryDao = categoryRepository.findById(id);
-
-            if (optionalCategoryDao.isEmpty()) {
-                log.info("Category not found");
-                throw new DataNotFoundException("Category Not Found");
-            }
-
-            log.info("Category found");
-            categoryRepository.updateIsActive(id, !optionalCategoryDao.get().isActive(), LocalDateTime.now());
-        } catch (Exception e) {
-            log.error("An error occurred in inactivating category by id. Error {}", e.getMessage());
             throw e;
         }
     }

@@ -60,26 +60,23 @@
                             <table class="table" th:if="${!warehouseBatch.isEmpty()}">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Id</th>
                                     <th scope="col">Warehouse</th>
                                     <th scope="col">Batch</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="warehouseBatchDto : ${warehouseBatch}">
-                                    <th scope="row" th:text="${warehouseBatchDto.id}"></th>
                                     <td th:text="${warehouseBatchDto.warehouseDao.warehouseName}"></td>
                                     <td th:text="${warehouseBatchDto.batchDao.batchTime}"></td>
+                                    <td th:if="${warehouseBatchDto.isActive == true}">Active</td>
+                                    <td th:if="${warehouseBatchDto.isActive == false}">Inactive</td>
                                     <td>
                                         <a th:if="${warehouseBatchDto.isActive == true}"
                                            class="btn btn-primary update-warehouse-batch-button" data-bs-toggle="modal"
                                            data-bs-target="#updateWarehouseBatchModal"
-                                           th:data-wb-id="${warehouseBatchDto.id}">Update</a>
-                                        <a th:if="${warehouseBatchDto.isActive == true}" class="btn btn-danger"
-                                           th:href="@{/inactive-warehouse-batch/{id} (id = ${warehouseBatchDto.id})}">Inactive</a>
-                                        <a th:if="${warehouseBatchDto.isActive == false}" class="btn btn-success"
-                                           th:href="@{/inactive-warehouse-batch/{id} (id = ${warehouseBatchDto.id})}">Active</a>
+                                           th:data-wb-id="${warehouseBatchDto.id}">Edit</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -184,7 +181,7 @@
                                 <label for="editWarehouseBatchModal_warehouseBatchWarehouse" class="form-label">Warehouse</label>
                                 <select class="form-select" id="editWarehouseBatchModal_warehouseBatchWarehouse"
                                         name="editWarehouseBatchModal_warehouseBatchWarehouse" th:field="*{warehouseDao}"
-                                        required disabled>
+                                        required>
                                     <option value="" disabled selected>Select Warehouse</option>
                                     <option th:each="warehouse : ${warehouses}"
                                             th:text="${warehouse.warehouseName}"
@@ -196,8 +193,7 @@
                                 <label for="editWarehouseBatchModal_warehouseBatchBatch"
                                        class="form-label">Batch</label>
                                 <select class="form-select" id="editWarehouseBatchModal_warehouseBatchBatch"
-                                        name="editWarehouseBatchModal_warehouseBatchBatch" th:field="*{batchDao}" required
-                                        disabled>
+                                        name="editWarehouseBatchModal_warehouseBatchBatch" th:field="*{batchDao}" required>
                                     <option value="" disabled selected>Select Batch</option>
                                     <option th:each="batch : ${batches}"
                                             th:text="${batch.batchTime}"
@@ -205,10 +201,14 @@
                                     </option>
                                 </select>
                             </div>
+                            <div class="mb-3">
+                                <label class="col-sm-2 col-form-label">Status</label>
+                                <div class="col-sm">
+                                </div>
+                            </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
-                                <button type="submit" class="btn btn-primary" id="updateWarehouseBatchButton" disabled>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="updateWarehouseBatchButton">
                                     Save
                                 </button>
                             </div>
@@ -218,17 +218,13 @@
             </div>
         </div>
 
-        <div th:replace="fragments :: footer"></div>
     </div>
-
-    <a th:replace="fragments :: top"></a>
 
 </div>
 
 <div th:replace="fragments :: script"></div>
 
 <script th:src="@{/js/warehouse-batch-update.js}"></script>
-<script th:src="@{/js/warehouse-batch-btn.js}"></script>
 <script>
     $(document).ready(function() {
         $('#addWarehouseBatchModal_warehouseBatchBatch').select2({

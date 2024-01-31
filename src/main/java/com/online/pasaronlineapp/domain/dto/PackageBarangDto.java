@@ -1,37 +1,31 @@
 package com.online.pasaronlineapp.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.online.pasaronlineapp.domain.dao.ItemDao;
+import com.online.pasaronlineapp.domain.dao.BarangDao;
 import com.online.pasaronlineapp.domain.dao.PackageDao;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
+/**
+ * DTO for {@link com.online.pasaronlineapp.domain.dao.PackageBarangDao}
+ */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class PackageItemDto {
-
-    private Long id;
-
-    private PackageDao packageDao;
-
-    private ItemDao itemDao;
+public class PackageBarangDto {
+    Long id;
+    PackageDao packageDao;
+    BarangDao barangDao;
+    @JsonIgnore
+    boolean isActive;
 
     @JsonIgnore
-    private List<ItemDao> itemDaoList;
-
-    @JsonIgnore
-    private Boolean isActive;
+    List<BarangDao> barangDaoList;
 }

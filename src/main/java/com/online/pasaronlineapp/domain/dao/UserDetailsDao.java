@@ -14,7 +14,7 @@ import java.util.Collections;
 @AllArgsConstructor
 public class UserDetailsDao implements UserDetails {
 
-    private UserDao userDao;
+    private PembeliDao userDao;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

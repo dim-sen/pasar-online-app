@@ -1,8 +1,8 @@
 package com.online.pasaronlineapp.controller;
 
-import com.online.pasaronlineapp.domain.dao.ItemDao;
+import com.online.pasaronlineapp.domain.dao.BarangDao;
+import com.online.pasaronlineapp.domain.dto.BarangDto;
 import com.online.pasaronlineapp.domain.dto.CategoryDto;
-import com.online.pasaronlineapp.domain.dto.ItemDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.service.impl.CategoryServiceImpl;
@@ -36,13 +36,13 @@ public class ItemController {
             return "redirect:/login";
         }
 
-        Page<ItemDto> itemDtoPage = itemService.itemPage(pageNumber);
+        Page<BarangDto> itemDtoPage = itemService.itemPage(pageNumber);
         List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
         model.addAttribute("title", "Item");
         model.addAttribute("totalPages", itemDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("items", itemDtoPage);
-        model.addAttribute("itemDto", new ItemDto());
+        model.addAttribute("itemDto", new BarangDto());
         model.addAttribute("categories", categoryDtoList);
         return "items";
     }
@@ -55,19 +55,19 @@ public class ItemController {
         if (principal == null) {
             return "redirect:/login";
         }
-        Page<ItemDto> itemDtoPage = itemService.searchItem(keyword, pageNumber);
+        Page<BarangDto> itemDtoPage = itemService.searchItem(keyword, pageNumber);
         List<CategoryDto> categoryDtoList = categoryService.getAllCategories();
         model.addAttribute("title", "Item");
         model.addAttribute("totalPages", itemDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("items", itemDtoPage);
-        model.addAttribute("itemDto", new ItemDto());
+        model.addAttribute("itemDto", new BarangDto());
         model.addAttribute("categories", categoryDtoList);
         return "items";
     }
 
     @PostMapping(value = "/save-item")
-    public String saveItem(@ModelAttribute(value = "itemDto") @Valid ItemDto itemDto,
+    public String saveItem(@ModelAttribute(value = "itemDto") @Valid BarangDto itemDto,
                            @RequestParam(value = "file") MultipartFile itemImage,
                            RedirectAttributes redirectAttributes) {
 
@@ -84,12 +84,12 @@ public class ItemController {
 
     @RequestMapping(value = "/find-item-by-id", method = {RequestMethod.PUT, RequestMethod.GET})
     @ResponseBody
-    public ItemDao findItemById(@RequestParam(value = "id") Long id) {
+    public BarangDao findItemById(@RequestParam(value = "id") Long id) {
         return itemService.findItemById(id);
     }
 
     @PostMapping(value = "/update-item/{id}")
-    public String updateItem(@ModelAttribute(value = "itemDto") ItemDto itemDto,
+    public String updateItem(@ModelAttribute(value = "itemDto") BarangDto itemDto,
             @RequestParam(value = "file") MultipartFile itemImage,
             RedirectAttributes redirectAttributes) {
 
@@ -100,19 +100,6 @@ public class ItemController {
             redirectAttributes.addFlashAttribute("ALREADY_EXIST", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("FAILED", "Item Failed to Update");
-        }
-        return "redirect:/items/0";
-    }
-
-    @RequestMapping(value = "/inactive-item/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String inactiveItemById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            itemService.inactivateItemById(id);
-            redirectAttributes.addFlashAttribute("SUCCESS", "Item Changed Successfully");
-        } catch (DataNotFoundException e) {
-            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("FAILED", "Item Failed to Change");
         }
         return "redirect:/items/0";
     }

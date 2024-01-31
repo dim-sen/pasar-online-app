@@ -1,6 +1,8 @@
 package com.online.pasaronlineapp.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PaymentDto {
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public class UsernamePassword {
+    private String username;
 
-    private Long id;
-
-    private String paymentStatus;
-
-    private String paymentType;
+    private String password;
 }

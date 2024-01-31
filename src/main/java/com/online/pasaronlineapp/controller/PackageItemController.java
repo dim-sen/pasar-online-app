@@ -1,9 +1,9 @@
 package com.online.pasaronlineapp.controller;
 
-import com.online.pasaronlineapp.domain.dao.PackageItemDao;
-import com.online.pasaronlineapp.domain.dto.ItemDto;
+import com.online.pasaronlineapp.domain.dao.PackageBarangDao;
+import com.online.pasaronlineapp.domain.dto.BarangDto;
+import com.online.pasaronlineapp.domain.dto.PackageBarangDto;
 import com.online.pasaronlineapp.domain.dto.PackageDto;
-import com.online.pasaronlineapp.domain.dto.PackageItemDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.exception.InactiveException;
@@ -38,14 +38,14 @@ public class PackageItemController {
             return "redirect:/login";
         }
 
-        Page<PackageItemDto> packageItemDtoPage = packageItemService.packageItemPage(pageNumber);
+        Page<PackageBarangDto> packageItemDtoPage = packageItemService.packageItemPage(pageNumber);
         List<PackageDto> packageDtoList = packageService.getAllPackages();
-        List<ItemDto> itemDtoList = itemService.getAllItems();
+        List<BarangDto> itemDtoList = itemService.getAllItems();
         model.addAttribute("title", "Package-Item");
         model.addAttribute("totalPages", packageItemDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("packageItem", packageItemDtoPage);
-        model.addAttribute("packageItemDto", new PackageItemDto());
+        model.addAttribute("packageItemDto", new PackageBarangDto());
         model.addAttribute("packages", packageDtoList);
         model.addAttribute("items", itemDtoList);
         return "package-item";
@@ -60,21 +60,21 @@ public class PackageItemController {
             return "redirect:/login";
         }
 
-        Page<PackageItemDto> packageItemDtoPage = packageItemService.searchPackageItem(keyword, pageNumber);
+        Page<PackageBarangDto> packageItemDtoPage = packageItemService.searchPackageItem(keyword, pageNumber);
         List<PackageDto> packageDtoList = packageService.getAllPackages();
-        List<ItemDto> itemDtoList = itemService.getAllItems();
+        List<BarangDto> itemDtoList = itemService.getAllItems();
         model.addAttribute("title", "Search");
         model.addAttribute("totalPages", packageItemDtoPage.getTotalPages());
         model.addAttribute("currentPage", pageNumber);
         model.addAttribute("packageItem", packageItemDtoPage);
-        model.addAttribute("packageItemDto", new PackageItemDto());
+        model.addAttribute("packageItemDto", new PackageBarangDto());
         model.addAttribute("packages", packageDtoList);
         model.addAttribute("items", itemDtoList);
         return "package-item";
     }
 
     @PostMapping(value = "/save-package-item")
-    public String savePackageItem(@ModelAttribute(value = "packageItemDto") PackageItemDto packageItemDto,
+    public String savePackageItem(@ModelAttribute(value = "packageItemDto") PackageBarangDto packageItemDto,
                                   RedirectAttributes redirectAttributes) {
         try {
             packageItemService.createPackageItem(packageItemDto);
@@ -89,35 +89,20 @@ public class PackageItemController {
 
     @RequestMapping(value = "/find-pi-by-id", method = {RequestMethod.PUT, RequestMethod.GET})
     @ResponseBody
-    public PackageItemDao findPackageItemById(@RequestParam(value = "id") Long id) {
+    public PackageBarangDao findPackageItemById(@RequestParam(value = "id") Long id) {
         return packageItemService.findPackageItemById(id);
     }
 
     @PostMapping(value = "/update-package-item/{id}")
-    public String updatePackageItem(@ModelAttribute(value = "packageItemDto") PackageItemDto packageItemDto,
+    public String updatePackageItem(@ModelAttribute(value = "packageItemDto") PackageBarangDto packageBarangDto,
                                     RedirectAttributes redirectAttributes) {
         try {
-            packageItemService.updatePackageItem(packageItemDto);
+            packageItemService.updatePackageItem(packageBarangDto);
             redirectAttributes.addFlashAttribute("SUCCESS", "Package Item Successfully Updated");
         } catch (AlreadyExistException e) {
             redirectAttributes.addFlashAttribute("ALREADY_EXIST", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("FAILED", "Package Item Failed to Update");
-        }
-        return "redirect:/package-item/0";
-    }
-
-    @RequestMapping(value = "/inactive-package-item/{id}")
-    public String inactivePackageItemById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            packageItemService.inactivePackageItemById(id);
-            redirectAttributes.addFlashAttribute("SUCCESS", "Package Item Changed Successfully");
-        } catch (DataNotFoundException e) {
-            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
-        } catch (InactiveException e) {
-            redirectAttributes.addFlashAttribute("INACTIVE", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("FAILED", "Package Item Failed to Change");
         }
         return "redirect:/package-item/0";
     }

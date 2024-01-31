@@ -1,9 +1,9 @@
 package com.online.pasaronlineapp.service.impl;
 
 import com.online.pasaronlineapp.constant.AppConstant;
-import com.online.pasaronlineapp.domain.dao.ItemDao;
-import com.online.pasaronlineapp.domain.dao.PackageItemDao;
-import com.online.pasaronlineapp.domain.dto.PackageItemDto;
+import com.online.pasaronlineapp.domain.dao.BarangDao;
+import com.online.pasaronlineapp.domain.dao.PackageBarangDao;
+import com.online.pasaronlineapp.domain.dto.PackageBarangDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
 import com.online.pasaronlineapp.exception.InactiveException;
@@ -30,21 +30,15 @@ public class PackageItemServiceImpl implements PackageItemService {
     @Autowired
     private PackageItemRepository packageItemRepository;
 
-    @Autowired
-    private PackageRepository packageRepository;
-
-    @Autowired
-    private ItemRepository itemRepository;
-
     @Override
-    public void createPackageItem(PackageItemDto packageItemDto) {
+    public void createPackageItem(PackageBarangDto packageItemDto) {
         try {
             log.info("Creating new Package-Item");
-            List<ItemDao> packageItemDaoList = packageItemDto.getItemDaoList();
+            List<BarangDao> packageItemDaoList = packageItemDto.getBarangDaoList();
 
-            for (ItemDao itemDao : packageItemDaoList) {
+            for (BarangDao itemDao : packageItemDaoList) {
                 log.info("Find by package id and item id");
-                Optional<PackageItemDao> optionalPackageItemDao = packageItemRepository.findByPackagesIdAndItemId(
+                Optional<PackageBarangDao> optionalPackageItemDao = packageItemRepository.findByPackagesIdAndItemId(
                         packageItemDto.getPackageDao().getId(),
                         itemDao.getId()
                 );
@@ -55,9 +49,9 @@ public class PackageItemServiceImpl implements PackageItemService {
                 }
 
                 log.info("Found it");
-                PackageItemDao packageItemDao = new PackageItemDao();
+                PackageBarangDao packageItemDao = new PackageBarangDao();
                 packageItemDao.setPackageDao(packageItemDto.getPackageDao());
-                packageItemDao.setItemDao(itemDao);
+                packageItemDao.setBarangDao(itemDao);
 
                 packageItemRepository.save(packageItemDao);
             }
@@ -68,10 +62,10 @@ public class PackageItemServiceImpl implements PackageItemService {
     }
 
     @Override
-    public PackageItemDao findPackageItemById(Long id) {
+    public PackageBarangDao findPackageItemById(Long id) {
         try {
             log.info("Finding a Package-Item by id");
-            Optional<PackageItemDao> optionalPackageItemDao = packageItemRepository.findById(id);
+            Optional<PackageBarangDao> optionalPackageItemDao = packageItemRepository.findById(id);
 
             if (optionalPackageItemDao.isEmpty()) {
                 log.info("Package-Item not found");
@@ -87,24 +81,25 @@ public class PackageItemServiceImpl implements PackageItemService {
     }
 
     @Override
-    public void updatePackageItem(PackageItemDto packageItemDto) {
+    public void updatePackageItem(PackageBarangDto packageBarangDto) {
         try {
             log.info("Updating a Package-Item by id");
-            Optional<PackageItemDao> optionalPackageItemDao = packageItemRepository.findById(packageItemDto.getId());
+            Optional<PackageBarangDao> optionalPackageItemDao = packageItemRepository.findById(packageBarangDto.getId());
 
-            Optional<PackageItemDao> packageItemDaoOptional = packageItemRepository.findByPackagesIdAndItemId(
-                    packageItemDto.getPackageDao().getId(),
-                    packageItemDto.getItemDao().getId()
+            Optional<PackageBarangDao> packageItemDaoOptional = packageItemRepository.findByPackagesIdAndItemId(
+                    packageBarangDto.getPackageDao().getId(),
+                    packageBarangDto.getBarangDao().getId()
             );
 
-            if (packageItemDaoOptional.isPresent() && !packageItemDaoOptional.get().getId().equals(packageItemDto.getId())) {
+            if (packageItemDaoOptional.isPresent() && !packageItemDaoOptional.get().getId().equals(packageBarangDto.getId())) {
                 log.info("Package-Item already exist");
                 throw new AlreadyExistException("Package-Item Already Exist");
             }
             log.info("Package-Item Found");
-            PackageItemDao packageItemDao = optionalPackageItemDao.get();
-            packageItemDao.setPackageDao(packageItemDto.getPackageDao());
-            packageItemDao.setItemDao(packageItemDto.getItemDao());
+            PackageBarangDao packageItemDao = optionalPackageItemDao.get();
+            packageItemDao.setPackageDao(packageBarangDto.getPackageDao());
+            packageItemDao.setBarangDao(packageBarangDto.getBarangDao());
+            packageItemDao.setActive(packageBarangDto.isActive());
             packageItemRepository.save(packageItemDao);
         } catch (Exception e) {
             log.error("An error occurred in updating Package-Item by id. Error {}", e.getMessage());
@@ -113,41 +108,17 @@ public class PackageItemServiceImpl implements PackageItemService {
     }
 
     @Override
-    public void inactivePackageItemById(Long id) {
-        try {
-            log.info("Inactivating Package-Item by id");
-            Optional<PackageItemDao> optionalPackageItemDao = packageItemRepository.findById(id);
-
-            if (optionalPackageItemDao.isEmpty()) {
-                log.info("Package-Item not Found");
-                throw new DataNotFoundException("Package-Item not Found");
-            }
-
-            log.info("Package-Item Found");
-            if (packageRepository.checkIfIsActiveFalse(optionalPackageItemDao.get().getPackageDao().getId()) ||
-                    itemRepository.checkIfIsActiveFalse(optionalPackageItemDao.get().getItemDao().getId())) {
-                throw new InactiveException("Failed to Change. Check Whether Package or Item is Inactive");
-            } else {
-                packageItemRepository.updateIsActive(id, !optionalPackageItemDao.get().isActive(), LocalDateTime.now());
-            }
-        } catch (Exception e) {
-            log.error("An error occurred in inactivating Package-Item by id. Error {}", e.getMessage());
-            throw e;
-        }
-    }
-
-    @Override
-    public Page<PackageItemDto> packageItemPage(Integer pageNumber) {
+    public Page<PackageBarangDto> packageItemPage(Integer pageNumber) {
         try {
             log.info("Showing Package-Item pagination");
             Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
-            Page<PackageItemDao> packageItemDaoPage = packageItemRepository.pageablePackageItem(pageable);
+            Page<PackageBarangDao> packageItemDaoPage = packageItemRepository.pageablePackageItem(pageable);
 
-            return packageItemDaoPage.<PackageItemDto>map(packageItemDao -> PackageItemDto.builder()
+            return packageItemDaoPage.<PackageBarangDto>map(packageItemDao -> PackageBarangDto.builder()
                     .id(packageItemDao.getId())
                     .packageDao(packageItemDao.getPackageDao())
-                    .itemDao(packageItemDao.getItemDao())
+                    .barangDao(packageItemDao.getBarangDao())
                     .isActive(packageItemDao.isActive())
                     .build());
         } catch (Exception e) {
@@ -157,17 +128,17 @@ public class PackageItemServiceImpl implements PackageItemService {
     }
 
     @Override
-    public Page<PackageItemDto> searchPackageItem(String keyword, Integer pageNumber) {
+    public Page<PackageBarangDto> searchPackageItem(String keyword, Integer pageNumber) {
         try {
             log.info("Searching for Package-Item");
             Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
 
-            Page<PackageItemDao> packageItemDaoPage = packageItemRepository.searchPackageItemDaoBy(keyword.toLowerCase(), pageable);
+            Page<PackageBarangDao> packageItemDaoPage = packageItemRepository.searchPackageItemDaoBy(keyword.toLowerCase(), pageable);
 
-            return packageItemDaoPage.<PackageItemDto>map(packageItemDao -> PackageItemDto.builder()
+            return packageItemDaoPage.<PackageBarangDto>map(packageItemDao -> PackageBarangDto.builder()
                     .id(packageItemDao.getId())
                     .packageDao(packageItemDao.getPackageDao())
-                    .itemDao(packageItemDao.getItemDao())
+                    .barangDao(packageItemDao.getBarangDao())
                     .isActive(packageItemDao.isActive())
                     .build());
         } catch (Exception e) {

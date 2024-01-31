@@ -25,12 +25,13 @@ public class BatchDao extends BaseDao {
     @Convert(converter = LocalTImeAttributeConverter.class)
     private LocalTime batchTime;
 
-    @OneToMany(mappedBy = "batchDao")
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "admin_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private AdminDao adminDao;
+
+    @OneToMany(mappedBy = "batchDao", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @ToString.Exclude
     @JsonIgnore
     private List<WarehouseBatchDao> warehouseBatchDaos;
-
-    @OneToMany(mappedBy = "batch", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @ToString.Exclude
-    private List<OrderDao> orderDaos;
 }

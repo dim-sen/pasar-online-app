@@ -1,8 +1,8 @@
 package com.online.pasaronlineapp.service.impl.rest;
 
 import com.online.pasaronlineapp.constant.AppConstant;
-import com.online.pasaronlineapp.domain.dao.PackageItemDao;
-import com.online.pasaronlineapp.domain.dto.PackageItemDto;
+import com.online.pasaronlineapp.domain.dao.PackageBarangDao;
+import com.online.pasaronlineapp.domain.dto.PackageBarangDto;
 import com.online.pasaronlineapp.repository.PackageItemRepository;
 import com.online.pasaronlineapp.service.rest.PackageItemRestService;
 import com.online.pasaronlineapp.util.ResponseUtil;
@@ -26,15 +26,15 @@ public class PackageItemRestServiceImpl implements PackageItemRestService {
     public ResponseEntity<Object> getAllPackageItemByPackageId(Long id) {
         try {
             log.info("Getting all Package-Item by package id");
-            List<PackageItemDao> packageItemDaoList = packageItemRepository.findAllByPackageId(id);
-            List<PackageItemDto> packageItemDtoList = new ArrayList<>();
+            List<PackageBarangDao> packageItemDaoList = packageItemRepository.findAllByPackageId(id);
+            List<PackageBarangDto> packageItemDtoList = new ArrayList<>();
 
-            for (PackageItemDao packageItemDao : packageItemDaoList) {
+            for (PackageBarangDao packageItemDao : packageItemDaoList) {
                 if (packageItemDao.isActive()) {
-                    packageItemDtoList.add(PackageItemDto.builder()
+                    packageItemDtoList.add(PackageBarangDto.builder()
                             .id(packageItemDao.getId())
                             .packageDao(packageItemDao.getPackageDao())
-                            .itemDao(packageItemDao.getItemDao())
+                            .barangDao(packageItemDao.getBarangDao())
                             .build());
                 }
             }

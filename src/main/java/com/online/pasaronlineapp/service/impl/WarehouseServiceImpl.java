@@ -57,7 +57,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public WarehouseDao findWarehouseById(Long id) {
+    public WarehouseDto findWarehouseById(Long id) {
         try {
             log.info("Finding a warehouse by id");
             Optional<WarehouseDao> optionalWarehouseDao = warehouseRepository.findById(id);
@@ -67,8 +67,12 @@ public class WarehouseServiceImpl implements WarehouseService {
                 throw new DataNotFoundException("Warehouse not Found");
             }
             log.info("Warehouse Found");
-            log.info("optionalWarehouseDao: " + optionalWarehouseDao.get());
-            return optionalWarehouseDao.get();
+
+            return WarehouseDto.builder()
+                    .id(optionalWarehouseDao.get().getId())
+                    .warehouseName(optionalWarehouseDao.get().getWarehouseName())
+                    .warehouseAddress(optionalWarehouseDao.get().getWarehouseAddress())
+                    .build();
         } catch (Exception e) {
             log.error("An error occurred in finding a warehouse by id. Error {}", e.getMessage());
             throw e;
@@ -114,39 +118,11 @@ public class WarehouseServiceImpl implements WarehouseService {
             WarehouseDao warehouseDao = optionalWarehouseDao.get();
             warehouseDao.setWarehouseName(warehouseDto.getWarehouseName());
             warehouseDao.setWarehouseAddress(warehouseDto.getWarehouseAddress());
+            warehouseDao.setActive(warehouseDto.isActive());
             warehouseRepository.save(warehouseDao);
 
         } catch (Exception e) {
             log.error("An error occurred in updating warehouse by id. Error {}", e.getMessage());
-            throw e;
-        }
-    }
-
-    @Override
-    public void inactivateWarehouseById(Long id) {
-        try {
-            log.info("Inactivating warehouse by id");
-            Optional<WarehouseDao> optionalWarehouseDao = warehouseRepository.findById(id);
-
-            if (optionalWarehouseDao.isEmpty()) {
-                log.info("Warehouse not found");
-                throw new DataNotFoundException("Warehouse Not Found");
-            }
-
-            log.info("Warehouse found");
-            if (optionalWarehouseDao.get().isActive()) {
-                List<WarehouseBatchDao> warehouseBatchDaoList = warehouseBatchRepository.findAllByWarehouseId(id);
-                for (WarehouseBatchDao warehouseBatchDao : warehouseBatchDaoList) {
-                    if (warehouseBatchDao.isActive()) {
-                        warehouseBatchRepository.updateIsActive(warehouseBatchDao.getId(), false, LocalDateTime.now());
-                    }
-                }
-                warehouseRepository.updateIsActive(id, false, LocalDateTime.now());
-            } else {
-                warehouseRepository.updateIsActive(id, true, LocalDateTime.now());
-            }
-        } catch (Exception e) {
-            log.error("An error occurred in inactivating warehouse by id. Error {}", e.getMessage());
             throw e;
         }
     }

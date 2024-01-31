@@ -2,24 +2,28 @@ package com.online.pasaronlineapp.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.online.pasaronlineapp.domain.dao.AdminDao;
+import lombok.*;
 
+/**
+ * DTO for {@link com.online.pasaronlineapp.domain.dao.WarehouseDao}
+ */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class WarehouseDto {
 
-    private Long id;
-
-    private String warehouseName;
-
-    private String warehouseAddress;
-
+    Long id;
+    String warehouseName;
+    String warehouseAddress;
+    String latitude;
+    String longitude;
+    AdminDao adminDao;
     @JsonIgnore
-    private Boolean isActive;
+    boolean isActive;
 }

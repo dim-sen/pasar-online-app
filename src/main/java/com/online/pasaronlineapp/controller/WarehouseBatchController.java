@@ -106,19 +106,4 @@ public class WarehouseBatchController {
         }
         return "redirect:/warehouse-batch/0";
     }
-
-    @RequestMapping(value = "/inactive-warehouse-batch/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String inactiveWarehouseBatchById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            warehouseBatchService.inactiveWarehouseBatchById(id);
-            redirectAttributes.addFlashAttribute("SUCCESS", "Warehouse Batch Changed Successfully");
-        } catch (DataNotFoundException e) {
-            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
-        } catch (InactiveException e) {
-            redirectAttributes.addFlashAttribute("INACTIVE", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("FAILED", "Warehouse Batch Failed to Change");
-        }
-        return "redirect:/warehouse-batch/0";
-    }
 }

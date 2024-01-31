@@ -1,6 +1,5 @@
 package com.online.pasaronlineapp.controller;
 
-import com.online.pasaronlineapp.domain.dao.WarehouseDao;
 import com.online.pasaronlineapp.domain.dto.WarehouseDto;
 import com.online.pasaronlineapp.exception.AlreadyExistException;
 import com.online.pasaronlineapp.exception.DataNotFoundException;
@@ -70,7 +69,7 @@ public class WarehouseController {
 
     @RequestMapping(value = "/find-warehouse-by-id", method = {RequestMethod.PUT, RequestMethod.GET})
     @ResponseBody
-    public WarehouseDao findWarehouseById(@RequestParam(value = "id") Long id) {
+    public WarehouseDto findWarehouseById(@RequestParam(value = "id") Long id) {
         return warehouseService.findWarehouseById(id);
     }
 
@@ -84,19 +83,6 @@ public class WarehouseController {
             redirectAttributes.addFlashAttribute("ALREADY_EXIST", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("FAILED", "Warehouse Failed to Update");
-        }
-        return "redirect:/warehouses/0";
-    }
-
-    @RequestMapping(value = "/inactive-warehouse/{id}", method = {RequestMethod.PUT, RequestMethod.GET})
-    public String inactiveWarehouseById(@PathVariable(value = "id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            warehouseService.inactivateWarehouseById(id);
-            redirectAttributes.addFlashAttribute("SUCCESS", "Warehouse Changed Successfully");
-        } catch (DataNotFoundException e) {
-            redirectAttributes.addFlashAttribute("NOT_FOUND", e.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("Failed", "Warehouse Failed to Change");
         }
         return "redirect:/warehouses/0";
     }

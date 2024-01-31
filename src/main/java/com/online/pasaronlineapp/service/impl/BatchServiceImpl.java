@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +37,7 @@ public class BatchServiceImpl implements BatchService {
     public void createBatch(BatchDto batchDto) {
         try {
             log.info("Creating new batch");
-            Optional<BatchDao> optionalBatchDao = batchRepository.findBatchDaoByBatchTime(LocalTime.parse(batchDto.getBatchTime()));
+            Optional<BatchDao> optionalBatchDao = batchRepository.findBatchDaoByBatchTime(batchDto.getBatchTime());
 
             if (optionalBatchDao.isPresent()) {
                 log.info("Batch already exists");
@@ -46,7 +45,7 @@ public class BatchServiceImpl implements BatchService {
             }
 
             BatchDao batchDao = BatchDao.builder()
-                    .batchTime(LocalTime.parse(batchDto.getBatchTime()))
+                    .batchTime(batchDto.getBatchTime())
                     .build();
 
             batchRepository.save(batchDao);
@@ -85,7 +84,7 @@ public class BatchServiceImpl implements BatchService {
             for (BatchDao batchDao : batchDaoList) {
                 batchDtoList.add(BatchDto.builder()
                                 .id(batchDao.getId())
-                                .batchTime(String.valueOf(batchDao.getBatchTime()))
+                                .batchTime(batchDao.getBatchTime())
                         .build());
             }
 
@@ -102,7 +101,7 @@ public class BatchServiceImpl implements BatchService {
             log.info("Updating a batch by id");
             Optional<BatchDao> optionalBatchDao = batchRepository.findById(batchDto.getId());
 
-            Optional<BatchDao> batchDaoOptional = batchRepository.findBatchDaoByBatchTime(LocalTime.parse(batchDto.getBatchTime()));
+            Optional<BatchDao> batchDaoOptional = batchRepository.findBatchDaoByBatchTime(batchDto.getBatchTime());
 
             if (batchDaoOptional.isPresent() && !batchDaoOptional.get().getId().equals(batchDto.getId())) {
                 log.info("Batch already exist");
@@ -111,7 +110,8 @@ public class BatchServiceImpl implements BatchService {
 
             log.info("Batch found");
             BatchDao batchDao = optionalBatchDao.get();
-            batchDao.setBatchTime(LocalTime.parse(batchDto.getBatchTime()));
+            batchDao.setBatchTime(batchDto.getBatchTime());
+            batchDao.setActive(batchDto.isActive());
             batchRepository.save(batchDao);
 
         } catch (Exception e) {
@@ -122,46 +122,16 @@ public class BatchServiceImpl implements BatchService {
     }
 
     @Override
-    public void inactivateBatchById(Long id) {
-        try {
-            log.info("Inactivating batch by id");
-            Optional<BatchDao> optionalBatchDao = batchRepository.findById(id);
-
-            if (optionalBatchDao.isEmpty()) {
-                log.info("Batch not found");
-                throw new DataNotFoundException("Batch Not Found");
-            }
-
-            log.info("Batch found");
-            if (optionalBatchDao.get().isActive()) {
-                List<WarehouseBatchDao> warehouseBatchDaoList = warehouseBatchRepository.findAllByBatchId(id);
-                for (WarehouseBatchDao warehouseBatchDao : warehouseBatchDaoList) {
-                    if (warehouseBatchDao.isActive()) {
-                        warehouseBatchRepository.updateIsActive(warehouseBatchDao.getId(), false, LocalDateTime.now());
-                    }
-                }
-                batchRepository.updateIsActive(id, false, LocalDateTime.now());
-            } else {
-                batchRepository.updateIsActive(id, true, LocalDateTime.now());
-            }
-
-        } catch (Exception e) {
-            log.error("An error occurred in inactivating batch by id. Error {}", e.getMessage());
-            throw e;
-        }
-    }
-
-    @Override
     public Page<BatchDto> batchPage(Integer pageNumber) {
         try {
             log.info("Showing batches pagination");
-            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.desc("isActive"), Sort.Order.asc("id")));
+            Pageable pageable = PageRequest.of(pageNumber, AppConstant.PAGE_MAX, Sort.by(Sort.Order.asc("batchTime")));
 
             Page<BatchDao> batchDaoPage = batchRepository.pageableBatch(pageable);
 
             return batchDaoPage.<BatchDto>map(batchDao -> BatchDto.builder()
                     .id(batchDao.getId())
-                    .batchTime(String.valueOf(batchDao.getBatchTime()))
+                    .batchTime(batchDao.getBatchTime())
                     .isActive(batchDao.isActive())
                     .build());
         } catch (Exception e) {
@@ -180,7 +150,7 @@ public class BatchServiceImpl implements BatchService {
 
             return batchDaoPage.<BatchDto>map(batchDao -> BatchDto.builder()
                     .id(batchDao.getId())
-                    .batchTime(String.valueOf(batchDao.getBatchTime()))
+                    .batchTime(batchDao.getBatchTime())
                     .isActive(batchDao.isActive())
                     .build());
         } catch (Exception e) {

@@ -27,7 +27,7 @@
                         </div>
                         <div class="table-responsive">
                             <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#addWarehouseModal">Add New Warehouse
+                                    data-bs-target="#addWarehouseModal" onclick="initMap()">Add New Warehouse
                             </button>
                             <div th:if="${warehouses.isEmpty() && param.keyword == null}">
                                 <div class="alert alert-warning">
@@ -57,26 +57,23 @@
                             <table class="table" th:if="${!warehouses.isEmpty()}">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Id</th>
                                     <th scope="col">Warehouse Name</th>
                                     <th scope="col">Warehouse Address</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="warehouseDto : ${warehouses}">
-                                    <th scope="row" th:text="${warehouseDto.id}"></th>
-                                    <td th:text="${warehouseDto.warehouseName}"></td>
+                                    <td th:text="${#strings.capitalizeWords(warehouseDto.warehouseName)}"></td>
                                     <td th:text="${warehouseDto.warehouseAddress}"></td>
+                                    <td th:if="${warehouseDto.isActive == true}">Active</td>
+                                    <td th:if="${warehouseDto.isActive == false}">Inactive</td>
                                     <td>
                                         <a th:if="${warehouseDto.isActive == true}"
                                            class="btn btn-primary update-warehouse-button" data-bs-toggle="modal"
                                            data-bs-target="#updateWarehouseModal"
-                                           th:data-warehouse-id="${warehouseDto.id}">Update</a>
-                                        <a th:if="${warehouseDto.isActive == true}" class="btn btn-danger"
-                                           th:href="@{/inactive-warehouse/{id} (id = ${warehouseDto.id})}">Inactive</a>
-                                        <a th:if="${warehouseDto.isActive == false}" class="btn btn-success"
-                                           th:href="@{/inactive-warehouse/{id} (id = ${warehouseDto.id})}">Active</a>
+                                           th:data-warehouse-id="${warehouseDto.id}">Edit</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -133,7 +130,11 @@
                                     Address</label>
                                 <textarea class="form-control" id="addWarehouseModal_warehouseAddress"
                                           th:field="*{warehouseAddress}" maxlength="255" required></textarea>
+                                <div class="col-sm-1">
+                                    <a class="btn btn-info" onclick="initMap()"><i class="fa fa-map-maker mr-auto"></i>Choose Location</a>
+                                </div>
                             </div>
+                            <div id="map"></div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary">Save</button>
@@ -174,7 +175,7 @@
                                     <input type="text" class="form-control" id="editWarehouseModal_warehouseName"
                                            name="editWarehouseModal_warehouseName" th:field="*{warehouseName}" required
                                            minlength="3"
-                                           maxlength="255" pattern="[a-zA-Z\s]+" disabled>
+                                           maxlength="255" pattern="[a-zA-Z\s]+">
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -182,12 +183,16 @@
                                     Address</label>
                                 <textarea class="form-control" id="editWarehouseModal_warehouseAddress"
                                           name="editWarehouseModal_warehouseAddress" th:field="*{warehouseAddress}"
-                                          maxlength="255" required disabled></textarea>
+                                          maxlength="255" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="col-sm-2 col-form-label">Status</label>
+                                <div class="col-sm">
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-info" id="editButton">Edit</button>
-                                <button type="submit" class="btn btn-primary" id="updateWarehouseButton" disabled>Save
+                                <button type="submit" class="btn btn-primary" id="updateWarehouseButton">Save
                                 </button>
                             </div>
                         </form>
@@ -196,17 +201,73 @@
             </div>
         </div>
 
-        <div th:replace="fragments :: footer"></div>
-    </div>
+        <!-- Location Modal -->
+        <div class="modal fade" id="location-modal" tabindex="-1" role="dialog"
+             aria-labelledby="location-modalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" style="max-width: 50%;" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="location-modalLabel">Location Picker</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+<!--                        <div id="map"></div>-->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info" data-bs-dismiss="modal"><i class="fa fa-check"></i>Done</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <a th:replace="fragments :: top"></a>
+    </div>
 
 </div>
 
 <div th:replace="fragments :: script"></div>
 
 <script th:src="@{/js/warehouse-update.js}"></script>
-<script th:src="@{/js/warehouse-btn.js}"></script>
+
+<!-- Tambahkan script untuk Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALrQoh6zTcopxnu6-lO6u2NIA58ecsSXc&libraries=places"></script>
+
+<script>
+    // Inisialisasi peta
+    var map;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: -6.2088, lng: 106.8456 }, // Koordinat default (misalnya Jakarta)
+            zoom: 12 // Tingkat zoom default
+        });
+
+        // Tambahkan event listener untuk menangkap klik pada peta
+        google.maps.event.addListener(map, 'click', function (event) {
+            // Koordinat dari titik yang diklik
+            var latitude = event.latLng.lat();
+            var longitude = event.latLng.lng();
+
+            // Tampilkan marker pada peta
+            placeMarker(event.latLng);
+
+            // Gunakan nilai latitude dan longitude sesuai kebutuhan
+            // Misalnya, simpan ke dalam formulir atau variabel
+            console.log('Latitude: ' + latitude);
+            console.log('Longitude: ' + longitude);
+        });
+    }
+
+    // Fungsi untuk menempatkan marker pada peta
+    function placeMarker(location) {
+        var marker = new google.maps.Marker({
+            position: location,
+            map: map
+        });
+    }
+</script>
 
 </body>
 

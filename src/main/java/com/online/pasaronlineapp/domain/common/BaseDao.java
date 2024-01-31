@@ -25,7 +25,7 @@ public abstract class BaseDao {
     private LocalDateTime updatedAt;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    public boolean isActive;
 
     @PrePersist
     void onCreate() {

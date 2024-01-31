@@ -4,17 +4,24 @@ $(document).ready(function () {
         $('#categoryId').val(categoryId);
 
         var url = '/admin/find-category-by-id?id=' + categoryId;
+        console.log("categoryId: ", categoryId);
 
-        $.get(url, function (categoryDto) {
-            if (categoryDto === null || Object.keys(categoryDto).length === 0) {
+        $.get(url, function (categoryDao) {
+            if (categoryDao === null || Object.keys(categoryDao).length === 0) {
                 $('#categoryNotFoundAlert').removeClass('d-none');
                 $('#updateCategoryModal').on('shown.bs.modal', function () {
                     $('#updateCategoryModal').modal('hide');
                 });
 
             } else {
-                $('#editCategoryModal_categoryId').val(categoryDto.id);
-                $('#editCategoryModal_categoryName').val(categoryDto.categoryName);
+                $('#editCategoryModal_categoryId').val(categoryDao.id);
+                var categoryName = categoryDao.categoryName;
+                var capitalizedCategoryName = categoryName.replace(/\b\w/g, function(match) {
+                    return match.toUpperCase();
+                });
+                $('#editCategoryModal_categoryName').val(capitalizedCategoryName);
+                $('#editCategoryModal_status').val(categoryDao.isActive.toString());
+                console.log("isActive: ", categoryDao.isActive)
                 $('#categoryNotFoundAlert').addClass('d-none');
                 $('#updateCategoryModal').modal('show');
             }
