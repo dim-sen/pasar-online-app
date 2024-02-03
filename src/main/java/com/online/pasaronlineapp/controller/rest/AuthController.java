@@ -20,6 +20,7 @@ public class AuthController {
     @Autowired
     private PembeliServiceImpl pembeliService;
 
+
     @PostMapping(value = "/register")
     public ResponseEntity<Object> register(@Valid @RequestBody PembeliDto pembeliDto) {
         return pembeliService.register(pembeliDto);
