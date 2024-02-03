@@ -35,9 +35,6 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private ImageUploadUtil imageUploadUtil;
 
-    @Autowired
-    private PackageItemRepository packageItemRepository;
-
     @Override
     public void createItem(BarangDto barangDto, MultipartFile itemImage) {
         try {

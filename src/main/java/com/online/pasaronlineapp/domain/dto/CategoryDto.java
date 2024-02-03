@@ -20,8 +20,6 @@ public class CategoryDto {
 
     Long id;
     String categoryName;
-
-    @JsonIgnore
     boolean isActive;
     AdminDao adminDao;
 }

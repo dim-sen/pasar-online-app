@@ -39,6 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             String jwt = getJwtFromRequest(request);
 
+            log.info(jwt);
             if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
                 log.info("Token isn't null");
                 String username = jwtTokenProvider.getUsername(jwt);
@@ -64,7 +65,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("Getting JWT from request");
 
         String bearerToken = request.getHeader(JWT_HEADER);
-
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(JWT_TOKEN_PREFIX)) {
             log.info("Got bearer JWT token");
             return bearerToken.substring(7);

@@ -1,6 +1,7 @@
 package com.online.pasaronlineapp.service.impl;
 
 import com.online.pasaronlineapp.domain.dao.AdminDao;
+import com.online.pasaronlineapp.domain.dao.AdminDetailsDao;
 import com.online.pasaronlineapp.domain.dao.PembeliDao;
 import com.online.pasaronlineapp.domain.dao.PembeliDetailDao;
 import com.online.pasaronlineapp.repository.AdminRepository;
@@ -27,13 +28,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private PembeliRepository pembeliRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Load Pembeli By Username");
-        PembeliDao pembeliDao = pembeliRepository.findByPhoneNumber(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found With Username: " + username));
+        log.info("Load User By Username");
 
-        log.info("Username found");
-        return PembeliDetailDao.build(pembeliDao);
+        Optional<PembeliDao> pembeliOptional = pembeliRepository.findByPhoneNumber(username);
+        if (pembeliOptional.isPresent()) {
+            PembeliDao pembeliDao = pembeliOptional.get();
+            log.info("Pembeli found");
+            return PembeliDetailDao.build(pembeliDao);
+        }
+
+        Optional<AdminDao> adminOptional = adminRepository.findByUsername(username);
+        if (adminOptional.isPresent()) {
+            AdminDao adminDao = adminOptional.get();
+            log.info("Admin found");
+            return AdminDetailsDao.build(adminDao);
+        }
+
+        throw new UsernameNotFoundException("User Not Found With Username: " + username);
     }
 }
+

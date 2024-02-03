@@ -18,11 +18,17 @@ public class AdminDetailsDao implements UserDetails {
 
     private AdminDao adminDao;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    private Collection<? extends GrantedAuthority> authorities;
+
+    public static AdminDetailsDao build(AdminDao adminDao) {
         List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
         simpleGrantedAuthorities.add(new SimpleGrantedAuthority(adminDao.getRole().getRoleName()));
-        return simpleGrantedAuthorities;
+        return new AdminDetailsDao(adminDao, simpleGrantedAuthorities);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override

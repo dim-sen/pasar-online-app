@@ -1,5 +1,6 @@
 package com.online.pasaronlineapp.config;
 
+import com.online.pasaronlineapp.domain.dao.AdminDetailsDao;
 import com.online.pasaronlineapp.domain.dao.PembeliDao;
 import com.online.pasaronlineapp.domain.dao.PembeliDetailDao;
 import io.jsonwebtoken.*;
@@ -26,26 +27,33 @@ public class JwtTokenProvider {
     private int jwtExpirationInMs;
 
     public String generateToken(Authentication authentication) {
-        PembeliDetailDao pembeliDetailDao = (PembeliDetailDao) authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
         Date now = new Date(System.currentTimeMillis());
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
-        return Jwts.builder()
-                .setSubject(pembeliDetailDao.getPembeliDao().getPhoneNumber())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(key)
-                .compact();
+        log.info("Token generated: ");
+
+        if (principal instanceof PembeliDetailDao) {
+            PembeliDetailDao pembeliDetailDao = (PembeliDetailDao) principal;
+            return Jwts.builder()
+                    .setSubject(pembeliDetailDao.getPembeliDao().getPhoneNumber())
+                    .setIssuedAt(now)
+                    .setExpiration(expiryDate)
+                    .signWith(key)
+                    .compact();
+        } else if (principal instanceof AdminDetailsDao) {
+            AdminDetailsDao adminDetailsDao = (AdminDetailsDao) principal;
+            return Jwts.builder()
+                    .setSubject(adminDetailsDao.getAdminDao().getUsername())
+                    .setIssuedAt(now)
+                    .setExpiration(expiryDate)
+                    .signWith(key)
+                    .compact();
+        }
+
+        throw new IllegalArgumentException("Unsupported UserDetails type: " + principal.getClass());
     }
 
-    public Long getUserIdFromJWT(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return Long.parseLong(claims.getSubject());
-    }
 
     public String getUsername(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
@@ -53,7 +61,6 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-//            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
             return true;
         } catch (ExpiredJwtException e) {
